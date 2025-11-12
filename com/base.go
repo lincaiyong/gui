@@ -1,5 +1,7 @@
 package com
 
+import "strconv"
+
 func NewBaseComponent[T any](tag string, self *T, children ...Component) *BaseComponent[T] {
 	return &BaseComponent[T]{
 		extraInfo: ExtraInfo{
@@ -227,23 +229,23 @@ func (b *BaseComponent[T]) ScrollLeft(s string) *T {
 	return b.self
 }
 
-func (b *BaseComponent[T]) BorderLeft(s string) *T {
-	b.SetProp("borderLeft", s)
+func (b *BaseComponent[T]) BorderLeft(s int) *T {
+	b.SetProp("borderLeft", strconv.Itoa(s))
 	return b.self
 }
 
-func (b *BaseComponent[T]) BorderRight(s string) *T {
-	b.SetProp("borderRight", s)
+func (b *BaseComponent[T]) BorderRight(s int) *T {
+	b.SetProp("borderRight", strconv.Itoa(s))
 	return b.self
 }
 
-func (b *BaseComponent[T]) BorderTop(s string) *T {
-	b.SetProp("borderTop", s)
+func (b *BaseComponent[T]) BorderTop(s int) *T {
+	b.SetProp("borderTop", strconv.Itoa(s))
 	return b.self
 }
 
-func (b *BaseComponent[T]) BorderBottom(s string) *T {
-	b.SetProp("borderBottom", s)
+func (b *BaseComponent[T]) BorderBottom(s int) *T {
+	b.SetProp("borderBottom", strconv.Itoa(s))
 	return b.self
 }
 

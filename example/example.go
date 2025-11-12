@@ -107,7 +107,7 @@ function test() {
 			r.GET("/input", func(c *gin.Context) {
 				page.MakePage(c, "input", Root(
 					Input().H("30").W("400").X("parent.w/2-.w/2").Y("parent.h/2-.h/2").
-						BorderTop("1").BorderBottom("1"),
+						BorderTop(1).BorderBottom(1),
 				))
 			})
 			r.GET("/tree", func(c *gin.Context) {

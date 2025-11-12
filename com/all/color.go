@@ -1,5 +1,11 @@
 package all
 
+import "fmt"
+
+func color(r, g, b int) string {
+	return fmt.Sprintf("'#%02x%02x%02x'", r, g, b)
+}
+
 const (
 	ColorBlack   = "'black'"   // 黑色
 	ColorSilver  = "'silver'"  // 银色
@@ -17,4 +23,10 @@ const (
 	ColorBlue    = "'blue'"    // 蓝色
 	ColorTeal    = "'teal'"    // 蓝绿色
 	ColorCyan    = "'cyan'"    // 水绿色/青色
+)
+
+var (
+	ColorGray247 = color(247, 248, 250)
+	ColorGray235 = color(235, 236, 240)
+	ColorGray201 = color(201, 204, 213)
 )
