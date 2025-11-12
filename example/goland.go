@@ -3,40 +3,54 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/lincaiyong/page"
+	. "github.com/lincaiyong/page/com"
 	. "github.com/lincaiyong/page/com/all"
 )
 
 func goland(c *gin.Context) {
 	comp := Root(
 		Div().W("2782/2").H("1590/2").SetSlots(
-			Div().NameAs("headerEle").H("33").BgColor(ColorGray247).BorderBottom(1).BorderColor(ColorGray235),
+			Div().NameAs("headerEle").H("33").BgColor(ColorGray247).BorderBottom(1).BorderColor(ColorGray235).SetSlots(
+				ToolButton().Svg(SvgSettings).X("parent.w-.w-.y-1").Y("parent.h/2-.h/2-0.5").Flag(),
+			),
 			Div().Y("prev.y2").H("parent.h-next.h-prev.h").SetSlots(
 				Div().NameAs("leftSideEle").W("33").BgColor(ColorGray247).BorderRight(1).BorderColor(ColorGray235).SetSlots(
-					Button().Icon(SvgProject).X("parent.w/2-.w/2-0.5").Y(".x").OnClick("Root.handleClick"),
-					Button().Icon(SvgCommit).X("prev.x").Y("prev.y2 + 8"),
-					Button().Icon(SvgPullRequests).X("prev.x").Y("prev.y2 + 8"),
+					ToolButton().Svg(SvgProject).X("parent.w/2-.w/2-0.5").Y(".x").OnClick("Root.handleClick"),
+					ToolButton().Svg(SvgCommit).X("prev.x").Y("prev.y2 + 8"),
+					ToolButton().Svg(SvgPullRequests).X("prev.x").Y("prev.y2 + 8"),
 					HDivider().X("prev.x").Y("prev.y2 + 9").W("prev.w").BgColor(ColorGray201),
-					Button().Icon(SvgStructure).X("prev.x").Y("prev.y2 + 9"),
-					Button().Icon(SvgMoreHorizontal).X("prev.x").Y("prev.y2 + 8"),
+					ToolButton().Svg(SvgStructure).X("prev.x").Y("prev.y2 + 9"),
+					ToolButton().Svg(SvgMoreHorizontal).X("prev.x").Y("prev.y2 + 8"),
 
-					Button().Icon(SvgPythonPackages).X("next.x").Y("next.y-8-.h"),
-					Button().Icon(SvgServices).X("next.x").Y("next.y-8-.h"),
-					Button().Icon(SvgTerminal).X("next.x").Y("next.y-8-.h"),
-					Button().Icon(SvgProblems).X("next.x").Y("next.y-8-.h"),
-					Button().Icon(SvgVCS).X("parent.w/2-.w/2-0.5").Y("parent.h-.h-.x"),
+					ToolButton().Svg(SvgPythonPackages).X("next.x").Y("next.y-8-.h"),
+					ToolButton().Svg(SvgServices).X("next.x").Y("next.y-8-.h"),
+					ToolButton().Svg(SvgTerminal).X("next.x").Y("next.y-8-.h"),
+					ToolButton().Svg(SvgProblems).X("next.x").Y("next.y-8-.h"),
+					ToolButton().Svg(SvgVCS).X("parent.w/2-.w/2-0.5").Y("parent.h-.h-.x"),
 				),
 				Div().X("prev.x2").W("parent.w-prev.w-next.w").BgColor(ColorGray247).SetSlots(
-					Div().NameAs("navEle").W("next.x").SetSlots(
+					Div().NameAs("navEle").W("next.x+next.w/2").BorderColor(ColorGray235).BorderRight(1).SetSlots(
 						Tree().NameAs("treeEle").OnClickItem("Root.clickTreeItem"),
 					),
-					VBar().X("parent.w/3").BgColor(ColorYellow),
-					Div().NameAs("mainEle").X("prev.x2").W("parent.w-prev.x2").SetSlots(
+					VBar().X("parent.w/3").BgColor(ColorYellow).Opacity("0"),
+					Div().NameAs("mainEle").X("prev.x2-prev.w/2").W("parent.w-.x").SetSlots(
 						Editor().NameAs("editorEle"),
 					),
 				),
-				Div().NameAs("rightSideEle").X("parent.w-.w").W("33").BgColor(ColorGray247).BorderColor(ColorGray235).BorderLeft(1),
+				Div().NameAs("rightSideEle").X("parent.w-.w").W("33").BgColor(ColorGray247).BorderColor(ColorGray235).BorderLeft(1).SetSlots(
+					ToolButton().Svg(SvgNotifications).X("parent.w/2-.w/2-0.5").Y(".x").Flag(),
+					ToolButton().Svg(SvgAIChat).X("prev.x").Y("prev.y2 + 8"),
+					ToolButton().Svg(SvgDatabase).X("prev.x").Y("prev.y2 + 8"),
+					ToolButton().Svg(SvgPythonConsole).X("prev.x").Y("prev.y2 + 8"),
+				),
 			),
-			Div().NameAs("footerEle").Y("parent.h-.h").H("24").BgColor(ColorGray247).BorderColor(ColorGray235).BorderTop(1).SetSlots(),
+			Div().NameAs("footerEle").Y("parent.h-.h").H("24").BgColor(ColorGray247).BorderColor(ColorGray235).BorderTop(1).SetSlots(
+				SourceRootButton().Text("'page'").X("9").Y("1"),
+				Svg(SvgArrowRight).X("prev.x2").Y("parent.h/2-.h/2-1").W("17").H(".w").Color(ColorGray110),
+				SourceDirButton().Text("'example'").X("prev.x2 + 1").Y("1"),
+				Svg(SvgArrowRight).X("prev.x2").Y("parent.h/2-.h/2-1").W("17").H(".w").Color(ColorGray110),
+				SourceFileButton().Text("'goland.go'").X("prev.x2 + 1").Y("1"),
+			),
 			Img("'img/goland.png'").NameAs("imgEle").V("0"),
 		),
 		Button().OnClick("Root.handleClick").Y("prev.y2").X("parent.w/2-.w/2"),

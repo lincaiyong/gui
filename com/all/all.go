@@ -32,6 +32,22 @@ func Button() *button.Component {
 	return button.Button()
 }
 
+func ToolButton() *button.Component {
+	return button.ToolButton()
+}
+
+func SourceRootButton() *button.Component {
+	return button.SourceRootButton()
+}
+
+func SourceDirButton() *button.Component {
+	return button.SourceDirButton()
+}
+
+func SourceFileButton() *button.Component {
+	return button.SourceFileButton()
+}
+
 func Compare() *compare.Component {
 	return compare.Compare()
 }

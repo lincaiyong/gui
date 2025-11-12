@@ -92,8 +92,10 @@ func genClassCode(info *com.ExtraInfo, namedChildren map[string]map[string][]int
 			pr.Put("static " + code)
 		}
 		for _, property := range info.Properties() {
-			pr.Put("get %s() { return this._properties.%s.value; }", property, property)
-			pr.Put("set %s(v) { this._properties.%s.value = v; }", property, property)
+			pr.Put("get %s() {", property).Push().
+				Put("return this._properties.%s.value;", property).Pop().Put("}")
+			pr.Put("set %s(v) {", property).Push().
+				Put("this._properties.%s.value = v;", property).Pop().Put("}")
 		}
 		if m, ok := namedChildren[info.Name()]; ok {
 			keys := make([]string, 0, len(m))
@@ -347,6 +349,13 @@ func MakeHtml(title string, page *root.Component) (string, error) {
 <head>
     <meta charset="utf-8"/>
     <title><ttt></title>
+	<style>
+		svg svg {
+		  width: 100%;
+		  height: 100%;
+		  display: block;
+		}
+	</style>
     <link rel="stylesheet" href="<base_url>/res/vs/editor/editor.main.css" />
 </head>
 <body>
@@ -364,6 +373,13 @@ func MakeHtml(title string, page *root.Component) (string, error) {
 <head>
     <meta charset="utf-8"/>
     <title><ttt></title>
+	<style>
+		svg svg {
+		  width: 100%;
+		  height: 100%;
+		  display: block;
+		}
+	</style>
 </head>
 <body>
     <script>

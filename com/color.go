@@ -1,4 +1,4 @@
-package all
+package com
 
 import "fmt"
 
@@ -29,4 +29,6 @@ var (
 	ColorGray247 = color(247, 248, 250)
 	ColorGray235 = color(235, 236, 240)
 	ColorGray201 = color(201, 204, 213)
+	ColorGray110 = color(110, 112, 124)
+	ColorOrange  = color(232, 181, 86)
 )

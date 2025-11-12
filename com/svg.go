@@ -1,4 +1,4 @@
-package all
+package com
 
 import "fmt"
 
@@ -19,4 +19,13 @@ var (
 	SvgServices            = svg("services")
 	SvgPythonPackages      = svg("pythonPackages")
 	SvgSourceRootFileLayer = svg("sourceRootFileLayer")
+	SvgArrowLeft           = svg("arrowLeft")
+	SvgArrowRight          = svg("arrowRight")
+	SvgArrowUp             = svg("arrowUp")
+	SvgArrowDown           = svg("arrowDown")
+	SvgNotifications       = svg("notifications")
+	SvgAIChat              = svg("toolWindowChat")
+	SvgDatabase            = svg("dbms")
+	SvgPythonConsole       = svg("pythonConsoleToolWindow")
+	SvgSettings            = svg("settings")
 )
