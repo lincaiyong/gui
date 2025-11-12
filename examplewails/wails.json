@@ -1,0 +1,10 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "CodeEdge",
+  "outputfilename": "codeedge",
+  "frontend:build": "go run .",
+  "author": {
+    "name": "lincaiyong",
+    "email": "lincaiyong@codeedge.com"
+  }
+}

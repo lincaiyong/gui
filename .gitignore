@@ -1,0 +1,6 @@
+.idea
+.vscode
+*.log
+/examplewails/frontend/dist/
+/examplewails/frontend/wailsjs/
+/examplewails/build/bin
