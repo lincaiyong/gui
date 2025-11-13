@@ -108,5 +108,5 @@ function startup() {
 	root.AddProp("treeItems", "[]")
 	root.AddProp("currentFile", "''")
 	root.AddProp("sourceRoot", "'/Users/bytedance/Code/lincaiyong'")
-	page.MakePage(c, "goland", comp)
+	gui.MakePage(c, "goland", comp)
 }

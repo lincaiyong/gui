@@ -15,14 +15,14 @@ var exampleJs string
 func main() {
 	common.StartServer("gui", "v1.0.1", "",
 		func(_ []string, r *gin.RouterGroup) error {
-			r.GET("/res/*filepath", page.HandleRes())
+			r.GET("/res/*filepath", gui.HandleRes())
 			r.GET("/hello", func(c *gin.Context) {
 				comp := Root(
 					Text("'hello world'").H("200").X("parent.w/2-.w/2").Y("100"),
 					HDivider().Y("prev.y2"),
 					Text("'hello world'").H("200").X("parent.w/2-.w/2").Y("prev.y2"),
 				)
-				page.MakePage(c, "debug", comp)
+				gui.MakePage(c, "debug", comp)
 			})
 			r.GET("/click", func(c *gin.Context) {
 				comp := Root(
@@ -37,7 +37,7 @@ function test(msg) {
 function handleClick() {
 	console.log(...arguments);
 }`)
-				page.MakePage(c, "debug", comp)
+				gui.MakePage(c, "debug", comp)
 			})
 			r.GET("/bar", func(c *gin.Context) {
 				comp := Root(Div().SetSlots(
@@ -56,7 +56,7 @@ function handleClick() {
 						Button().Svg(SvgProject).X("prev.x2").Y("prev.y2 + 100").W("40").H("40"),
 					),
 				))
-				page.MakePage(c, "debug", comp)
+				gui.MakePage(c, "debug", comp)
 			})
 			r.GET("/vlist", func(c *gin.Context) {
 				comp := Root(
@@ -66,11 +66,11 @@ function handleClick() {
 						)).NameAs("containerEle").ItemCompute("Root.computeItem").ItemOnUpdated("Root.updateItem"),
 					),
 				).OnCreated("Root.onCreated").Code(exampleJs)
-				page.MakePage(c, "debug5", comp)
+				gui.MakePage(c, "debug5", comp)
 			})
 			r.GET("/container", func(c *gin.Context) {
 				comp := Root(Container(Text("'hello world!'").H("400")).Scrollable(true).BgColor("'#eee'").W("200").H("200").X("parent.w/2-.w/2").Y("parent.h/2-.h/2"))
-				page.MakePage(c, "debug4", comp)
+				gui.MakePage(c, "debug4", comp)
 			})
 			r.GET("/editor", func(c *gin.Context) {
 				comp := Root(Editor().NameAs("editorEle")).OnCreated("Root.test").
@@ -83,7 +83,7 @@ function test() {
 	}, 1000);
 }
 `)
-				page.MakePage(c, "editor", comp)
+				gui.MakePage(c, "editor", comp)
 			})
 			r.GET("/iframe", func(c *gin.Context) {
 				comp := Root(
@@ -100,19 +100,19 @@ function test() {
 		});
 	}, 1000);
 }`)
-				page.MakePage(c, "iframe", comp)
+				gui.MakePage(c, "iframe", comp)
 			})
 			r.GET("/img", func(c *gin.Context) {
-				page.MakePage(c, "img", Root(Img("'img/bot.png'")))
+				gui.MakePage(c, "img", Root(Img("'img/bot.png'")))
 			})
 			r.GET("/input", func(c *gin.Context) {
-				page.MakePage(c, "input", Root(
+				gui.MakePage(c, "input", Root(
 					Input().H("30").W("400").X("parent.w/2-.w/2").Y("parent.h/2-.h/2").
 						BorderTop(1).BorderBottom(1),
 				))
 			})
 			r.GET("/tree", func(c *gin.Context) {
-				page.MakePage(c, "tree", Root(
+				gui.MakePage(c, "tree", Root(
 					Tree().NameAs("treeEle"),
 				).OnCreated("Root.test").Code(`
 function test() {
@@ -124,7 +124,7 @@ function test() {
 `))
 			})
 			r.GET("/toyeditor", func(c *gin.Context) {
-				page.MakePage(c, "toyeditor", Root(ToyEditor()))
+				gui.MakePage(c, "toyeditor", Root(ToyEditor()))
 			})
 			r.GET("/goland", goland)
 			r.GET("/larkbase", larkbase)
