@@ -29,12 +29,19 @@ func goland(c *gin.Context) {
 					ToolButton().Svg(SvgVCS).X("parent.w/2-.w/2-0.5").Y("parent.h-.h-.x"),
 				),
 				Div().X("prev.x2").W("parent.w-prev.w-next.w").BgColor(ColorGray247).SetSlots(
-					Div().NameAs("navEle").W("next.x+next.w/2").BorderColor(ColorGray235).BorderRight(1).SetSlots(
-						Tree().NameAs("treeEle").OnClickItem("Root.clickTreeItem"),
+					Div().H("next.y+next.h/2").SetSlots(
+						Div().NameAs("leftPaneEle").W("next.x+next.w/2").BorderColor(ColorGray235).BorderRight(1).SetSlots(
+							Tree().NameAs("treeEle").OnClickItem("Root.clickTreeItem"),
+						),
+						VBar().X("parent.w/3").BgColor(ColorYellow).Opacity("0"),
+						Div().NameAs("mainPaneEle").X("prev.x2-prev.w/2").W("parent.w-.x").SetSlots(
+							Editor().NameAs("editorEle"),
+						),
 					),
-					VBar().X("parent.w/3").BgColor(ColorYellow).Opacity("0"),
-					Div().NameAs("mainEle").X("prev.x2-prev.w/2").W("parent.w-.x").SetSlots(
-						Editor().NameAs("editorEle"),
+					HBar().Y("parent.h/2"),
+					Div().NameAs("bottomPaneEle").Y("prev.y2-prev.h/2").H("parent.h-.y").BorderTop(1).BorderColor(ColorGray235).SetSlots(
+						Div().NameAs("bottomHeaderEle").H("33").BgColor(ColorGray247).BorderBottom(1).BorderColor(ColorGray235),
+						Div().Y("prev.y2").H("parent.h-.y").BgColor(ColorWhite),
 					),
 				),
 				Div().NameAs("rightSideEle").X("parent.w-.w").W("33").BgColor(ColorGray247).BorderColor(ColorGray235).BorderLeft(1).SetSlots(
