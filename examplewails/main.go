@@ -8,6 +8,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"github.com/wailsapp/wails/v2/pkg/options/mac"
+	"wails/lsp"
 )
 
 //go:embed build/appicon.png
@@ -40,6 +41,11 @@ func main() {
 		},
 		OnStartup: func(ctx context.Context) {
 			app.ctx = ctx
+			var err error
+			app.lspClient, err = lsp.CreateClient()
+			if err != nil {
+				log.ErrorLog("fail to create lsp client: %v", err)
+			}
 		},
 		Bind: []any{&app},
 	})

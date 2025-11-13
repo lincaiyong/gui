@@ -8,6 +8,7 @@ require (
 	github.com/fsnotify/fsnotify v1.9.0
 	github.com/lincaiyong/gui v1.0.2
 	github.com/lincaiyong/log v1.0.4
+	github.com/mitchellh/mapstructure v1.5.0
 	github.com/wailsapp/wails/v2 v2.11.0
 )
 
