@@ -231,7 +231,7 @@ class Component {
             color: [() => '', []],
             cursor: [() => 'inherit', []],
             cw: [() => 0, []],
-            fontFamily: [() => 'SF Pro Display', []],
+            fontFamily: [() => '-apple-system, BlinkMacSystemFont, "SF Pro", "SF Pro Text", "PingFang SC", "Helvetica Neue", Arial, sans-serif', []],
             fontSize: [() => 0, []],
             fontVariantLigatures: [() => 'none', []],
             h: [() => 0, []],
