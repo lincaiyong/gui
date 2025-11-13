@@ -28,7 +28,10 @@ func (a *App) Log(v any) {
 
 func (a *App) Reload() {
 	log.DebugLog("reload")
+	runtime.EventsEmit(a.ctx, "wails:reload")
 	runtime.EventsEmit(a.ctx, "wails:reload:frontend")
+	runtime.EventsEmit(a.ctx, "wails:dev:reload")
+	runtime.EventsEmit(a.ctx, "wails:dev:reload:frontend")
 }
 
 func (a *App) ReadFile(path string) string {
