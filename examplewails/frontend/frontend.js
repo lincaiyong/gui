@@ -36,3 +36,10 @@ function onStartup() {
         g.root.treeItems = ['com/test.go', 'res.go'];
     });
 }
+
+function test() {
+    Root.queryDefinition('/Users/bytedance/Code/lincaiyong/gui/example/example.go', 15, 11).then(v => {
+        Root.log(v);
+        g.root.outputEle.setValue(v);
+    })
+}

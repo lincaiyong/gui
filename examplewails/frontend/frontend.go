@@ -23,7 +23,7 @@ func main() {
 			Div().Y("prev.y2").H("parent.h-next.h-prev.h").SetSlots(
 				Div().NameAs("leftSideEle").W("33").BgColor(ColorGray247).BorderRight(1).BorderColor(ColorGray235).SetSlots(
 					ToolButton().Svg(SvgProject).X("parent.w/2-.w/2-0.5").Y(".x").OnClick("Root.onOpenProject"),
-					ToolButton().Svg(SvgCommit).X("prev.x").Y("prev.y2 + 8"),
+					ToolButton().Svg(SvgCommit).X("prev.x").Y("prev.y2 + 8").OnClick("Root.test"),
 					ToolButton().Svg(SvgPullRequests).X("prev.x").Y("prev.y2 + 8"),
 					HDivider().X("prev.x").Y("prev.y2 + 9").W("prev.w").BgColor(ColorGray201),
 					ToolButton().Svg(SvgStructure).X("prev.x").Y("prev.y2 + 9"),
@@ -54,10 +54,12 @@ func main() {
 							Editor().NameAs("editorEle"),
 						),
 					),
-					HBar().Y("parent.h*4/5"),
+					HBar().Y("parent.h*3/5"),
 					Div().NameAs("bottomPaneEle").Y("prev.y2-prev.h/2").H("parent.h-.y").BorderTop(1).BorderColor(ColorGray235).SetSlots(
 						Div().NameAs("bottomHeaderEle").H("33").BgColor(ColorGray247).BorderBottom(1).BorderColor(ColorGray235),
-						Div().Y("prev.y2").H("parent.h-.y").BgColor(ColorWhite),
+						Div().Y("prev.y2").H("parent.h-.y").BgColor(ColorWhite).SetSlots(
+							Editor().NameAs("outputEle").ShowLineNo(false),
+						),
 					),
 				),
 				Div().NameAs("rightSideEle").X("parent.w-.w").W("33").BgColor(ColorGray247).BorderColor(ColorGray235).BorderLeft(1).SetSlots(

@@ -26,11 +26,12 @@ func (a *App) Log(v any) {
 
 func (a *App) QueryDefinition(file string, lineIdx, charIdx int) string {
 	log.DebugLog("lsp query definition: %s#%d:%d", file, lineIdx+1, charIdx+1)
-	targets, err := a.lspClient.QueryDefinition(file, lineIdx+1, charIdx)
+	targets, err := a.lspClient.QueryDefinition(file, lineIdx, charIdx)
 	if err != nil {
 		log.ErrorLog("fail to open file: %v", err)
 	}
 	b, _ := json.MarshalIndent(targets, "", "  ")
+	log.InfoLog("targets: %s", string(b))
 	return string(b)
 }
 
@@ -77,7 +78,7 @@ func (a *App) OpenProject() string {
 		if d.IsDir() && strings.HasPrefix(d.Name(), ".") {
 			return fs.SkipDir
 		}
-		if !d.IsDir() {
+		if !d.IsDir() && !strings.HasPrefix(d.Name(), ".") {
 			relPath, _ := filepath.Rel(folder, path)
 			files = append(files, relPath)
 		}

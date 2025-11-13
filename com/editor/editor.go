@@ -1,6 +1,9 @@
 package editor
 
-import "github.com/lincaiyong/gui/com"
+import (
+	"fmt"
+	"github.com/lincaiyong/gui/com"
+)
 
 const (
 	LangGo         = "'go'"
@@ -18,8 +21,15 @@ func Editor() *Component {
 
 type Component struct {
 	*com.BaseComponent[Component]
+	showLineNo  com.Property `default:"true"`
 	onCreated   com.Method
+	onUpdated   com.Method
 	_destroy    com.Method
 	setValue    com.Method
 	setLanguage com.Method
+}
+
+func (c *Component) ShowLineNo(b bool) *Component {
+	c.SetProp("showLineNo", fmt.Sprintf("%v", b))
+	return c
 }
