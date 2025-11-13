@@ -199,6 +199,11 @@ func (b *BaseComponent[T]) FontSize(s string) *T {
 	return b.self
 }
 
+func (b *BaseComponent[T]) FontWeight(s string) *T {
+	b.SetProp("fontWeight", s)
+	return b.self
+}
+
 func (b *BaseComponent[T]) Outline(s string) *T {
 	b.SetProp("outline", s)
 	return b.self

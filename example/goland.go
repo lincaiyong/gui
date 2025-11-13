@@ -31,7 +31,11 @@ func goland(c *gin.Context) {
 				Div().X("prev.x2").W("parent.w-prev.w-next.w").BgColor(ColorGray247).SetSlots(
 					Div().H("next.y+next.h/2").SetSlots(
 						Div().NameAs("leftPaneEle").W("next.x+next.w/2").BorderColor(ColorGray235).BorderRight(1).SetSlots(
-							Tree().NameAs("treeEle").OnClickItem("Root.clickTreeItem"),
+							Div().H("33").SetSlots(
+								Text("'Project'").X(".y+4").Y("parent.h/2-.h/2").H("18").FontWeight("600"),
+								Svg(SvgArrowDown).X("prev.x2+2").Y("parent.h/2-.h/2").W("17").H(".w").Color(ColorGray110),
+							),
+							Tree().NameAs("treeEle").Y("prev.y2").H("parent.h-.y").OnClickItem("Root.clickTreeItem"),
 						),
 						VBar().X("parent.w/3").BgColor(ColorYellow).Opacity("0"),
 						Div().NameAs("mainPaneEle").X("prev.x2-prev.w/2").W("parent.w-.x").SetSlots(

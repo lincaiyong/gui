@@ -343,6 +343,10 @@ class Component {
         return this._properties.fontSize.value;
     }
 
+    get fontWeight() {
+        return this._properties.fontWeight.value;
+    }
+
     get fontVariantLigatures() {
         return this._properties.fontVariantLigatures.value;
     }
@@ -625,6 +629,13 @@ class Component {
         if (this.fontSize !== v) {
             this._properties.fontSize.value = v;
             this.ref.style.fontSize = v + 'px';
+        }
+    }
+
+    set fontWeight(v) {
+        if (this.fontWeight !== v) {
+            this._properties.fontWeight.value = v;
+            this.ref.style.fontWeight = v;
         }
     }
 
