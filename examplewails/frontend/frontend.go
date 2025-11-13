@@ -13,7 +13,7 @@ func main() {
 	gui.SetBaseUrl("")
 	comp := Root(
 		Div().SetSlots(
-			Div().NameAs("headerEle").H("33").BgColor(ColorGray247).BorderBottom(1).BorderColor(ColorGray235).SetSlots(
+			Div().NameAs("headerEle").H("0").BgColor(ColorGray247).BorderBottom(1).BorderColor(ColorGray235).SetSlots(
 				ToolButton().Svg(SvgSettings).X("parent.w-.w-.y-1").Y("parent.h/2-.h/2-0.5").Flag(),
 			),
 			Div().Y("prev.y2").H("parent.h-next.h-prev.h").SetSlots(
@@ -50,7 +50,7 @@ func main() {
 							Editor().NameAs("editorEle"),
 						),
 					),
-					HBar().Y("parent.h/2"),
+					HBar().Y("parent.h*4/5"),
 					Div().NameAs("bottomPaneEle").Y("prev.y2-prev.h/2").H("parent.h-.y").BorderTop(1).BorderColor(ColorGray235).SetSlots(
 						Div().NameAs("bottomHeaderEle").H("33").BgColor(ColorGray247).BorderBottom(1).BorderColor(ColorGray235),
 						Div().Y("prev.y2").H("parent.h-.y").BgColor(ColorWhite),
@@ -72,27 +72,35 @@ func main() {
 			),
 			Img("'img/goland.png'").NameAs("imgEle").V("0"),
 		),
-		Button().OnClick("Root.handleClick").Y("prev.y2").X("parent.w/2-.w/2"),
-		Button().OnClick("Root.handleClick2").Y("prev.y2").X("parent.w/2-.w/2"),
 	).Code(`
-function handleClick() {
-	const img = g.root.imgEle;
-	img.v = !img.v;
-}
-
-function handleClick2() {
-	const img = g.root.imgEle;
-	img.opacity = img.opacity >= 1 ? 0.4 : img.opacity + 0.3;
-}
-
 function clickTreeItem(itemEle) {
-	console.log(itemEle.data);
+	Root.log('click: ' + JSON.stringify(itemEle.data));
 	if (itemEle.data.leaf) {
-		g.root.currentFile = itemEle.data;
-		g.root.editorEle.setValue(itemEle.data.key);
+		g.root.currentFile = itemEle.data.key;
+		const relPath = itemEle.data.key;
+		Root.readFile(g.root.sourceRoot + '/' + relPath).then(v => {
+			g.root.editorEle.setValue(v);
+		});
 	}
 }
 
+function handleClick() {
+	Root.selectFolder().then(s => {
+		const obj = JSON.parse(s)
+		Root.log(obj);
+		g.root.sourceRoot = obj.folder; 
+		g.root.treeEle.items = obj.files;
+	});
+}
+function log(v) {
+	go.main.App.Log(v);
+}
+function selectFolder() {
+	return go.main.App.SelectFolder();
+}
+function readFile(path) {
+	return go.main.App.ReadFile(path);
+}
 function startup() {
 	setTimeout(function() {
 		g.root.treeItems = [
