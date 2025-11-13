@@ -24,23 +24,7 @@ func (a *App) Log(v any) {
 	log.DebugLog("%v", v)
 }
 
-func (a *App) LspOpenProject(dir string) {
-	log.DebugLog("lsp open project: %s", dir)
-	err := a.lspClient.OpenProject(dir)
-	if err != nil {
-		log.ErrorLog("fail to open project: %v", err)
-	}
-}
-
-func (a *App) LspOpenFile(file string) {
-	log.DebugLog("lsp open file: %s", file)
-	err := a.lspClient.OpenFile(file)
-	if err != nil {
-		log.ErrorLog("fail to open file: %v", err)
-	}
-}
-
-func (a *App) LspQueryDefinition(file string, lineIdx, charIdx int) string {
+func (a *App) QueryDefinition(file string, lineIdx, charIdx int) string {
 	log.DebugLog("lsp query definition: %s#%d:%d", file, lineIdx+1, charIdx+1)
 	targets, err := a.lspClient.QueryDefinition(file, lineIdx+1, charIdx)
 	if err != nil {
@@ -50,19 +34,23 @@ func (a *App) LspQueryDefinition(file string, lineIdx, charIdx int) string {
 	return string(b)
 }
 
-func (a *App) ReadFile(path string) string {
+func (a *App) OpenFile(path string) string {
 	b, err := os.ReadFile(path)
 	if err != nil {
 		log.ErrorLog("fail to read file %s: %v", err)
 		return fmt.Sprintf("fail to read file %s: %v", path, err)
 	}
+	err = a.lspClient.OpenFile(path)
+	if err != nil {
+		log.ErrorLog("fail to open file: %v", err)
+	}
 	return string(b)
 }
 
-func (a *App) SelectFolder() string {
+func (a *App) OpenProject() string {
 	log.DebugLog("select folder...")
 	opts := runtime.OpenDialogOptions{
-		Title: "选择项目",
+		Title: "打开项目",
 	}
 	folder, err := runtime.OpenDirectoryDialog(a.ctx, opts)
 	if err != nil {
@@ -70,6 +58,17 @@ func (a *App) SelectFolder() string {
 		return ""
 	}
 	log.DebugLog("folder: %s", folder)
+	if app.lspClient != nil {
+		app.lspClient.Close()
+	}
+	app.lspClient, err = lsp.CreateClient()
+	if err != nil {
+		log.ErrorLog("fail to create lsp client: %v", err)
+	}
+	err = a.lspClient.OpenProject(folder)
+	if err != nil {
+		log.ErrorLog("fail to open project: %v", err)
+	}
 	var files []string
 	err = filepath.WalkDir(folder, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {

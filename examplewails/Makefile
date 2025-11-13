@@ -18,7 +18,7 @@ frontend/dist/res:
 	cp -r ../res frontend/dist/res
 
 frontend/dist/index.html: frontend/frontend.go
-	cd frontend && go run .
+	cd frontend && go run frontend.go
 
 .PHONY: clean
 clean:

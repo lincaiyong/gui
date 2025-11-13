@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "embed"
 	"github.com/lincaiyong/gui"
 	. "github.com/lincaiyong/gui/com"
 	. "github.com/lincaiyong/gui/com/all"
@@ -8,6 +9,9 @@ import (
 	"github.com/lincaiyong/log"
 	"os"
 )
+
+//go:embed frontend.js
+var frontendJs string
 
 func main() {
 	gui.SetBaseUrl("")
@@ -18,8 +22,8 @@ func main() {
 			),
 			Div().Y("prev.y2").H("parent.h-next.h-prev.h").SetSlots(
 				Div().NameAs("leftSideEle").W("33").BgColor(ColorGray247).BorderRight(1).BorderColor(ColorGray235).SetSlots(
-					ToolButton().Svg(SvgProject).X("parent.w/2-.w/2-0.5").Y(".x").OnClick("Root.handleClick"),
-					ToolButton().Svg(SvgCommit).X("prev.x").Y("prev.y2 + 8").OnClick("Root.reloadFrontend"),
+					ToolButton().Svg(SvgProject).X("parent.w/2-.w/2-0.5").Y(".x").OnClick("Root.onOpenProject"),
+					ToolButton().Svg(SvgCommit).X("prev.x").Y("prev.y2 + 8"),
 					ToolButton().Svg(SvgPullRequests).X("prev.x").Y("prev.y2 + 8"),
 					HDivider().X("prev.x").Y("prev.y2 + 9").W("prev.w").BgColor(ColorGray201),
 					ToolButton().Svg(SvgStructure).X("prev.x").Y("prev.y2 + 9"),
@@ -43,7 +47,7 @@ func main() {
 								Svg(SvgFolder).X("prev.x2+4").Y("parent.h/2-.h/2").W("16").H(".w").Color(ColorGray110),
 								Text("'page'").X("prev.x2+4").Y("parent.h/2-.h/2").H("20").FontWeight("600"),
 							),
-							Tree().NameAs("treeEle").Y("prev.y2").H("parent.h-.y").OnClickItem("Root.clickTreeItem").Items("root.treeItems").Indent(16),
+							Tree().NameAs("treeEle").Y("prev.y2").H("parent.h-.y").OnClickItem("Root.onClickTreeItem").Items("root.treeItems").Indent(16),
 						),
 						VBar().X("parent.w/3").BgColor(ColorYellow).Opacity("0"),
 						Div().NameAs("mainPaneEle").X("prev.x2-prev.w/2").W("parent.w-.x").SetSlots(
@@ -72,66 +76,7 @@ func main() {
 			),
 			Img("'img/goland.png'").NameAs("imgEle").V("0"),
 		),
-	).Code(`
-function reloadFrontend() {
-	Root.reload();
-}
-function clickTreeItem(itemEle) {
-	Root.log('click: ' + JSON.stringify(itemEle.data));
-	if (itemEle.data.leaf) {
-		g.root.currentFile = itemEle.data.key;
-		const relPath = itemEle.data.key;
-		Root.readFile(g.root.sourceRoot + '/' + relPath).then(v => {
-			g.root.editorEle.setValue(v);
-		});
-	}
-}
-
-function handleClick() {
-	Root.selectFolder().then(s => {
-		const obj = JSON.parse(s)
-		Root.log(obj);
-		g.root.sourceRoot = obj.folder; 
-		g.root.treeEle.items = obj.files;
-	});
-}
-function log(v) {
-	go.main.App.Log(v);
-}
-function reload() {
-	go.main.App.Reload();
-}
-function selectFolder() {
-	return go.main.App.SelectFolder();
-}
-function readFile(path) {
-	return go.main.App.ReadFile(path);
-}
-function startup() {
-	setTimeout(function() {
-		g.root.treeItems = [
-			'com/test.go',
-			'example/goland/explorer_pane.js',
-			'example/goland/explorer_pane.jsm',
-			'example/goland/icons.txt',
-			'example/goland/top.js',
-			'example/goland/top.jsm',
-			'example/example.go',
-			'example/example.js',
-			'example/go.mod',
-			'example/goland.go',
-			'example/larkbase.go',
-			'example/main.go',
-			'example/page.log',
-			'.gitignore',
-			'gen.go',			
-			'go.mod',
-			'js.go',
-			'LICENSE',
-			'res.go',
-		];
-	});
-}`).OnCreated("Root.startup")
+	).Code(frontendJs).OnCreated("Root.onStartup")
 	root.AddProp("treeItems", "[]")
 	root.AddProp("currentFile", "''")
 	root.AddProp("sourceRoot", "'/Users/bytedance/Code/lincaiyong'")

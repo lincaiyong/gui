@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 )
 
-func watchFile(path string) {
+func watchFile(files ...string) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		log.FatalLog("fail to create watcher: %v", err)
@@ -40,18 +40,20 @@ func watchFile(path string) {
 			}
 		}
 	}()
-
-	absPath, err := filepath.Abs(path)
-	if err != nil {
-		log.FatalLog("fail to get abs path: %v", err)
-	}
-	err = watcher.Add(absPath)
-	if err != nil {
-		log.FatalLog("fail to watch: %v", err)
+	for _, file := range files {
+		var absPath string
+		absPath, err = filepath.Abs(file)
+		if err != nil {
+			log.FatalLog("fail to get abs path: %v", err)
+		}
+		err = watcher.Add(absPath)
+		if err != nil {
+			log.FatalLog("fail to watch: %v", err)
+		}
 	}
 	<-done
 }
 
 func main() {
-	watchFile("frontend.go")
+	watchFile("frontend.go", "frontend.js")
 }

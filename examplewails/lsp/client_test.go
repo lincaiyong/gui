@@ -3,10 +3,11 @@ package lsp
 import (
 	"fmt"
 	"github.com/lincaiyong/log"
+	"path"
 	"testing"
 )
 
-func testClient(projectDir, filePath string) error {
+func testClient(projectDir, relPath string) error {
 	c, err := CreateClient()
 	if err != nil {
 		return fmt.Errorf("fail to create lsp client: %v", err)
@@ -16,11 +17,12 @@ func testClient(projectDir, filePath string) error {
 	if err != nil {
 		return fmt.Errorf("fail to initialize lsp client: %v", err)
 	}
+	filePath := path.Join(projectDir, relPath)
 	err = c.OpenFile(filePath)
 	if err != nil {
 		return fmt.Errorf("failed to send didopen notification: %s, %v", filePath, err)
 	}
-	targets, err := c.QueryDefinition(filePath, 16, 12)
+	targets, err := c.QueryDefinition(filePath, 15, 11)
 	if err != nil {
 		return fmt.Errorf("fail to query: %v", err)
 	}

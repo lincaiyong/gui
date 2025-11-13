@@ -15,6 +15,27 @@ import (
 	"time"
 )
 
+type Position_ struct {
+	Line      int
+	Character int
+}
+
+type Target_ struct {
+	URI   string
+	Range struct {
+		Start Position_
+		End   Position_
+	}
+}
+
+type Target struct {
+	File       string `json:"file,omitempty"`
+	LineIdx    int    `json:"line_idx,omitempty"`
+	CharIdx    int    `json:"char_idx,omitempty"`
+	EndLineIdx int    `json:"end_line_idx,omitempty"`
+	EndCharIdx int    `json:"end_char_idx,omitempty"`
+}
+
 type Message struct {
 	JSONRPC string `json:"jsonrpc"`
 	ID      any    `json:"id,omitempty"`
@@ -212,47 +233,24 @@ func (c *Client) OpenProject(projectDir string) error {
 	return c.initialize(projectDir)
 }
 
-func (c *Client) OpenFile(relPath string) error {
+func (c *Client) OpenFile(filePath string) error {
 	if c.files == nil {
 		c.files = make(map[string][]byte)
 	}
-	filePath := filepath.Join(c.sourceRoot, relPath)
 	var b []byte
 	var ok bool
-	if b, ok = c.files[relPath]; !ok {
+	if b, ok = c.files[filePath]; !ok {
 		var err error
 		b, err = os.ReadFile(filePath)
 		if err != nil {
 			return err
 		}
-		c.files[relPath] = b
+		c.files[filePath] = b
 	}
 	return c.didOpen(filePath, string(b))
 }
 
-type Position_ struct {
-	Line      int
-	Character int
-}
-
-type Target_ struct {
-	URI   string
-	Range struct {
-		Start Position_
-		End   Position_
-	}
-}
-
-type Target struct {
-	File       string `json:"file,omitempty"`
-	LineIdx    int    `json:"line_idx,omitempty"`
-	CharIdx    int    `json:"char_idx,omitempty"`
-	EndLineIdx int    `json:"end_line_idx,omitempty"`
-	EndCharIdx int    `json:"end_char_idx,omitempty"`
-}
-
-func (c *Client) QueryDefinition(relPath string, lineIdx, charIdx int) ([]*Target, error) {
-	filePath := filepath.Join(c.sourceRoot, relPath)
+func (c *Client) QueryDefinition(filePath string, lineIdx, charIdx int) ([]*Target, error) {
 	ret, err := c.getDefinition(filePath, lineIdx, charIdx)
 	if err != nil {
 		return nil, err
