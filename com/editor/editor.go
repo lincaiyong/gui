@@ -21,15 +21,23 @@ func Editor() *Component {
 
 type Component struct {
 	*com.BaseComponent[Component]
-	showLineNo  com.Property `default:"true"`
+	showLineNo             com.Property `default:"true"`
+	onCursorPositionChange com.Property `default:"undefined"`
+
 	onCreated   com.Method
 	onUpdated   com.Method
 	_destroy    com.Method
 	setValue    com.Method
+	getValue    com.Method
 	setLanguage com.Method
 }
 
 func (c *Component) ShowLineNo(b bool) *Component {
 	c.SetProp("showLineNo", fmt.Sprintf("%v", b))
+	return c
+}
+
+func (c *Component) OnCursorPositionChange(s string) *Component {
+	c.SetProp("onCursorPositionChange", s)
 	return c
 }

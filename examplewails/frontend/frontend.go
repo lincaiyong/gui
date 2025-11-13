@@ -51,7 +51,7 @@ func main() {
 						),
 						VBar().X("parent.w/3").BgColor(ColorYellow).Opacity("0"),
 						Div().NameAs("mainPaneEle").X("prev.x2-prev.w/2").W("parent.w-.x").SetSlots(
-							Editor().NameAs("editorEle"),
+							Editor().NameAs("editorEle").OnCursorPositionChange("Root.onCursorPositionChange"),
 						),
 					),
 					HBar().Y("parent.h*3/5"),

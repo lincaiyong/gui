@@ -31,9 +31,9 @@ type Target_ struct {
 type Target struct {
 	File       string `json:"file,omitempty"`
 	LineIdx    int    `json:"line_idx,omitempty"`
-	CharIdx    int    `json:"char_idx,omitempty"`
+	ColIdx     int    `json:"col_idx,omitempty"`
 	EndLineIdx int    `json:"end_line_idx,omitempty"`
-	EndCharIdx int    `json:"end_char_idx,omitempty"`
+	EndColIdx  int    `json:"end_col_idx,omitempty"`
 }
 
 type Message struct {
@@ -49,7 +49,7 @@ type Message struct {
 	} `json:"error,omitempty"`
 }
 
-func TextDocumentParams(filePath string, lineIdx, charIdx int) any {
+func TextDocumentParams(filePath string, lineIdx, colIdx int) any {
 	type TextDocument struct {
 		URI string `json:"uri"`
 	}
@@ -66,7 +66,7 @@ func TextDocumentParams(filePath string, lineIdx, charIdx int) any {
 		},
 		Position: Position{
 			LineIdx: lineIdx,
-			CharIdx: charIdx,
+			CharIdx: colIdx,
 		},
 	}
 	return params
@@ -250,8 +250,8 @@ func (c *Client) OpenFile(filePath string) error {
 	return c.didOpen(filePath, string(b))
 }
 
-func (c *Client) QueryDefinition(filePath string, lineIdx, charIdx int) ([]*Target, error) {
-	ret, err := c.getDefinition(filePath, lineIdx, charIdx)
+func (c *Client) QueryDefinition(filePath string, lineIdx, colIdx int) ([]*Target, error) {
+	ret, err := c.getDefinition(filePath, lineIdx, colIdx)
 	if err != nil {
 		return nil, err
 	}
@@ -266,9 +266,9 @@ func (c *Client) QueryDefinition(filePath string, lineIdx, charIdx int) ([]*Targ
 		target := Target{
 			File:       strings.TrimPrefix(target_.URI, "file://"),
 			LineIdx:    target_.Range.Start.Line,
-			CharIdx:    target_.Range.Start.Character,
+			ColIdx:     target_.Range.Start.Character,
 			EndLineIdx: target_.Range.End.Line,
-			EndCharIdx: target_.Range.End.Character,
+			EndColIdx:  target_.Range.End.Character,
 		}
 		result = append(result, &target)
 	}
@@ -327,8 +327,8 @@ func (c *Client) didOpen(uri, content string) error {
 	return c.sendRequest("textDocument/didOpen", params, false)
 }
 
-func (c *Client) getDefinition(filePath string, lineIdx, charIdx int) ([]any, error) {
-	params := TextDocumentParams(filePath, lineIdx, charIdx)
+func (c *Client) getDefinition(filePath string, lineIdx, colIdx int) ([]any, error) {
+	params := TextDocumentParams(filePath, lineIdx, colIdx)
 	err := c.sendRequest("textDocument/definition", params, true)
 	if err != nil {
 		return nil, err

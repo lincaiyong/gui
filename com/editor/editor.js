@@ -35,6 +35,9 @@ function onCreated() {
         // suggestOnTriggerCharacters: false,
     };
     this._editor = monaco.editor.create(this.ref, options);
+    this._editor.onDidChangeCursorPosition((e) => {
+        this.onCursorPositionChange?.(e.position.lineNumber, e.position.column);
+    });
 }
 
 function onUpdated(k, v) {

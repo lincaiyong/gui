@@ -37,8 +37,31 @@ function onStartup() {
     });
 }
 
-function test() {
-    Root.queryDefinition('/Users/bytedance/Code/lincaiyong/gui/example/example.go', 15, 11).then(v => {
+function getColIdx(code, lineNo, charNo) {
+    const lines = code.split('\n');
+    if (lineNo < 1 || lineNo > lines.length) {
+        return 0;
+    }
+    const lineContent = lines[lineNo - 1];
+    if (charNo < 1 || charNo > lineContent.length) {
+        return 0;
+    }
+    let colIdx = 0;
+    for (let i = 0; i < charNo; i++) {
+        if (lineContent[i] === '\t') {
+            colIdx += 4 - ((colIdx - 1) % 4);
+        } else {
+            colIdx += 1;
+        }
+    }
+    return colIdx;
+}
+
+function onCursorPositionChange(lineNo, charNo) {
+    Root.log(`cursor: ${lineNo} ${charNo}`);
+    const content = g.root.editorEle.getValue();
+    const colIdx = Root.getColIdx(content, lineNo, charNo);
+    Root.queryDefinition(g.root.currentFile, lineNo-1, colIdx).then(v => {
         Root.log(v);
         g.root.outputEle.setValue(v);
     })
