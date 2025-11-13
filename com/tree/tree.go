@@ -20,7 +20,7 @@ func Tree() *Component {
 				X("this.indent + parent.data.depth * 20 + 4").Y("parent.h/2-.h/2").W("17").H(".w").V("parent.data.leaf ? 0 : 1").Color(com.ColorGray110),
 			img.Img("''").NameAs("iconEle").
 				X("prev.x2+4").Y("parent.h/2-.h/2").W("16").H(".w"),
-			text.Text("parent.data.text").X("prev.x2+4").Y("2").H("this.itemHeight - 2 * .y").Cursor("'default'"),
+			text.Text("parent.data.text").X("prev.x2+4").Y("1").H("this.itemHeight - 2 * .y").Cursor("'default'"),
 		).Align("'fill'").X("10").W("parent.w - .x").
 			NameAs("containerEle").
 			ItemCompute("Tree.computeItem").
@@ -37,7 +37,7 @@ type Component struct {
 	nodeMap          com.Property `default:"undefined"`
 	onClickItem      com.Property `default:"undefined"`
 	selectedChildTop com.Property `default:"0"`
-	itemHeight       com.Property `default:"24"`
+	itemHeight       com.Property `default:"22"`
 	indent           com.Property `default:"0"`
 	computeItem      com.Method   `static:"true"`
 	clickItem        com.Method   `static:"true"`

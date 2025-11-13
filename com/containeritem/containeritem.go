@@ -7,7 +7,7 @@ import (
 func ContainerItem(children ...com.Component) *Component {
 	ret := &Component{}
 	ret.BaseComponent = com.NewBaseComponent[Component]("div", ret, children...)
-	ret.Y("0").X("0").H("20")
+	ret.Y("0").X("0").H("0")
 	return ret
 }
 
