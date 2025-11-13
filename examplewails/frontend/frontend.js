@@ -61,7 +61,7 @@ function onCursorPositionChange(lineNo, charNo) {
     Root.log(`cursor: ${lineNo} ${charNo}`);
     const content = g.root.editorEle.getValue();
     const colIdx = Root.getColIdx(content, lineNo, charNo);
-    Root.queryDefinition(g.root.currentFile, lineNo-1, colIdx).then(v => {
+    Root.queryDefinition(`${g.root.sourceRoot}/${g.root.currentFile}`, lineNo-1, colIdx).then(v => {
         Root.log(v);
         g.root.outputEle.setValue(v);
     })
