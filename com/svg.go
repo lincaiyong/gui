@@ -30,4 +30,5 @@ var (
 	SvgSettings            = svg("settings")
 	SvgIgnored             = svg("ignored")
 	SvgFolder              = svg("folder")
+	SvgSearch              = svg("search")
 )

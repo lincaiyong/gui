@@ -17,13 +17,13 @@ func main() {
 	gui.SetBaseUrl("")
 	comp := Root(
 		Div().SetSlots(
-			Div().NameAs("headerEle").H("0").BgColor(ColorGray247).BorderBottom(1).BorderColor(ColorGray235).SetSlots(
+			Div().NameAs("headerEle").H("1").BgColor(ColorGray247).BorderBottom(1).BorderColor(ColorGray235).SetSlots(
 				ToolButton().Svg(SvgSettings).X("parent.w-.w-.y-1").Y("parent.h/2-.h/2-0.5").Flag(),
 			),
 			Div().Y("prev.y2").H("parent.h-next.h-prev.h").SetSlots(
 				Div().NameAs("leftSideEle").W("33").BgColor(ColorGray247).BorderRight(1).BorderColor(ColorGray235).SetSlots(
 					ToolButton().Svg(SvgProject).X("parent.w/2-.w/2-0.5").Y(".x").OnClick("Root.onOpenProject"),
-					ToolButton().Svg(SvgCommit).X("prev.x").Y("prev.y2 + 8").OnClick("Root.test"),
+					ToolButton().Svg(SvgSearch).X("prev.x").Y("prev.y2 + 8").OnClick("Root.test"),
 					ToolButton().Svg(SvgPullRequests).X("prev.x").Y("prev.y2 + 8"),
 					HDivider().X("prev.x").Y("prev.y2 + 9").W("prev.w").BgColor(ColorGray201),
 					ToolButton().Svg(SvgStructure).X("prev.x").Y("prev.y2 + 9"),
