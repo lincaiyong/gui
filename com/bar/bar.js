@@ -9,8 +9,8 @@ function handleMouseDown(ele, mouseDownEvent) {
             state.prevX = ev.clientX;
             if (newX < prev.x + safeDist) {
                 ele.x = prev.x + safeDist;
-            } else if (newX > next.x + next.w - safeDist) {
-                ele.x = next.x + next.w - safeDist;
+            } else if (newX + ele.w > next.x + next.w - safeDist) {
+                ele.x = next.x + next.w - safeDist - ele.w;
             } else {
                 ele.x = newX;
             }
@@ -19,8 +19,8 @@ function handleMouseDown(ele, mouseDownEvent) {
             state.prevY = ev.clientY;
             if (newY < prev.y + safeDist) {
                 ele.y = prev.y + safeDist;
-            } else if (newY > next.y + next.h - safeDist) {
-                ele.y = next.y + next.h - safeDist;
+            } else if (newY + ele.h > next.y + next.h - safeDist) {
+                ele.y = next.y + next.h - safeDist - ele.h;
             } else {
                 ele.y = newY;
             }

@@ -22,7 +22,7 @@ frontend/dist/index.html: frontend/frontend.go
 
 .PHONY: clean
 clean:
-	rm -rf build/bin frontend/dist/index.html
+	rm -rf build/bin frontend/dist/index.html frontend/dist/res
 
 .PHONY: open
 open:

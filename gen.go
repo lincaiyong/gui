@@ -19,6 +19,12 @@ import (
 	"strings"
 )
 
+var baseUrl = "http://127.0.0.1:9123"
+
+func SetBaseUrl(url string) {
+	baseUrl = url
+}
+
 func sortedKeys(m map[string]string) []string {
 	keys := make([]string, 0, len(m))
 	for k := range m {
@@ -393,6 +399,6 @@ func MakeHtml(title string, page *root.Component) (string, error) {
 	}
 	template = strings.ReplaceAll(template, "<ttt>", title)
 	ss = strings.ReplaceAll(template, "<xxx>", ss)
-	html := strings.ReplaceAll(ss, "<base_url>", com.BaseUrl)
+	html := strings.ReplaceAll(ss, "<base_url>", baseUrl)
 	return html, nil
 }

@@ -5,8 +5,8 @@ go 1.25.0
 replace github.com/lincaiyong/gui v1.0.2 => ..
 
 require (
-	github.com/lincaiyong/log v1.0.4
 	github.com/lincaiyong/gui v1.0.2
+	github.com/lincaiyong/log v1.0.4
 	github.com/wailsapp/wails/v2 v2.11.0
 )
 
