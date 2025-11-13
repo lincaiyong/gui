@@ -26,6 +26,11 @@ func (a *App) Log(v any) {
 	log.DebugLog("%v", v)
 }
 
+func (a *App) Reload() {
+	log.DebugLog("reload")
+	runtime.EventsEmit(a.ctx, "wails:reload:frontend")
+}
+
 func (a *App) ReadFile(path string) string {
 	b, err := os.ReadFile(path)
 	if err != nil {

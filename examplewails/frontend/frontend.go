@@ -19,7 +19,7 @@ func main() {
 			Div().Y("prev.y2").H("parent.h-next.h-prev.h").SetSlots(
 				Div().NameAs("leftSideEle").W("33").BgColor(ColorGray247).BorderRight(1).BorderColor(ColorGray235).SetSlots(
 					ToolButton().Svg(SvgProject).X("parent.w/2-.w/2-0.5").Y(".x").OnClick("Root.handleClick"),
-					ToolButton().Svg(SvgCommit).X("prev.x").Y("prev.y2 + 8"),
+					ToolButton().Svg(SvgCommit).X("prev.x").Y("prev.y2 + 8").OnClick("Root.reloadFrontend"),
 					ToolButton().Svg(SvgPullRequests).X("prev.x").Y("prev.y2 + 8"),
 					HDivider().X("prev.x").Y("prev.y2 + 9").W("prev.w").BgColor(ColorGray201),
 					ToolButton().Svg(SvgStructure).X("prev.x").Y("prev.y2 + 9"),
@@ -73,6 +73,9 @@ func main() {
 			Img("'img/goland.png'").NameAs("imgEle").V("0"),
 		),
 	).Code(`
+function reloadFrontend() {
+	Root.reload();
+}
 function clickTreeItem(itemEle) {
 	Root.log('click: ' + JSON.stringify(itemEle.data));
 	if (itemEle.data.leaf) {
@@ -94,6 +97,9 @@ function handleClick() {
 }
 function log(v) {
 	go.main.App.Log(v);
+}
+function reload() {
+	go.main.App.Reload();
 }
 function selectFolder() {
 	return go.main.App.SelectFolder();

@@ -30,4 +30,4 @@ open:
 
 .PHONY: debug
 debug: frontend target
-	wails dev
+	wails dev -nogorebuild
