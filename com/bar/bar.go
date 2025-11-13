@@ -1,7 +1,7 @@
 package bar
 
 import (
-	"github.com/lincaiyong/page/com"
+	"github.com/lincaiyong/gui/com"
 )
 
 func create() *Component {

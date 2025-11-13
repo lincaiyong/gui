@@ -3,7 +3,7 @@ function handleActive(ele) {
         return;
     }
     const oldBgColor = ele.backgroundColor;
-    ele.backgroundColor = page.theme.buttonActiveBgColor;
+    ele.backgroundColor = g.theme.buttonActiveBgColor;
     return () => {
         ele.backgroundColor = oldBgColor;
     };
@@ -11,8 +11,8 @@ function handleActive(ele) {
 
 function handleHover(ele, hover) {
     if (hover) {
-        this.backgroundColor = this.selected ? page.theme.buttonSelectedBgColor : page.theme.buttonHoverBgColor;
+        this.backgroundColor = this.selected ? g.theme.buttonSelectedBgColor : g.theme.buttonHoverBgColor;
     } else {
-        this.backgroundColor = this.selected ? page.theme.buttonSelectedBgColor : page.theme.buttonBgColor;
+        this.backgroundColor = this.selected ? g.theme.buttonSelectedBgColor : g.theme.buttonBgColor;
     }
 }

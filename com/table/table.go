@@ -1,6 +1,6 @@
 package table
 
-import "github.com/lincaiyong/page/com"
+import "github.com/lincaiyong/gui/com"
 
 func Table() *Component {
 	return nil

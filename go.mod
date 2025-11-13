@@ -1,4 +1,4 @@
-module github.com/lincaiyong/page
+module github.com/lincaiyong/gui
 
 go 1.25.0
 

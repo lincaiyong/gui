@@ -1,10 +1,10 @@
 package toyeditor
 
 import (
-	"github.com/lincaiyong/page/com"
-	"github.com/lincaiyong/page/com/container"
-	"github.com/lincaiyong/page/com/div"
-	"github.com/lincaiyong/page/com/input"
+	"github.com/lincaiyong/gui/com"
+	"github.com/lincaiyong/gui/com/container"
+	"github.com/lincaiyong/gui/com/div"
+	"github.com/lincaiyong/gui/com/input"
 )
 
 func ToyEditor() *Component {

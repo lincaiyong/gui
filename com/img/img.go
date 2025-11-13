@@ -1,6 +1,6 @@
 package img
 
-import "github.com/lincaiyong/page/com"
+import "github.com/lincaiyong/gui/com"
 
 func Img(src string) *Component {
 	ret := &Component{}

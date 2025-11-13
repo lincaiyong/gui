@@ -2,9 +2,9 @@ package container
 
 import (
 	"fmt"
-	"github.com/lincaiyong/page/com"
-	"github.com/lincaiyong/page/com/containeritem"
-	"github.com/lincaiyong/page/com/scrollbar"
+	"github.com/lincaiyong/gui/com"
+	"github.com/lincaiyong/gui/com/containeritem"
+	"github.com/lincaiyong/gui/com/scrollbar"
 	"strconv"
 )
 

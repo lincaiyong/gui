@@ -23,12 +23,12 @@ class Property {
     }
 
     reset(sources=null, computeFunc=null) {
-        page.util.assert(sources instanceof Array || sources === null);
+        g.util.assert(sources instanceof Array || sources === null);
         this.unsubscribe();
         this._sources = Array.from(sources || []);
         this.subscribe();
         if (computeFunc) {
-            page.util.assert(computeFunc instanceof Function);
+            g.util.assert(computeFunc instanceof Function);
             this._computeFunc = computeFunc;
         }
     }
@@ -66,9 +66,9 @@ class Property {
             this._subscribers.forEach(sub => sub.update());
 
             // trace log
-            if (page.log.level === 'trace') {
-                page.log.trace(`update: ${this.id} = ${val}`);
-                this._subscribers.forEach(sub => page.log.trace(`     -> ${this.id}`));
+            if (g.log.level === 'trace') {
+                g.log.trace(`update: ${this.id} = ${val}`);
+                this._subscribers.forEach(sub => g.log.trace(`     -> ${this.id}`));
             }
         }
     }

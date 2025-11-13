@@ -4,14 +4,14 @@ import (
 	"embed"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/lincaiyong/gui/com"
+	"github.com/lincaiyong/gui/com/root"
+	"github.com/lincaiyong/gui/js"
+	"github.com/lincaiyong/gui/parser"
+	"github.com/lincaiyong/gui/printer"
+	"github.com/lincaiyong/gui/utils"
+	"github.com/lincaiyong/gui/visit"
 	"github.com/lincaiyong/log"
-	"github.com/lincaiyong/page/com"
-	"github.com/lincaiyong/page/com/root"
-	"github.com/lincaiyong/page/js"
-	"github.com/lincaiyong/page/parser"
-	"github.com/lincaiyong/page/printer"
-	"github.com/lincaiyong/page/utils"
-	"github.com/lincaiyong/page/visit"
 	"net/http"
 	"reflect"
 	"sort"
@@ -164,6 +164,13 @@ func buildClasses(page com.Component) (string, error) {
 	for n, comp := range compMap {
 		keys = append(keys, n)
 		info := comp.ExtraInfo()
+		if info.Name() == "Root" {
+			for k, v := range root.Props() {
+				info.AddProperty(k)
+				info.SetDefaultValue(k, v)
+			}
+		}
+
 		struct_ := reflect.TypeOf(comp).Elem()
 		for i := 0; i < struct_.NumField(); i++ {
 			field := struct_.Field(i)
@@ -171,7 +178,7 @@ func buildClasses(page com.Component) (string, error) {
 				tn := field.Type.Name()
 				switch tn {
 				case "Property":
-					info.SetProperties(append(info.Properties(), field.Name))
+					info.AddProperty(field.Name)
 					v := field.Tag.Get("default")
 					if v == "" {
 						return "", fmt.Errorf("default value is required: %s", field.Name)
@@ -235,7 +242,6 @@ func buildModel(comp com.Component, depth int, pr *printer.Printer) error {
 		}
 		pr.Put("Component: %s,", s)
 		pr.Put("tag: '%s',", comp.Tag())
-		pr.Put("overflow: 'hidden',")
 		pr.Put("name: '%s',", compName)
 		pr.Put("depth: %d,", depth)
 		props := make(map[string]string)
@@ -275,9 +281,7 @@ func buildModel(comp com.Component, depth int, pr *printer.Printer) error {
 		} else {
 			childrenDepth = 1
 		}
-		if len(children) == 0 {
-			pr.Put("children: [],")
-		} else {
+		if len(children) > 0 {
 			pr.Put("children: [").Push()
 			for _, tmp := range children {
 				err := buildModel(tmp, childrenDepth, pr)
@@ -287,9 +291,7 @@ func buildModel(comp com.Component, depth int, pr *printer.Printer) error {
 			}
 			pr.Pop().Put("],")
 		}
-		if len(slots) == 0 {
-			pr.Put("slot: null,")
-		} else {
+		if len(slots) > 0 {
 			pr.Put("slot: [").Push()
 			for _, tmp := range slots {
 				err := buildModel(tmp, depth+1, pr)
@@ -312,7 +314,7 @@ func buildPageModel(page com.Component) (string, error) {
 	}
 	code := pr.Code()
 	code = strings.TrimRight(code, ",")
-	return "page.model = " + code + ";", nil
+	return "g.model = " + code + ";", nil
 }
 
 //go:embed js/*.js
@@ -333,7 +335,7 @@ func MakeHtml(title string, page *root.Component) (string, error) {
 	propertyJs, _ := jsEmbed.ReadFile("js/_property.js")
 	scrollbarJs, _ := jsEmbed.ReadFile("js/_scrollbar.js")
 	componentJs, _ := jsEmbed.ReadFile("js/_component.js")
-	pageJs, _ := jsEmbed.ReadFile("js/_page.js")
+	gJs, _ := jsEmbed.ReadFile("js/_g.js")
 	classes, err := buildClasses(page)
 	if err != nil {
 		return "", err
@@ -342,7 +344,7 @@ func MakeHtml(title string, page *root.Component) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	s := []string{string(eventJs), string(propertyJs), string(scrollbarJs), string(componentJs), string(pageJs), classes, model}
+	s := []string{string(eventJs), string(propertyJs), string(scrollbarJs), string(componentJs), string(gJs), classes, model}
 	ss := strings.Join(strings.Split(strings.Join(s, "\n"), "\n"), "\n        ")
 	template := `<!DOCTYPE html>
 <html lang="en">
@@ -363,7 +365,7 @@ func MakeHtml(title string, page *root.Component) (string, error) {
     <script>
         <xxx>
         require.config({paths: {'vs': '<base_url>/res/vs'}});
-        require(['vs/editor/editor.main'], () =>page.create());
+        require(['vs/editor/editor.main'], () =>g.create());
     </script>
 </body>
 </html>`
@@ -384,7 +386,7 @@ func MakeHtml(title string, page *root.Component) (string, error) {
 <body>
     <script>
         <xxx>
-        page.create();
+        g.create();
     </script>
 </body>
 </html>`

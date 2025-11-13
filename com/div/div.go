@@ -1,6 +1,6 @@
 package div
 
-import "github.com/lincaiyong/page/com"
+import "github.com/lincaiyong/gui/com"
 
 func Div() *Component {
 	ret := &Component{}

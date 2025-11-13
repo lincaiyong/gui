@@ -2,7 +2,7 @@ function handleMouseDown(ele, mouseDownEvent) {
     const prev = ele._('prev');
     const next = ele._('next');
     const state = {prevX: mouseDownEvent.clientX, prevY: mouseDownEvent.clientY};
-    const cancelMouseMoveListener = page.event.addListener(window, 'mousemove', ev => {
+    const cancelMouseMoveListener = g.event.addListener(window, 'mousemove', ev => {
         const safeDist = 10;
         if (ele.cursor === 'col-resize') {
             const newX = ele.x + ev.clientX - state.prevX;
@@ -26,7 +26,7 @@ function handleMouseDown(ele, mouseDownEvent) {
             }
         }
     });
-    page.event.onceListener(window, 'mouseup', () => {
+    g.event.onceListener(window, 'mouseup', () => {
         cancelMouseMoveListener();
     });
 }

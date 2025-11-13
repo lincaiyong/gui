@@ -2,9 +2,9 @@ package page
 
 import (
 	"embed"
+	"github.com/lincaiyong/gui/js"
+	"github.com/lincaiyong/gui/utils"
 	"github.com/lincaiyong/log"
-	"github.com/lincaiyong/page/js"
-	"github.com/lincaiyong/page/utils"
 	"io/fs"
 	"path/filepath"
 )

@@ -1,6 +1,6 @@
 package input
 
-import "github.com/lincaiyong/page/com"
+import "github.com/lincaiyong/gui/com"
 
 func Input() *Component {
 	ret := &Component{}

@@ -1,7 +1,7 @@
 package containeritem
 
 import (
-	"github.com/lincaiyong/page/com"
+	"github.com/lincaiyong/gui/com"
 )
 
 func ContainerItem(children ...com.Component) *Component {

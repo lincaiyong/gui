@@ -4,9 +4,9 @@ function _updateList() {
     }
     const data = this.items;
 
-    page.util.assert(data instanceof Array);
+    g.util.assert(data instanceof Array);
     const computeFunc = this.model.slot[0].properties.compute[0]();
-    page.util.assert(computeFunc instanceof Function);
+    g.util.assert(computeFunc instanceof Function);
 
     const scrollLeft = this.scrollLeft || 0;
     const scrollTop = this.scrollTop || 0;
@@ -18,7 +18,7 @@ function _updateList() {
     let prevItem = null;
     for (let i = 0; i < data.length; i++) {
         const item = computeFunc(this, i, prevItem);
-        page.util.assert(typeof(item.key) === 'string');
+        g.util.assert(typeof(item.key) === 'string');
         computedItems.push(item);
         prevItem = item;
 
@@ -43,7 +43,7 @@ function _updateList() {
         for (let i = RESERVED_COUNT; i < this.children.length; i++) {
             const child = this.children[i];
             const key = child.data.key;
-            page.util.assert(typeof(key) === 'string');
+            g.util.assert(typeof(key) === 'string');
             if (key in old) {
                 old[key].push(child);
             } else {
@@ -54,7 +54,7 @@ function _updateList() {
         const hitKey = {};
         visible.forEach(i => {
             const key = computedItems[i].key;
-            page.util.assert(typeof(key) === 'string');
+            g.util.assert(typeof(key) === 'string');
             if (key in old && old[key].length > 0) {
                 hitKey[i] = old[key].shift();
             }
@@ -68,15 +68,15 @@ function _updateList() {
             if (!child) {
                 child = other.shift();
                 if (!child) {
-                    child = page.createElement(this.model.slot[0], this);
+                    child = g.createElement(this.model.slot[0], this);
                     ['x', 'y', 'w', 'h'].forEach(k => child._properties[k].reset());
                 }
                 nonHitKey.push(child);
             }
         });
-        other.forEach(t => page.removeElement(t));
+        other.forEach(t => g.removeElement(t));
 
-        page.log.trace(`total: ${visible.length}, hit: ${Object.values(hitKey).length}, non hit: ${nonHitKey.length}`);
+        g.log.trace(`total: ${visible.length}, hit: ${Object.values(hitKey).length}, non hit: ${nonHitKey.length}`);
 
         visible.forEach(i => {
             const item = computedItems[i];
@@ -90,10 +90,10 @@ function _updateList() {
     } else {
         while (this.children.length > visible.length + 2) {
             const child = this.children[this.children.length - 1];
-            page.removeElement(child);
+            g.removeElement(child);
         }
         while (this.children.length < visible.length + 2) {
-            page.createElement(this.model.slot[0], this);
+            g.createElement(this.model.slot[0], this);
         }
         for (let i = 0; i < visible.length; i++) {
             const child = this.children[i+RESERVED_COUNT];

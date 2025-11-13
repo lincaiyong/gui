@@ -1,10 +1,10 @@
 package main
 
 import (
+	"github.com/lincaiyong/gui"
+	"github.com/lincaiyong/gui/com"
+	. "github.com/lincaiyong/gui/com/all"
 	"github.com/lincaiyong/log"
-	"github.com/lincaiyong/page"
-	"github.com/lincaiyong/page/com"
-	. "github.com/lincaiyong/page/com/all"
 	"os"
 )
 
@@ -15,7 +15,7 @@ func main() {
 			Div().NameAs("leftSideEle").W("32").SetSlots(
 				Button().OnClick("Root.handleClick"),
 			),
-			Div().X("prev.x2").W("parent.w-prev.w-next.w").BgColor("page.theme.grayPaneColor").SetSlots(
+			Div().X("prev.x2").W("parent.w-prev.w-next.w").BgColor("g.theme.grayPaneColor").SetSlots(
 				Div().NameAs("navEle").W("next.x").SetSlots(
 					Tree().NameAs("treeEle").OnClickItem("Root.clickTreeItem"),
 				),
@@ -24,17 +24,17 @@ func main() {
 					Editor().NameAs("editorEle"),
 				),
 			),
-			Div().NameAs("rightSideEle").X("parent.w-.w").W("32").BgColor("page.theme.grayPaneColor"),
+			Div().NameAs("rightSideEle").X("parent.w-.w").W("32").BgColor("g.theme.grayPaneColor"),
 		),
-		Div().NameAs("footerEle").Y("parent.h-.h").H("24").BgColor("page.theme.grayPaneColor"),
+		Div().NameAs("footerEle").Y("parent.h-.h").H("24").BgColor("g.theme.grayPaneColor"),
 	).OnCreated("Root.test").
 		Code(`
 function clickTreeItem(itemEle) {
 	Root.log('click: ' + JSON.stringify(itemEle.data));
 	if (itemEle.data.leaf) {
 		const relPath = itemEle.data.key;
-		Root.readFile(page.state.folder + '/' + relPath).then(v => {
-			page.root.editorEle.setValue(v);
+		Root.readFile(g.state.folder + '/' + relPath).then(v => {
+			g.root.editorEle.setValue(v);
 		});
 	}
 }
@@ -42,8 +42,8 @@ function handleClick() {
 	Root.selectFolder().then(s => {
 		const obj = JSON.parse(s)
 		Root.log(obj);
-		page.state.folder = obj.folder; 
-		page.root.treeEle.items = obj.files;
+		g.state.folder = obj.folder; 
+		g.root.treeEle.items = obj.files;
 	});
 }
 function log(v) {

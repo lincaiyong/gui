@@ -2,9 +2,10 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/lincaiyong/page"
-	. "github.com/lincaiyong/page/com"
-	. "github.com/lincaiyong/page/com/all"
+	"github.com/lincaiyong/gui"
+	. "github.com/lincaiyong/gui/com"
+	. "github.com/lincaiyong/gui/com/all"
+	"github.com/lincaiyong/gui/com/root"
 )
 
 func goland(c *gin.Context) {
@@ -35,7 +36,7 @@ func goland(c *gin.Context) {
 								Text("'Project'").X(".y+4").Y("parent.h/2-.h/2").H("18").FontWeight("600"),
 								Svg(SvgArrowDown).X("prev.x2+2").Y("parent.h/2-.h/2").W("17").H(".w").Color(ColorGray110),
 							),
-							Tree().NameAs("treeEle").Y("prev.y2").H("parent.h-.y").OnClickItem("Root.clickTreeItem"),
+							Tree().NameAs("treeEle").Y("prev.y2").H("parent.h-.y").OnClickItem("Root.clickTreeItem").Items("root.treeItems"),
 						),
 						VBar().X("parent.w/3").BgColor(ColorYellow).Opacity("0"),
 						Div().NameAs("mainPaneEle").X("prev.x2-prev.w/2").W("parent.w-.x").SetSlots(
@@ -68,13 +69,44 @@ func goland(c *gin.Context) {
 		Button().OnClick("Root.handleClick2").Y("prev.y2").X("parent.w/2-.w/2"),
 	).Code(`
 function handleClick() {
-	const img = page.root.imgEle;
+	const img = g.root.imgEle;
 	img.v = !img.v;
 }
 
 function handleClick2() {
-	const img = page.root.imgEle;
+	const img = g.root.imgEle;
 	img.opacity = img.opacity >= 1 ? 0.4 : img.opacity + 0.3;
-}`)
+}
+
+function clickTreeItem(itemEle) {
+	console.log(itemEle.data);
+	if (itemEle.data.leaf) {
+		g.root.currentFile = itemEle.data;
+		g.root.editorEle.setValue(itemEle.data.key);
+	}
+}
+
+function startup() {
+	setTimeout(function() {
+		g.root.treeItems = [
+			'page/com/test.go',
+			'page/example/goland/explorer_pane.js',
+			'page/example/goland/explorer_pane.jsm',
+			'page/example/goland/icons.txt',
+			'page/example/goland/top.js',
+			'page/example/goland/top.jsm',
+			'page/example/example.go',
+			'page/example/example.js',
+			'page/example/go.mod',
+			'page/example/goland.go',
+			'page/example/larkbase.go',
+			'page/example/main.go',
+			'page/example/page.log',
+		];
+	});
+}`).OnCreated("Root.startup")
+	root.AddProp("treeItems", "[]")
+	root.AddProp("currentFile", "''")
+	root.AddProp("sourceRoot", "'/Users/bytedance/Code/lincaiyong'")
 	page.MakePage(c, "goland", comp)
 }

@@ -2,7 +2,7 @@ package visit
 
 import (
 	"fmt"
-	"github.com/lincaiyong/page/parser"
+	"github.com/lincaiyong/gui/parser"
 	"sort"
 	"strings"
 )
@@ -14,6 +14,7 @@ var mm = map[string]bool{
 	"prev":   true,
 	"next":   true,
 	"this":   true,
+	"root":   true,
 }
 
 func Visit(node *parser.Node) (string, string, error) {
@@ -91,6 +92,8 @@ func (v *Visitor) visit(node *parser.Node) string {
 		if mm[i] {
 			if i == "parent" {
 				return "e.parent"
+			} else if i == "root" {
+				return "g.root"
 			}
 			i = fmt.Sprintf("e._('%s')", i)
 		}

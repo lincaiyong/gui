@@ -6,7 +6,7 @@ function computeItem(container, index) {
         key: data.key,
         x: 0,
         y: index * h,
-        w: data.depth * 20 + page.util.textWidth(data.text, container.fontFamily, 12) + 40,
+        w: data.depth * 20 + g.util.textWidth(data.text, container.fontFamily, 12) + 40,
         h,
     });
 }

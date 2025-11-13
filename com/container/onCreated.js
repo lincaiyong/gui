@@ -1,6 +1,6 @@
 function onCreated() {
     if (!this.list) {
-        const child = page.createElement(this.model.slot[0], this);
+        const child = g.createElement(this.model.slot[0], this);
         this.childWidth = child.w;
         this.childHeight = child.h;
         child.onUpdated((k, v) => {

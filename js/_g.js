@@ -1,21 +1,21 @@
-const page = {
+const g = {
     model: null,
     root: null,
     state: {},
     create() {
-        page.log.info('create app.')
+        g.log.info('create app.')
         document.documentElement.style.overflow = 'hidden';
 
-        page.util.assert(page.model);
+        g.util.assert(g.model);
         Promise.all([]).then(() => {
-            page.destroy();
-            page._create();
+            g.destroy();
+            g._create();
         });
     },
     destroy() {
-        if (page.root) {
-            page.root._destroy();
-            page.root = null;
+        if (g.root) {
+            g.root._destroy();
+            g.root = null;
         }
     },
     createElement(model, parent) {
@@ -23,28 +23,28 @@ const page = {
         if (parent instanceof Component) {
             ele._create(parent);
         } else {
-            page.log.error("invalid argument")
+            g.log.error("invalid argument")
         }
         return ele;
     },
     createRootElement(parent) {
-        page.root = new page.model.Component(null, page.model);
+        g.root = new g.model.Component(null, g.model);
         if (parent instanceof Element) {
-            page.root._create(parent);
+            g.root._create(parent);
         } else {
-            page.log.error("invalid argument")
+            g.log.error("invalid argument")
         }
     },
     _autoLayout() {
-        const resize = () => [page.root.w, page.root.h] = [window.innerWidth, window.innerHeight];
-        page.event.addListener(window, 'resize', page.util.debounce(resize, 20));
+        const resize = () => [g.root.w, g.root.h] = [window.innerWidth, window.innerHeight];
+        g.event.addListener(window, 'resize', g.util.debounce(resize, 20));
         resize();
     },
     _create() {
-        page.createRootElement(document.body);
-        page._autoLayout();
-        page.root.v = 1;
-        page.root._checkLoop();
+        g.createRootElement(document.body);
+        g._autoLayout();
+        g.root.v = 1;
+        g.root._checkLoop();
     },
     removeElement(ele) {
         ele._destroy();
@@ -56,17 +56,17 @@ const page = {
             document.body.innerText = [...arguments].join('\n');
         },
         info() {
-            if (['info', 'debug', 'trace'].indexOf(page.log.level) !== -1) {
+            if (['info', 'debug', 'trace'].indexOf(g.log.level) !== -1) {
                 console.log('[INFO ] ', ...arguments);
             }
         },
         debug() {
-            if (['debug', 'trace'].indexOf(page.log.level) !== -1) {
+            if (['debug', 'trace'].indexOf(g.log.level) !== -1) {
                 console.debug('[DEBUG] ', ...arguments);
             }
         },
         trace() {
-            if (page.log.level === 'trace') {
+            if (g.log.level === 'trace') {
                 console.debug('[TRACE] ', ...arguments);
             }
         },
@@ -74,7 +74,7 @@ const page = {
     util: {
         assert(condition, failMsg = '') {
             if (!condition) {
-                page.log.error(failMsg || 'assertion fail');
+                g.log.error(failMsg || 'assertion fail');
             }
         },
         debounce(fun, interval) {
@@ -98,12 +98,12 @@ const page = {
             if (text === '') {
                 return 0;
             }
-            if (!page.util._canvasCtx) {
+            if (!g.util._canvasCtx) {
                 const canvas = new OffscreenCanvas(1000, 40);
-                page.util._canvasCtx = canvas.getContext("2d");
+                g.util._canvasCtx = canvas.getContext("2d");
             }
             text = `=${text}=`
-            const ctx = page.util._canvasCtx;
+            const ctx = g.util._canvasCtx;
             ctx.font = `${size}px ${font}`;
             const metrics = ctx.measureText(text);
             const actual = Math.abs(metrics.actualBoundingBoxLeft) + Math.abs(metrics.actualBoundingBoxRight);
@@ -114,17 +114,17 @@ const page = {
     event: {
         addListener(ref, name, handler) {
             if (handler instanceof Function) {
-                page.log.trace('add event listener', name);
+                g.log.trace('add event listener', name);
                 ref.addEventListener(name, handler);
                 return () => ref.removeEventListener(name, handler);
             }
         },
         onceListener(ref, name, handler) {
             if (handler instanceof Function) {
-                page.log.trace('add once event listener', name);
+                g.log.trace('add once event listener', name);
 
                 function handlerWrapper(ev) {
-                    page.log.trace('once event listener removed', ref, name);
+                    g.log.trace('once event listener removed', ref, name);
                     handler(ev);
                     ref.removeEventListener(name, handlerWrapper);
                 }

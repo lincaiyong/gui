@@ -1,8 +1,8 @@
 package root
 
 import (
-	"github.com/lincaiyong/page/com"
-	"github.com/lincaiyong/page/js"
+	"github.com/lincaiyong/gui/com"
+	"github.com/lincaiyong/gui/js"
 )
 
 func Root(children ...com.Component) *Component {
@@ -13,6 +13,7 @@ func Root(children ...com.Component) *Component {
 
 type Component struct {
 	*com.BaseComponent[Component]
+	_props map[string]string
 }
 
 func (c *Component) Code(code string) *Component {

@@ -12,10 +12,10 @@ class ScrollbarWrapper {
         }
 
         const _fade = () => this.active = false;
-        this.debouncedFade = page.util.debounce(_fade, container.scrollBarFadeTime);
+        this.debouncedFade = g.util.debounce(_fade, container.scrollBarFadeTime);
 
-        page.util.assert(container instanceof Container);
-        page.util.assert(this.bar instanceof Scrollbar);
+        g.util.assert(container instanceof Container);
+        g.util.assert(this.bar instanceof Scrollbar);
     }
     get contentLen() {
         return this.vertical ? this.container.childHeight : this.container.childWidth;
@@ -71,7 +71,7 @@ class ScrollbarWrapper {
         this.bar.onMouseDown = (_, ev0) => {
             ev0.stopPropagation();
             const prev = {val: this.getEventPos(ev0)};
-            const cancelMouseMove = page.event.addListener(window, 'mousemove', ev => {
+            const cancelMouseMove = g.event.addListener(window, 'mousemove', ev => {
                 const evPos = this.getEventPos(ev);
                 const {min, max} = this.containerRect;
                 if ((evPos < min && prev.val === min) || (evPos > max && prev.val === max)) {
@@ -83,7 +83,7 @@ class ScrollbarWrapper {
                 this.show(true);
                 this.active = true;
             });
-            page.event.onceListener(window, 'mouseup', () => {
+            g.event.onceListener(window, 'mouseup', () => {
                 this.active = false;
                 cancelMouseMove();
             });

@@ -1,6 +1,6 @@
 package text
 
-import "github.com/lincaiyong/page/com"
+import "github.com/lincaiyong/gui/com"
 
 func Text(text string) *Component {
 	ret := &Component{}
@@ -8,7 +8,7 @@ func Text(text string) *Component {
 	ret.InnerText(text)
 	ret.FontSize("Math.floor(.h * 2 / 3)").
 		LineHeight(".h").
-		W("page.util.textWidth(.innerText, .fontFamily, .fontSize)")
+		W("g.util.textWidth(.innerText, .fontFamily, .fontSize)")
 	return ret
 }
 

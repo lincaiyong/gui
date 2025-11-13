@@ -1,13 +1,13 @@
 class Component {
     constructor(parent, model) {
-        const {properties, children} = model;
+        const {properties, children=[]} = model;
         this._properties = {};
         this._parent = parent;
         this._model = model;
         this._id = parent ? `${parent.id}.${model.name}` : model.name;
         this._ref = document.createElement(model.tag);
         this._ref.style.position = model.position;
-        this._ref.style.overflow = model.overflow;
+        this._ref.style.overflow = model.overflow || 'hidden';
         this._ref.style.boxSizing = 'border-box';
         this._children = children.map(childData => new childData.Component(this, childData));
 
@@ -17,7 +17,7 @@ class Component {
         const props = Object.assign(this._defaultProperties, properties);
         for (const k in props) {
             const v = props[k];
-            page.util.assert(v instanceof Array && v.length === 2 && v[0] instanceof Function && v[1] instanceof Array, `invalid argument ${v}`);
+            g.util.assert(v instanceof Array && v.length === 2 && v[0] instanceof Function && v[1] instanceof Array, `invalid argument ${v}`);
             const [computeFunc, sources] = v;
             const sourceResolver = source => this._(source);
             this._properties[k] = new Property(this, k, sources, sourceResolver, computeFunc);
@@ -86,7 +86,7 @@ class Component {
             parent.children.push(this);
             parent.ref.appendChild(this.ref);
         } else {
-            page.log.error("invalid argument")
+            g.log.error("invalid argument")
         }
         Object.values(this._properties).forEach(p => p.subscribe());
         this.children.forEach(child => child._createAll(this.ref));
@@ -159,7 +159,7 @@ class Component {
             }
             if (count === newCount) {
                 const tmp = properties.filter(prop => !(prop.id in visited)).map(prop => `${prop.id}: ${prop._sources.join(', ')}`);
-                page.log.error("loop detected", '\n\t' + tmp.join('\n\t'));
+                g.log.error("loop detected", '\n\t' + tmp.join('\n\t'));
                 return;
             }
             count = newCount;
@@ -175,9 +175,9 @@ class Component {
     }
 
     _(source) {
-        page.util.assert(typeof (source) === 'string' && this instanceof Component);
+        g.util.assert(typeof (source) === 'string' && this instanceof Component);
         const ret = this._resolve(source);
-        page.util.assert(ret);
+        g.util.assert(ret);
         return ret;
     }
 
@@ -193,6 +193,8 @@ class Component {
     _resolveEle(name) {
         if (name === '') {
             return this;
+        } else if (name === 'root') {
+            return g.root;
         } else if (name === 'this') {
             return this.root;
         } else if (name === 'parent') {
@@ -681,16 +683,16 @@ class Component {
 
     set onActive(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onActive', page.event.addListener(this.ref, 'mousedown', ev => {
+            this._addSideEffect('onActive', g.event.addListener(this.ref, 'mousedown', ev => {
                 const fun = v(this, ev);
-                page.event.onceListener(this.ref, 'mouseup', ev => fun?.(this, ev));
+                g.event.onceListener(this.ref, 'mouseup', ev => fun?.(this, ev));
             }));
         }
     }
 
     set onClick(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onClick', page.event.addListener(this.ref, 'click', ev => {
+            this._addSideEffect('onClick', g.event.addListener(this.ref, 'click', ev => {
                 v(this, ev);
             }));
         }
@@ -698,7 +700,7 @@ class Component {
 
     set onClickOutside(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onClickOutside', page.event.addListener(document, 'click', ev => {
+            this._addSideEffect('onClickOutside', g.event.addListener(document, 'click', ev => {
                 const rect = this.ref.getBoundingClientRect();
                 if (rect.x > ev.clientX || rect.y > ev.clientY || (rect.x + rect.width) < ev.clientX || (rect.y + rect.height) < ev.clientY) {
                     const isOutsideEvent = v(this, ev); // ev !== clickEv
@@ -712,7 +714,7 @@ class Component {
 
     set onCompositionEnd(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onCompositionEnd', page.event.addListener(this.ref, 'compositionend', ev => {
+            this._addSideEffect('onCompositionEnd', g.event.addListener(this.ref, 'compositionend', ev => {
                 v(this, ev);
             }));
         }
@@ -720,7 +722,7 @@ class Component {
 
     set onCompositionStart(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onCompositionStart', page.event.addListener(this.ref, 'compositionstart', ev => {
+            this._addSideEffect('onCompositionStart', g.event.addListener(this.ref, 'compositionstart', ev => {
                 v(this, ev);
             }));
         }
@@ -728,7 +730,7 @@ class Component {
 
     set onCompositionUpdate(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onCompositionUpdate', page.event.addListener(this.ref, 'compositionupdate', ev => {
+            this._addSideEffect('onCompositionUpdate', g.event.addListener(this.ref, 'compositionupdate', ev => {
                 v(this, ev);
             }));
         }
@@ -736,7 +738,7 @@ class Component {
 
     set onCopy(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onCopy', page.event.addListener(this.ref, 'copy', ev => {
+            this._addSideEffect('onCopy', g.event.addListener(this.ref, 'copy', ev => {
                 v(this, ev);
             }));
         }
@@ -744,7 +746,7 @@ class Component {
 
     set onCut(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onCut', page.event.addListener(this.ref, 'cut', ev => {
+            this._addSideEffect('onCut', g.event.addListener(this.ref, 'cut', ev => {
                 v(this, ev);
             }));
         }
@@ -752,7 +754,7 @@ class Component {
 
     set onDoubleClick(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onDoubleClick', page.event.addListener(this.ref, 'dblclick', ev => {
+            this._addSideEffect('onDoubleClick', g.event.addListener(this.ref, 'dblclick', ev => {
                 v(this, ev);
             }));
         }
@@ -760,9 +762,9 @@ class Component {
 
     set onFocus(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onFocus', page.event.addListener(this.ref, 'focus', ev => {
+            this._addSideEffect('onFocus', g.event.addListener(this.ref, 'focus', ev => {
                 const fun = v(this, ev);
-                page.event.onceListener(this.ref, 'blur', ev => fun?.(this, ev));
+                g.event.onceListener(this.ref, 'blur', ev => fun?.(this, ev));
             }));
         }
     }
@@ -770,8 +772,8 @@ class Component {
     set onHover(v) {
         if (v instanceof Function) {
             this._properties.onHover.value = v;
-            this._addSideEffect('mouseenter', page.event.addListener(this.ref, 'mouseenter', () => {
-                page.event.onceListener(this.ref, 'mouseleave', () => this.hoveredByMouse = false);
+            this._addSideEffect('mouseenter', g.event.addListener(this.ref, 'mouseenter', () => {
+                g.event.onceListener(this.ref, 'mouseleave', () => this.hoveredByMouse = false);
                 this.hoveredByMouse = true;
             }));
         }
@@ -779,7 +781,7 @@ class Component {
 
     set onInput(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onInput', page.event.addListener(this.ref, 'input', ev => {
+            this._addSideEffect('onInput', g.event.addListener(this.ref, 'input', ev => {
                 v(this, ev);
             }));
         }
@@ -787,7 +789,7 @@ class Component {
 
     set onKeyDown(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onKeyDown', page.event.addListener(this.ref, 'keydown', ev => {
+            this._addSideEffect('onKeyDown', g.event.addListener(this.ref, 'keydown', ev => {
                 v(this, ev);
             }));
         }
@@ -795,7 +797,7 @@ class Component {
 
     set onKeyUp(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onKeyUp', page.event.addListener(this.ref, 'keyup', ev => {
+            this._addSideEffect('onKeyUp', g.event.addListener(this.ref, 'keyup', ev => {
                 v(this, ev);
             }));
         }
@@ -803,7 +805,7 @@ class Component {
 
     set onMouseDown(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onMouseDown', page.event.addListener(this.ref, 'mousedown', ev => {
+            this._addSideEffect('onMouseDown', g.event.addListener(this.ref, 'mousedown', ev => {
                 v(this, ev);
             }));
         }
@@ -811,7 +813,7 @@ class Component {
 
     set onMouseMove(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onMouseMove', page.event.addListener(this.ref, 'mousemove', ev => {
+            this._addSideEffect('onMouseMove', g.event.addListener(this.ref, 'mousemove', ev => {
                 v(this, ev);
             }));
         }
@@ -819,7 +821,7 @@ class Component {
 
     set onMouseUp(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onMouseUp', page.event.addListener(this.ref, 'mouseup', ev => {
+            this._addSideEffect('onMouseUp', g.event.addListener(this.ref, 'mouseup', ev => {
                 v(this, ev);
             }));
         }
@@ -827,7 +829,7 @@ class Component {
 
     set onPaste(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onPaste', page.event.addListener(this.ref, 'paste', ev => {
+            this._addSideEffect('onPaste', g.event.addListener(this.ref, 'paste', ev => {
                 v(this, ev);
             }));
         }
@@ -847,7 +849,7 @@ class Component {
 
     set onWheel(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onWheel', page.event.addListener(this.ref, 'wheel', ev => {
+            this._addSideEffect('onWheel', g.event.addListener(this.ref, 'wheel', ev => {
                 v(this, ev);
             }));
         }

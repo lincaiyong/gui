@@ -4,16 +4,16 @@ import (
 	_ "embed"
 	"github.com/gin-gonic/gin"
 	"github.com/lincaiyong/daemon/common"
-	"github.com/lincaiyong/page"
-	. "github.com/lincaiyong/page/com"
-	. "github.com/lincaiyong/page/com/all"
+	"github.com/lincaiyong/gui"
+	. "github.com/lincaiyong/gui/com"
+	. "github.com/lincaiyong/gui/com/all"
 )
 
 //go:embed example.js
 var exampleJs string
 
 func main() {
-	common.StartServer("page", "v1.0.1", "",
+	common.StartServer("gui", "v1.0.1", "",
 		func(_ []string, r *gin.RouterGroup) error {
 			r.GET("/res/*filepath", page.HandleRes())
 			r.GET("/hello", func(c *gin.Context) {
@@ -77,7 +77,7 @@ function handleClick() {
 					Code(`
 function test() {
 	setTimeout(function() {
-		const editor = page.root.editorEle;
+		const editor = g.root.editorEle;
 		editor.setValue('package main\n\nfunc main() {\n\n}');
 		editor.setLanguage('go');
 	}, 1000);
@@ -91,12 +91,12 @@ function test() {
 				).OnCreated("Root.test").Code(`
 function test() {
 	setTimeout(function() {
-		const iframe = page.root.iframeEle;
+		const iframe = g.root.iframeEle;
 		const url = 'http://127.0.0.1:9123/editor';
-		page.util.fetch(url).then(html => {
+		g.util.fetch(url).then(html => {
 			iframe.setHtml(html);
 		}).catch(e => {
-			page.log.error(e);
+			g.log.error(e);
 		});
 	}, 1000);
 }`)
@@ -117,7 +117,7 @@ function test() {
 				).OnCreated("Root.test").Code(`
 function test() {
 	setTimeout(function() {
-		const treeEle = page.root.treeEle;
+		const treeEle = g.root.treeEle;
 		treeEle.items = ['test/test.go', 'test/test.js', 'test/test.py', 'test/test.txt', 'go.mod'];
 	}, 1000);
 }

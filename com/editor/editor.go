@@ -1,6 +1,6 @@
 package editor
 
-import "github.com/lincaiyong/page/com"
+import "github.com/lincaiyong/gui/com"
 
 const (
 	LangGo         = "'go'"

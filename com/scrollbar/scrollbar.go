@@ -2,14 +2,14 @@ package scrollbar
 
 import (
 	"fmt"
-	"github.com/lincaiyong/page/com"
+	"github.com/lincaiyong/gui/com"
 )
 
 func create() *Component {
 	ret := &Component{}
 	ret.BaseComponent = com.NewBaseComponent[Component]("div", ret)
 	ret.ZIndex("1").
-		BgColor("page.theme.scrollbarBgColor").
+		BgColor("g.theme.scrollbarBgColor").
 		Opacity("0.5").
 		BorderRadius(".w / 2").
 		Cursor("'default'").

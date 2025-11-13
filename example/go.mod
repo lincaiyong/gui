@@ -2,12 +2,12 @@ module example
 
 go 1.25.0
 
-replace github.com/lincaiyong/page v1.0.1 => ..
+replace github.com/lincaiyong/gui v1.0.1 => ..
 
 require (
 	github.com/gin-gonic/gin v1.11.0
 	github.com/lincaiyong/daemon v1.0.29
-	github.com/lincaiyong/page v1.0.1
+	github.com/lincaiyong/gui v1.0.1
 )
 
 require (

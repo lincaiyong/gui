@@ -32,8 +32,8 @@ func (e *ExtraInfo) Properties() []string {
 	return e.properties
 }
 
-func (e *ExtraInfo) SetProperties(properties []string) {
-	e.properties = properties
+func (e *ExtraInfo) AddProperty(k string) {
+	e.properties = append(e.properties, k)
 }
 
 func (e *ExtraInfo) Methods() []string {

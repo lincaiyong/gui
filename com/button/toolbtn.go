@@ -1,9 +1,9 @@
 package button
 
 import (
-	"github.com/lincaiyong/page/com"
-	"github.com/lincaiyong/page/com/div"
-	"github.com/lincaiyong/page/com/img"
+	"github.com/lincaiyong/gui/com"
+	"github.com/lincaiyong/gui/com/div"
+	"github.com/lincaiyong/gui/com/img"
 )
 
 func ToolButton() *Component {
@@ -15,8 +15,8 @@ func ToolButton() *Component {
 			BorderColor(com.ColorWhite).BorderLeft(1).BorderRight(1).BorderTop(1).BorderBottom(1),
 	)
 	ret.W("24").H(".w").BorderRadius("6").
-		BgColor(".selected ? page.theme.ComponentSelectedBgColor : page.theme.ComponentBgColor").
-		Color(".selected ? page.theme.ComponentSelectedColor : page.theme.ComponentColor").
+		BgColor(".selected ? g.theme.ComponentSelectedBgColor : g.theme.ComponentBgColor").
+		Color(".selected ? g.theme.ComponentSelectedColor : g.theme.ComponentColor").
 		OnHover("e.handleHover").
 		OnActive("e.handleActive")
 	return ret
