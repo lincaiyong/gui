@@ -6,6 +6,7 @@ import (
 	"github.com/lincaiyong/gui/com/div"
 	"github.com/lincaiyong/gui/com/img"
 	"github.com/lincaiyong/gui/com/text"
+	"strconv"
 )
 
 func Tree() *Component {
@@ -16,10 +17,10 @@ func Tree() *Component {
 			NameAs("selectedEle"),
 		container.VListContainer(
 			img.Svg("parent.data.collapsed ? 'svg/arrowRight.svg' : 'svg/arrowDown.svg'").NameAs("arrowEle").
-				X("parent.data.depth * 20 + 4").Y("parent.h/2-.h/2").W("17").H(".w").V("parent.data.leaf ? 0 : 1").Color(com.ColorGray110),
+				X("this.indent + parent.data.depth * 20 + 4").Y("parent.h/2-.h/2").W("17").H(".w").V("parent.data.leaf ? 0 : 1").Color(com.ColorGray110),
 			img.Img("''").NameAs("iconEle").
-				X("next.x-20").Y("parent.h/2-.h/2").W("16").H(".w"),
-			text.Text("parent.data.text").X("parent.data.depth * 20 + 44").Y("2").H("this.itemHeight - 2 * .y").Cursor("'default'"),
+				X("prev.x2+4").Y("parent.h/2-.h/2").W("16").H(".w"),
+			text.Text("parent.data.text").X("prev.x2+4").Y("2").H("this.itemHeight - 2 * .y").Cursor("'default'"),
 		).Align("'fill'").X("10").W("parent.w - .x").
 			NameAs("containerEle").
 			ItemCompute("Tree.computeItem").
@@ -37,6 +38,7 @@ type Component struct {
 	onClickItem      com.Property `default:"undefined"`
 	selectedChildTop com.Property `default:"0"`
 	itemHeight       com.Property `default:"24"`
+	indent           com.Property `default:"0"`
 	computeItem      com.Method   `static:"true"`
 	clickItem        com.Method   `static:"true"`
 	updateItem       com.Method   `static:"true"`
@@ -53,5 +55,10 @@ func (b *Component) OnClickItem(s string) *Component {
 
 func (b *Component) Items(s string) *Component {
 	b.SetProp("items", s)
+	return b
+}
+
+func (b *Component) Indent(s int) *Component {
+	b.SetProp("indent", strconv.Itoa(s))
 	return b
 }

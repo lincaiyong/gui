@@ -32,11 +32,16 @@ func goland(c *gin.Context) {
 				Div().X("prev.x2").W("parent.w-prev.w-next.w").BgColor(ColorGray247).SetSlots(
 					Div().H("next.y+next.h/2").SetSlots(
 						Div().NameAs("leftPaneEle").W("next.x+next.w/2").BorderColor(ColorGray235).BorderRight(1).SetSlots(
-							Div().H("33").SetSlots(
-								Text("'Project'").X(".y+4").Y("parent.h/2-.h/2").H("18").FontWeight("600"),
+							Div().H("32").SetSlots(
+								Text("'Project'").X(".y+4").Y("parent.h/2-.h/2").H("20").FontWeight("600"),
 								Svg(SvgArrowDown).X("prev.x2+2").Y("parent.h/2-.h/2").W("17").H(".w").Color(ColorGray110),
 							),
-							Tree().NameAs("treeEle").Y("prev.y2").H("parent.h-.y").OnClickItem("Root.clickTreeItem").Items("root.treeItems"),
+							Div().Y("prev.y2").H("24").SetSlots(
+								Svg(SvgArrowDown).X(".y+6").Y("parent.h/2-.h/2").W("17").H(".w").Color(ColorGray110),
+								Svg(SvgFolder).X("prev.x2+4").Y("parent.h/2-.h/2").W("16").H(".w").Color(ColorGray110),
+								Text("'page'").X("prev.x2+4").Y("parent.h/2-.h/2").H("20").FontWeight("600"),
+							),
+							Tree().NameAs("treeEle").Y("prev.y2").H("parent.h-.y").OnClickItem("Root.clickTreeItem").Items("root.treeItems").Indent(16),
 						),
 						VBar().X("parent.w/3").BgColor(ColorYellow).Opacity("0"),
 						Div().NameAs("mainPaneEle").X("prev.x2-prev.w/2").W("parent.w-.x").SetSlots(
@@ -89,19 +94,25 @@ function clickTreeItem(itemEle) {
 function startup() {
 	setTimeout(function() {
 		g.root.treeItems = [
-			'page/com/test.go',
-			'page/example/goland/explorer_pane.js',
-			'page/example/goland/explorer_pane.jsm',
-			'page/example/goland/icons.txt',
-			'page/example/goland/top.js',
-			'page/example/goland/top.jsm',
-			'page/example/example.go',
-			'page/example/example.js',
-			'page/example/go.mod',
-			'page/example/goland.go',
-			'page/example/larkbase.go',
-			'page/example/main.go',
-			'page/example/page.log',
+			'com/test.go',
+			'example/goland/explorer_pane.js',
+			'example/goland/explorer_pane.jsm',
+			'example/goland/icons.txt',
+			'example/goland/top.js',
+			'example/goland/top.jsm',
+			'example/example.go',
+			'example/example.js',
+			'example/go.mod',
+			'example/goland.go',
+			'example/larkbase.go',
+			'example/main.go',
+			'example/page.log',
+			'.gitignore',
+			'gen.go',			
+			'go.mod',
+			'js.go',
+			'LICENSE',
+			'res.go',
 		];
 	});
 }`).OnCreated("Root.startup")

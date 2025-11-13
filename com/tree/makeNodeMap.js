@@ -19,7 +19,7 @@ function makeNodeMap(items) {
                     key: key,
                     text: tmp,
                     children: [],
-                    collapsed: false,
+                    collapsed: true,
                 };
                 parent.children.push(nodeMap[key]);
             }

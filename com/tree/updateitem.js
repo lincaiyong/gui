@@ -17,6 +17,9 @@ function updateItem(itemEle, k, v) {
             if (v.key === 'go.mod' || v.key.endsWith('/go.mod')) {
                 src = 'svg/goMod.svg'
             }
+            if (v.key === '.gitignore' || v.key.endsWith('/.gitignore')) {
+                src = 'svg/ignored.svg'
+            }
             itemEle.iconEle.src = src;
         } else {
             itemEle.iconEle.src = 'svg/folder.svg';

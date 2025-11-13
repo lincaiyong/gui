@@ -28,4 +28,6 @@ var (
 	SvgDatabase            = svg("dbms")
 	SvgPythonConsole       = svg("pythonConsoleToolWindow")
 	SvgSettings            = svg("settings")
+	SvgIgnored             = svg("ignored")
+	SvgFolder              = svg("folder")
 )
