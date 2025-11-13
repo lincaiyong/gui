@@ -1,29 +1,23 @@
 function log(v) {
     go.main.App.Log(v);
 }
-function queryDefinition(file, lineIdx, charIdx) {
-    return go.main.App.QueryDefinition(file, lineIdx, charIdx);
-}
-function openProject() {
-    return go.main.App.OpenProject();
-}
-function openFile(path) {
-    return go.main.App.OpenFile(path);
-}
 
 function onClickTreeItem(itemEle) {
     Root.log('click: ' + JSON.stringify(itemEle.data));
     if (itemEle.data.leaf) {
         g.root.currentFile = itemEle.data.key;
         const relPath = itemEle.data.key;
-        Root.openFile(g.root.sourceRoot + '/' + relPath).then(v => {
+        go.main.App.OpenFile(g.root.sourceRoot + '/' + relPath).then(v => {
             g.root.editorEle.setValue(v);
+            if (relPath.endsWith('.go')) {
+                g.root.editorEle.setLanguage('go');
+            }
         });
     }
 }
 
 function onOpenProject() {
-    Root.openProject().then(s => {
+    go.main.App.OpenProject().then(s => {
         const obj = JSON.parse(s)
         Root.log(obj);
         g.root.sourceRoot = obj.folder;
@@ -37,32 +31,18 @@ function onStartup() {
     });
 }
 
-function getColIdx(code, lineNo, charNo) {
-    const lines = code.split('\n');
-    if (lineNo < 1 || lineNo > lines.length) {
-        return 0;
-    }
-    const lineContent = lines[lineNo - 1];
-    if (charNo < 1 || charNo > lineContent.length) {
-        return 0;
-    }
-    let colIdx = 0;
-    for (let i = 0; i < charNo; i++) {
-        if (lineContent[i] === '\t') {
-            colIdx += 4 - ((colIdx - 1) % 4);
-        } else {
-            colIdx += 1;
-        }
-    }
-    return colIdx;
-}
-
 function onCursorPositionChange(lineNo, charNo) {
     Root.log(`cursor: ${lineNo} ${charNo}`);
-    const content = g.root.editorEle.getValue();
-    const colIdx = Root.getColIdx(content, lineNo, charNo);
-    Root.queryDefinition(`${g.root.sourceRoot}/${g.root.currentFile}`, lineNo-1, colIdx).then(v => {
-        Root.log(v);
-        g.root.outputEle.setValue(v);
+    go.main.App.QueryDefinition(`${g.root.sourceRoot}/${g.root.currentFile}`, lineNo-1, charNo-1).then(s => {
+        Root.log(`definition: ${s}`);
+        const targets = JSON.parse(s);
+        if (targets && targets.length === 1) {
+            const target = targets[0];
+            let file = target.file;
+            if (target.file.includes(g.root.sourceRoot)) {
+               file = file.substring(g.root.sourceRoot.length+1);
+            }
+            g.root.outputEle.setValue(`${file}#L${target.lineIdx +1}`);
+        }
     })
 }

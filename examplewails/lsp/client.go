@@ -30,10 +30,10 @@ type Target_ struct {
 
 type Target struct {
 	File       string `json:"file,omitempty"`
-	LineIdx    int    `json:"line_idx,omitempty"`
-	ColIdx     int    `json:"col_idx,omitempty"`
-	EndLineIdx int    `json:"end_line_idx,omitempty"`
-	EndColIdx  int    `json:"end_col_idx,omitempty"`
+	LineIdx    int    `json:"lineIdx,omitempty"`
+	ColIdx     int    `json:"colIdx,omitempty"`
+	EndLineIdx int    `json:"endLineIdx,omitempty"`
+	EndColIdx  int    `json:"endColIdx,omitempty"`
 }
 
 type Message struct {
@@ -49,7 +49,7 @@ type Message struct {
 	} `json:"error,omitempty"`
 }
 
-func TextDocumentParams(filePath string, lineIdx, colIdx int) any {
+func TextDocumentParams(filePath string, lineIdx, charIdx int) any {
 	type TextDocument struct {
 		URI string `json:"uri"`
 	}
@@ -66,7 +66,7 @@ func TextDocumentParams(filePath string, lineIdx, colIdx int) any {
 		},
 		Position: Position{
 			LineIdx: lineIdx,
-			CharIdx: colIdx,
+			CharIdx: charIdx,
 		},
 	}
 	return params
@@ -250,8 +250,8 @@ func (c *Client) OpenFile(filePath string) error {
 	return c.didOpen(filePath, string(b))
 }
 
-func (c *Client) QueryDefinition(filePath string, lineIdx, colIdx int) ([]*Target, error) {
-	ret, err := c.getDefinition(filePath, lineIdx, colIdx)
+func (c *Client) QueryDefinition(filePath string, lineIdx, charIdx int) ([]*Target, error) {
+	ret, err := c.getDefinition(filePath, lineIdx, charIdx)
 	if err != nil {
 		return nil, err
 	}
@@ -327,8 +327,8 @@ func (c *Client) didOpen(uri, content string) error {
 	return c.sendRequest("textDocument/didOpen", params, false)
 }
 
-func (c *Client) getDefinition(filePath string, lineIdx, colIdx int) ([]any, error) {
-	params := TextDocumentParams(filePath, lineIdx, colIdx)
+func (c *Client) getDefinition(filePath string, lineIdx, charIdx int) ([]any, error) {
+	params := TextDocumentParams(filePath, lineIdx, charIdx)
 	err := c.sendRequest("textDocument/definition", params, true)
 	if err != nil {
 		return nil, err

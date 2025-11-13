@@ -24,13 +24,13 @@ func (a *App) Log(v any) {
 	log.DebugLog("%v", v)
 }
 
-func (a *App) QueryDefinition(file string, lineIdx, colIdx int) string {
-	log.DebugLog("lsp query definition: %s#%d:%d", file, lineIdx+1, colIdx+1)
-	targets, err := a.lspClient.QueryDefinition(file, lineIdx, colIdx)
+func (a *App) QueryDefinition(file string, lineIdx, charIdx int) string {
+	log.DebugLog("lsp query definition: %s#%d:%d", file, lineIdx+1, charIdx+1)
+	targets, err := a.lspClient.QueryDefinition(file, lineIdx, charIdx)
 	if err != nil {
 		log.ErrorLog("fail to open file: %v", err)
 	}
-	b, _ := json.MarshalIndent(targets, "", "  ")
+	b, _ := json.Marshal(targets)
 	log.InfoLog("targets: %s", string(b))
 	return string(b)
 }
