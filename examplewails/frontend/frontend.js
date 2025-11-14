@@ -34,7 +34,7 @@ function onOpenDirectory() {
     });
 }
 
-function onStartup() {
+function OnCreated() {
     setTimeout(function() {
         Root.openProject('/Users/andy/Code/lincaiyong/gui');
     });

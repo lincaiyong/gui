@@ -75,7 +75,7 @@ func (b *BaseComponent[T]) OnCreated(fn string) *T {
 }
 
 func (b *BaseComponent[T]) OnUpdated(fn string) *T {
-	b.SetProp("onUpdated", fn)
+	b.SetProp("onUpdatedFn", fn)
 	return b.self
 }
 

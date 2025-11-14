@@ -79,7 +79,7 @@ func main() {
 			),
 			Img("'img/goland.png'").NameAs("imgEle").V("0"),
 		),
-	).Code(frontendJs).OnCreated("Root.onStartup")
+	).Code(frontendJs).OnCreated("Root.OnCreated").OnUpdated("Root.onUpdated")
 	root.AddProp("files", "[]")
 	root.AddProp("currentFile", "''")
 	root.AddProp("sourceRoot", "''")
