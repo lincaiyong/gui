@@ -48,20 +48,25 @@ func (a *App) OpenFile(path string) string {
 	return string(b)
 }
 
-func (a *App) OpenProject() string {
-	log.DebugLog("select folder...")
+func (a *App) OpenDirectory() string {
+	log.DebugLog("open directory...")
 	opts := runtime.OpenDialogOptions{
-		Title: "打开项目",
+		Title: "打开目录",
 	}
 	folder, err := runtime.OpenDirectoryDialog(a.ctx, opts)
 	if err != nil {
-		log.ErrorLog("fail to OpenDirectoryDialog: %v", err)
+		log.ErrorLog("fail to open: %v", err)
 		return ""
 	}
-	log.DebugLog("folder: %s", folder)
+	return folder
+}
+
+func (a *App) OpenProject(folder string) string {
+	log.DebugLog("open project: %s", folder)
 	if app.lspClient != nil {
 		app.lspClient.Close()
 	}
+	var err error
 	app.lspClient, err = lsp.CreateClient()
 	if err != nil {
 		log.ErrorLog("fail to create lsp client: %v", err)

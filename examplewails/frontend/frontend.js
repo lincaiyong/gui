@@ -8,26 +8,35 @@ function onClickTreeItem(itemEle) {
         g.root.currentFile = itemEle.data.key;
         const relPath = itemEle.data.key;
         go.main.App.OpenFile(g.root.sourceRoot + '/' + relPath).then(v => {
-            g.root.editorEle.setValue(v);
+            g.root.currentFileContent = v;
             if (relPath.endsWith('.go')) {
-                g.root.editorEle.setLanguage('go');
+                g.root.currentFileLanguage = 'go';
             }
         });
     }
 }
 
-function onOpenProject() {
-    go.main.App.OpenProject().then(s => {
+function openProject(folder) {
+    go.main.App.OpenProject(folder).then(s => {
         const obj = JSON.parse(s)
         Root.log(obj);
+        g.root.files = obj.files;
         g.root.sourceRoot = obj.folder;
-        g.root.treeEle.items = obj.files;
+        g.root.projectName = obj.folder.substring(obj.folder.lastIndexOf('/')+1);
+    });
+}
+
+function onOpenDirectory() {
+    go.main.App.OpenDirectory().then(folder => {
+        if (folder) {
+            Root.openProject(folder);
+        }
     });
 }
 
 function onStartup() {
     setTimeout(function() {
-        g.root.treeItems = ['com/test.go', 'res.go'];
+        Root.openProject('/Users/andy/Code/lincaiyong/gui');
     });
 }
 
@@ -42,7 +51,7 @@ function onCursorPositionChange(lineNo, charNo) {
             if (target.file.includes(g.root.sourceRoot)) {
                file = file.substring(g.root.sourceRoot.length+1);
             }
-            g.root.outputEle.setValue(`${file}#L${target.lineIdx +1}`);
+            g.root.outputText = `${file}#L${target.lineIdx +1}`;
         }
     })
 }

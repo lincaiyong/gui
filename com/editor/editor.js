@@ -3,26 +3,16 @@ function _destroy() {
     super._destroy();
 }
 
-function setValue(v) {
-    this._editor.setValue(v);
-}
-
-function getValue() {
-    return this._editor.getModel().getValue();
-}
-
-function setLanguage(v) {
-    monaco.editor.setModelLanguage(this._editor.getModel(), v);
-}
-
 function onCreated() {
     let lineNumbers = 'on';
     if (!this.showLineNo) {
         lineNumbers = 'off';
     }
+    const value = this.value;
+    const language = this.language;
     const options = {
-        value: '',
-        language: '',
+        value,
+        language,
         theme: 'vs',
         automaticLayout: true,
         lineNumbers,
@@ -38,6 +28,9 @@ function onCreated() {
     this._editor.onDidChangeCursorPosition((e) => {
         this.onCursorPositionChange?.(e.position.lineNumber, e.position.column);
     });
+    this._editor.onDidChangeModelContent(() => {
+        this.value = this._editor.getValue();
+    });
 }
 
 function onUpdated(k, v) {
@@ -45,11 +38,11 @@ function onUpdated(k, v) {
         return;
     }
     switch (k) {
-    case 'showLineNo':
-        if (v) {
-            this._editor.updateOptions({ lineNumbers: 'on' });
-        } else {
-            this._editor.updateOptions({ lineNumbers: 'off' });
-        }
+    case 'value':
+        this._editor.setValue(v);
+        break;
+    case 'language':
+        monaco.editor.setModelLanguage(this._editor.getModel(), v);
+        break;
     }
 }

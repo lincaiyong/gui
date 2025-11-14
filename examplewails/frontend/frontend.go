@@ -45,20 +45,21 @@ func main() {
 							Div().Y("prev.y2").H("24").SetSlots(
 								Svg(SvgArrowDown).X(".y+6").Y("parent.h/2-.h/2").W("17").H(".w").Color(ColorGray110),
 								Svg(SvgFolder).X("prev.x2+4").Y("parent.h/2-.h/2").W("16").H(".w").Color(ColorGray110),
-								Text("'page'").X("prev.x2+4").Y("parent.h/2-.h/2").H("20").FontWeight("600"),
+								Text("root.projectName").X("prev.x2+4").Y("parent.h/2-.h/2").H("20").FontWeight("600"),
 							),
-							Tree().NameAs("treeEle").Y("prev.y2").H("parent.h-.y").OnClickItem("Root.onClickTreeItem").Items("root.treeItems").Indent(16),
+							Tree().NameAs("treeEle").Y("prev.y2").H("parent.h-.y").OnClickItem("Root.onClickTreeItem").Items("root.files").Indent(16),
 						),
 						VBar().X("parent.w/3").BgColor(ColorYellow).Opacity("0"),
 						Div().NameAs("mainPaneEle").X("prev.x2-prev.w/2").W("parent.w-.x").SetSlots(
-							Editor().NameAs("editorEle").OnCursorPositionChange("Root.onCursorPositionChange"),
+							Editor().NameAs("editorEle").OnCursorPositionChange("Root.onCursorPositionChange").
+								Value("root.currentFileContent").Language("root.currentFileLanguage"),
 						),
 					),
 					HBar().Y("parent.h*3/5"),
 					Div().NameAs("bottomPaneEle").Y("prev.y2-prev.h/2").H("parent.h-.y").BorderTop(1).BorderColor(ColorGray235).SetSlots(
 						Div().NameAs("bottomHeaderEle").H("33").BgColor(ColorGray247).BorderBottom(1).BorderColor(ColorGray235),
 						Div().Y("prev.y2").H("parent.h-.y").BgColor(ColorWhite).SetSlots(
-							Editor().NameAs("outputEle").ShowLineNo(false),
+							Editor().NameAs("outputEle").ShowLineNo(false).Value("root.outputText"),
 						),
 					),
 				),
@@ -79,9 +80,13 @@ func main() {
 			Img("'img/goland.png'").NameAs("imgEle").V("0"),
 		),
 	).Code(frontendJs).OnCreated("Root.onStartup")
-	root.AddProp("treeItems", "[]")
+	root.AddProp("files", "[]")
 	root.AddProp("currentFile", "''")
-	root.AddProp("sourceRoot", "'/Users/bytedance/Code/lincaiyong'")
+	root.AddProp("sourceRoot", "''")
+	root.AddProp("projectName", "''")
+	root.AddProp("currentFileContent", "''")
+	root.AddProp("currentFileLanguage", "'go'")
+	root.AddProp("outputText", "'hello world'")
 	html, err := gui.MakeHtml("CodeEdge", comp)
 	if err != nil {
 		log.ErrorLog("%v", err)
