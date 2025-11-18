@@ -1,6 +1,7 @@
 package tree
 
 import (
+	"fmt"
 	"github.com/lincaiyong/gui/com"
 	"github.com/lincaiyong/gui/com/container"
 	"github.com/lincaiyong/gui/com/div"
@@ -39,6 +40,7 @@ type Component struct {
 	selectedChildTop com.Property `default:"0"`
 	itemHeight       com.Property `default:"22"`
 	indent           com.Property `default:"0"`
+	sort             com.Property `default:"true"`
 	computeItem      com.Method   `static:"true"`
 	clickItem        com.Method   `static:"true"`
 	updateItem       com.Method   `static:"true"`
@@ -60,5 +62,10 @@ func (b *Component) Items(s string) *Component {
 
 func (b *Component) Indent(s int) *Component {
 	b.SetProp("indent", strconv.Itoa(s))
+	return b
+}
+
+func (b *Component) Sort(v bool) *Component {
+	b.SetProp("sort", fmt.Sprintf("%v", v))
 	return b
 }

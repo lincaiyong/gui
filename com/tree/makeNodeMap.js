@@ -1,5 +1,7 @@
 function makeNodeMap(items) {
-    items.sort();
+    if (this.sort) {
+        items.sort();
+    }
     const nodeMap = {};
     nodeMap[''] = {
         parent: null,
