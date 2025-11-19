@@ -1,10 +1,6 @@
 class Property {
     static id = 0;
 
-    static alloc() {
-        return Property.id++;
-    }
-
     constructor(element, name, sources, sourceResolver, computeFunc) {
         this._element = element;
         this._name = name;
@@ -15,14 +11,14 @@ class Property {
         this._resolvedSources = [];
         this._computeFunc = computeFunc;
         this._updatedListeners = [];
-        this._id = Property.alloc();
+        this._id = Property.id++;
     }
 
     get id() {
         return `${this._id}(${this._element.id}.${this._name})`;
     }
 
-    reset(sources=null, computeFunc=null) {
+    reset(sources = null, computeFunc = null) {
         this.unsubscribe();
         this._sources = Array.from(sources || []);
         this.subscribe();
@@ -71,71 +67,7 @@ class Property {
     }
 }
 
-class E {
-    static root;
-    static createAll(domElement, model) {
-        document.documentElement.style.overflow = 'hidden';
-        if (E.root) {
-            E.root._destroy();
-        }
-        E.root = E.createElement(null, model);
-        E.root._create(domElement);
-        const resize = () => [E.root.w, E.root.h] = [window.innerWidth, window.innerHeight];
-        E.addListener(window, 'resize', E.debounce(resize, 20));
-        resize();
-        E.root.v = 1;
-        E.root._checkLoop();
-    }
-    static createElement(parent, model) {
-        const instance = new E(parent, model);
-        for (const k in model.methods || {}) {
-            instance[k] = model.methods[k];
-        }
-        return instance;
-    }
-    static destroyElement(e) {
-        e._destroy();
-    }
-    static addListener(ref, name, handler) {
-        if (handler instanceof Function) {
-            ref.addEventListener(name, handler);
-            return () => ref.removeEventListener(name, handler);
-        }
-    }
-    static onceListener(ref, name, handler) {
-        if (handler instanceof Function) {
-            function handlerWrapper(ev) {
-                handler(ev);
-                ref.removeEventListener(name, handlerWrapper);
-            }
-            ref.addEventListener(name, handlerWrapper);
-        }
-    }
-    static debounce(fun, interval) {
-        let timer;
-        return function () {
-            const args = arguments;
-            clearTimeout(timer);
-            timer = setTimeout(() => fun.apply(this, args), interval);
-        };
-    }
-    static _canvasCtx;
-    static textWidth(text, font, size = 12) {
-        if (text === '') {
-            return 0;
-        }
-        if (!E._canvasCtx) {
-            const canvas = new OffscreenCanvas(1000, 40);
-            E._canvasCtx = canvas.getContext("2d");
-        }
-        text = `=${text}=`
-        const ctx = E._canvasCtx;
-        ctx.font = `${size}px ${font}`;
-        const metrics = ctx.measureText(text);
-        const actual = Math.abs(metrics.actualBoundingBoxLeft) + Math.abs(metrics.actualBoundingBoxRight);
-        const ret = Math.max(metrics.width, actual);
-        return ret - 1.104 * size;
-    }
+class BaseElement {
     constructor(parent, model) {
         this.properties = {};
         this.parent = parent;
@@ -146,7 +78,7 @@ class E {
         this.ref.style.position = model.position || 'absolute';
         this.ref.style.overflow = model.overflow || 'hidden';
         this.ref.style.boxSizing = 'border-box';
-        this.children = (model.children || []).map(child => E.createElement(this, child));
+        this.children = (model.children || []).map(child => g.createElement(this, child));
         this._sideEffects = {};
 
         const props = Object.assign({}, this._defaultProperties, model.properties || {});
@@ -155,9 +87,14 @@ class E {
             const sourceResolver = source => this._(source);
             this.properties[k] = new Property(this, k, sources, sourceResolver, computeFunc);
             if (k === 'hovered') {
-                this.properties[k].onUpdated(v => { this.onHover?.(this, v); this.onUpdated?.(k, v); });
+                this.properties[k].onUpdated(v => {
+                    this.onHover?.(this, v);
+                    this.onUpdated?.(k, v);
+                });
             } else {
-                this.properties[k].onUpdated(v => { this.onUpdated?.(k, v); });
+                this.properties[k].onUpdated(v => {
+                    this.onUpdated?.(k, v);
+                });
             }
         }
     }
@@ -177,7 +114,7 @@ class E {
     _createAll(parent) {
         if (parent instanceof Element) {
             parent.appendChild(this.ref);
-        } else if (parent instanceof E) {
+        } else if (parent instanceof BaseElement) {
             this.parent = parent;
             parent.children.push(this);
             parent.ref.appendChild(this.ref);
@@ -291,7 +228,7 @@ class E {
         if (name === '') {
             return this;
         } else if (name === 'root') {
-            return E.root;
+            return g.root;
         } else if (name === 'this') {
             return this.root;
         } else if (name === 'parent') {
@@ -781,16 +718,16 @@ class E {
 
     set onActive(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onActive', E.addListener(this.ref, 'mousedown', ev => {
+            this._addSideEffect('onActive', g.addListener(this.ref, 'mousedown', ev => {
                 const fun = v(this, ev);
-                E.onceListener(this.ref, 'mouseup', ev => fun?.(this, ev));
+                g.onceListener(this.ref, 'mouseup', ev => fun?.(this, ev));
             }));
         }
     }
 
     set onClick(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onClick', E.addListener(this.ref, 'click', ev => {
+            this._addSideEffect('onClick', g.addListener(this.ref, 'click', ev => {
                 v(this, ev);
             }));
         }
@@ -798,7 +735,7 @@ class E {
 
     set onClickOutside(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onClickOutside', E.addListener(document, 'click', ev => {
+            this._addSideEffect('onClickOutside', g.addListener(document, 'click', ev => {
                 const rect = this.ref.getBoundingClientRect();
                 if (rect.x > ev.clientX || rect.y > ev.clientY || (rect.x + rect.width) < ev.clientX || (rect.y + rect.height) < ev.clientY) {
                     const isOutsideEvent = v(this, ev); // ev !== clickEv
@@ -812,7 +749,7 @@ class E {
 
     set onCompositionEnd(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onCompositionEnd', E.addListener(this.ref, 'compositionend', ev => {
+            this._addSideEffect('onCompositionEnd', g.addListener(this.ref, 'compositionend', ev => {
                 v(this, ev);
             }));
         }
@@ -820,7 +757,7 @@ class E {
 
     set onCompositionStart(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onCompositionStart', E.addListener(this.ref, 'compositionstart', ev => {
+            this._addSideEffect('onCompositionStart', g.addListener(this.ref, 'compositionstart', ev => {
                 v(this, ev);
             }));
         }
@@ -828,7 +765,7 @@ class E {
 
     set onCompositionUpdate(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onCompositionUpdate', E.addListener(this.ref, 'compositionupdate', ev => {
+            this._addSideEffect('onCompositionUpdate', g.addListener(this.ref, 'compositionupdate', ev => {
                 v(this, ev);
             }));
         }
@@ -836,7 +773,7 @@ class E {
 
     set onCopy(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onCopy', E.addListener(this.ref, 'copy', ev => {
+            this._addSideEffect('onCopy', g.addListener(this.ref, 'copy', ev => {
                 v(this, ev);
             }));
         }
@@ -844,7 +781,7 @@ class E {
 
     set onCut(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onCut', E.addListener(this.ref, 'cut', ev => {
+            this._addSideEffect('onCut', g.addListener(this.ref, 'cut', ev => {
                 v(this, ev);
             }));
         }
@@ -852,7 +789,7 @@ class E {
 
     set onDoubleClick(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onDoubleClick', E.addListener(this.ref, 'dblclick', ev => {
+            this._addSideEffect('onDoubleClick', g.addListener(this.ref, 'dblclick', ev => {
                 v(this, ev);
             }));
         }
@@ -860,9 +797,9 @@ class E {
 
     set onFocus(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onFocus', E.addListener(this.ref, 'focus', ev => {
+            this._addSideEffect('onFocus', g.addListener(this.ref, 'focus', ev => {
                 const fun = v(this, ev);
-                E.onceListener(this.ref, 'blur', ev => fun?.(this, ev));
+                g.onceListener(this.ref, 'blur', ev => fun?.(this, ev));
             }));
         }
     }
@@ -870,8 +807,8 @@ class E {
     set onHover(v) {
         if (v instanceof Function) {
             this.properties.onHover.value = v;
-            this._addSideEffect('mouseenter', E.addListener(this.ref, 'mouseenter', () => {
-                E.onceListener(this.ref, 'mouseleave', () => this.hoveredByMouse = false);
+            this._addSideEffect('mouseenter', g.addListener(this.ref, 'mouseenter', () => {
+                g.onceListener(this.ref, 'mouseleave', () => this.hoveredByMouse = false);
                 this.hoveredByMouse = true;
             }));
         }
@@ -879,7 +816,7 @@ class E {
 
     set onInput(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onInput', E.addListener(this.ref, 'input', ev => {
+            this._addSideEffect('onInput', g.addListener(this.ref, 'input', ev => {
                 v(this, ev);
             }));
         }
@@ -887,7 +824,7 @@ class E {
 
     set onKeyDown(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onKeyDown', E.addListener(this.ref, 'keydown', ev => {
+            this._addSideEffect('onKeyDown', g.addListener(this.ref, 'keydown', ev => {
                 v(this, ev);
             }));
         }
@@ -895,7 +832,7 @@ class E {
 
     set onKeyUp(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onKeyUp', E.addListener(this.ref, 'keyup', ev => {
+            this._addSideEffect('onKeyUp', g.addListener(this.ref, 'keyup', ev => {
                 v(this, ev);
             }));
         }
@@ -903,7 +840,7 @@ class E {
 
     set onMouseDown(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onMouseDown', E.addListener(this.ref, 'mousedown', ev => {
+            this._addSideEffect('onMouseDown', g.addListener(this.ref, 'mousedown', ev => {
                 v(this, ev);
             }));
         }
@@ -911,7 +848,7 @@ class E {
 
     set onMouseMove(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onMouseMove', E.addListener(this.ref, 'mousemove', ev => {
+            this._addSideEffect('onMouseMove', g.addListener(this.ref, 'mousemove', ev => {
                 v(this, ev);
             }));
         }
@@ -919,7 +856,7 @@ class E {
 
     set onMouseUp(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onMouseUp', E.addListener(this.ref, 'mouseup', ev => {
+            this._addSideEffect('onMouseUp', g.addListener(this.ref, 'mouseup', ev => {
                 v(this, ev);
             }));
         }
@@ -927,7 +864,7 @@ class E {
 
     set onPaste(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onPaste', E.addListener(this.ref, 'paste', ev => {
+            this._addSideEffect('onPaste', g.addListener(this.ref, 'paste', ev => {
                 v(this, ev);
             }));
         }
@@ -947,7 +884,7 @@ class E {
 
     set onWheel(v) {
         if (v instanceof Function) {
-            this._addSideEffect('onWheel', E.addListener(this.ref, 'wheel', ev => {
+            this._addSideEffect('onWheel', g.addListener(this.ref, 'wheel', ev => {
                 v(this, ev);
             }));
         }
@@ -1045,6 +982,74 @@ class E {
     }
 }
 
+const g = {
+    root: null,
+    createAll(domElement, model) {
+        document.documentElement.style.overflow = 'hidden';
+        if (g.root) {
+            g.root._destroy();
+        }
+        g.root = g.createElement(null, model);
+        g.root._create(domElement);
+        const resize = () => [g.root.w, g.root.h] = [window.innerWidth, window.innerHeight];
+        g.addListener(window, 'resize', g.debounce(resize, 20));
+        resize();
+        g.root.v = 1;
+        g.root._checkLoop();
+    },
+    createElement(parent, model) {
+        const instance = new BaseElement(parent, model);
+        for (const k in model.methods || {}) {
+            instance[k] = model.methods[k];
+        }
+        return instance;
+    },
+    destroyElement(e) {
+        e._destroy();
+    },
+    addListener(ref, name, handler) {
+        if (handler instanceof Function) {
+            ref.addEventListener(name, handler);
+            return () => ref.removeEventListener(name, handler);
+        }
+    },
+    onceListener(ref, name, handler) {
+        if (handler instanceof Function) {
+            function handlerWrapper(ev) {
+                handler(ev);
+                ref.removeEventListener(name, handlerWrapper);
+            }
+
+            ref.addEventListener(name, handlerWrapper);
+        }
+    },
+    debounce(fun, interval) {
+        let timer;
+        return function () {
+            const args = arguments;
+            clearTimeout(timer);
+            timer = setTimeout(() => fun.apply(this, args), interval);
+        };
+    },
+    _canvasCtx: null,
+    textWidth(text, font, size = 12) {
+        if (text === '') {
+            return 0;
+        }
+        if (!g._canvasCtx) {
+            const canvas = new OffscreenCanvas(1000, 40);
+            g._canvasCtx = canvas.getContext("2d");
+        }
+        text = `=${text}=`
+        const ctx = g._canvasCtx;
+        ctx.font = `${size}px ${font}`;
+        const metrics = ctx.measureText(text);
+        const actual = Math.abs(metrics.actualBoundingBoxLeft) + Math.abs(metrics.actualBoundingBoxRight);
+        const ret = Math.max(metrics.width, actual);
+        return ret - 1.104 * size;
+    },
+};
+
 const root = {
     tag: 'div',
     id: 'div',
@@ -1071,7 +1076,7 @@ const root = {
                 innerText: [e => 'hello world', []],
                 lineHeight: [e => e.h, ['.h']],
                 v: [e => e.parent.v, ['parent.v']],
-                w: [e => E.textWidth(e.innerText, e.fontFamily, e.fontSize), ['.fontFamily', '.fontSize', '.innerText']],
+                w: [e => g.textWidth(e.innerText, e.fontFamily, e.fontSize), ['.fontFamily', '.fontSize', '.innerText']],
                 x: [e => ((e.parent.w / 2) - (e.w / 2)), ['.w', 'parent.w']],
                 x2: [e => (e.x + e.w), ['.w', '.x']],
                 y: [e => 100, []],
@@ -1086,4 +1091,4 @@ const root = {
     slot: null,
 };
 
-E.createAll(document.body, root);
+g.createAll(document.body, root);
