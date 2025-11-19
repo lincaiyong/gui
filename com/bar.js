@@ -1,4 +1,4 @@
-function handleMouseDown(ele, mouseDownEvent) {
+function bar_handleMouseDown(ele, mouseDownEvent) {
     const prev = ele._('prev');
     const next = ele._('next');
     const state = {prevX: mouseDownEvent.clientX, prevY: mouseDownEvent.clientY};

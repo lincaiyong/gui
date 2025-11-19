@@ -128,12 +128,12 @@ class BaseElement {
     _initAll() {
         Object.values(this.properties).forEach(p => p.update());
         this.children.forEach(child => child._initAll());
-        this.onCreated?.();
     }
 
     _create(parent) {
         this._createAll(parent);
         this._initAll();
+        this.onCreated?.();
     }
 
     _unInitAll() {
@@ -154,6 +154,7 @@ class BaseElement {
     }
 
     _destroy() {
+        this.onDestroy?.();
         this._unInitAll();
         this._destroyAll();
     }
@@ -410,6 +411,10 @@ class BaseElement {
 
     get innerText() {
         return this.properties.innerText.value;
+    }
+
+    get placeholder() {
+        return this.properties.placeholder.value;
     }
 
     get lineHeight() {
@@ -709,6 +714,13 @@ class BaseElement {
         }
     }
 
+    set placeholder(v) {
+        if (typeof (v) === 'string' && this.tag === 'input') {
+            this.properties.placeholder.value = v;
+            this.ref.placeholder = v;
+        }
+    }
+
     set lineHeight(v) {
         if (this.lineHeight !== v) {
             this.properties.lineHeight.value = v;
@@ -987,7 +999,7 @@ const g = {
     createAll(domElement, model) {
         document.documentElement.style.overflow = 'hidden';
         if (g.root) {
-            g.root._destroy();
+            g.root.destroyElement();
         }
         g.root = g.createElement(null, model);
         g.root._create(domElement);
@@ -1048,6 +1060,29 @@ const g = {
         const ret = Math.max(metrics.width, actual);
         return ret - 1.104 * size;
     },
+    fetch(url) {
+        return new Promise((resolve, reject) => {
+            fetch(url)
+                .then(resp => resp.text())
+                .then(v => resolve(v))
+                .catch(err => reject(err));
+        });
+    },
+    resCache: {},
+    fetchRes(uri) {
+        if (uri in g.resCache) {
+            return g.resCache[uri];
+        }
+        return new Promise((resolve, reject) => {
+            fetch(uri)
+                .then(resp => resp.text())
+                .then(v => {
+                    g.resCache[uri] = v;
+                    resolve(v);
+                })
+                .catch(err => reject(err));
+        });
+    }
 };
 
 const root = {
