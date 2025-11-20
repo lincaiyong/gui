@@ -25,12 +25,12 @@ const (
 type ElementTag string
 
 const (
-	ElementTagDiv    ElementTag  = "div"
-	ElementTagSpan   ElementTag  = "span"
-	ElementTagSvg    ElementTag  = "svg"
-	ElementTagImg    ElementTag  = "img"
-	ElementTagInput  ElementTag  = "input"
-	ElementTagIframe ElementType = "iframe"
+	ElementTagDiv    ElementTag = "div"
+	ElementTagSpan   ElementTag = "span"
+	ElementTagSvg    ElementTag = "svg"
+	ElementTagImg    ElementTag = "img"
+	ElementTagInput  ElementTag = "input"
+	ElementTagIframe ElementTag = "iframe"
 )
 
 func NewElement(type_ ElementType, tag ElementTag, children ...*Element) *Element {
