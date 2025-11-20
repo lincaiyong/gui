@@ -1,6 +1,6 @@
 package com
 
-func Compare() *Element {
+func Compare(opt *Opt) *Element {
 	ret := NewElement(ElementTypeCompare, ElementTagDiv)
 	ret.SetMethod("onCreated", `function() {
     const leftModel = monaco.editor.createModel('原始文本', 'text/plain');
@@ -16,5 +16,6 @@ func Compare() *Element {
 }`).SetMethod("onDestroy", `function() {
     this._editor.dispose();
 }`)
+	opt.Init(ret)
 	return ret
 }

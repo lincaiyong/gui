@@ -1,62 +1,63 @@
 package com
 
-func Div() *Element {
-	return NewElement(ElementTypeDiv, ElementTagDiv)
+func Div(opt *Opt, children ...*Element) *Element {
+	ret := NewElement(ElementTypeDiv, ElementTagDiv, children...)
+	opt.Init(ret)
+	return ret
 }
 
-func Text(text string) *Element {
+func Text(opt *Opt, text string) *Element {
 	ret := NewElement(ElementTypeText, ElementTagSpan)
-	ret.InnerText(text).FontSize("Math.floor(.h * 2 / 3)").LineHeight(".h").
-		W("g.textWidth(.innerText, .fontFamily, .fontSize)")
+	opt.InnerText(text).FontSize("Math.floor(.h * 2 / 3)").LineHeight(".h").
+		W("g.textWidth(.innerText, .fontFamily, .fontSize)").Init(ret)
 	return ret
 }
 
-func Input() *Element {
+func Input(opt *Opt, placeholder string) *Element {
 	ret := NewElement(ElementTypeInput, ElementTagInput)
-	ret.LineHeight(".h").FontSize("Math.floor(.h * 2 / 3)")
+	opt.Placeholder(placeholder).LineHeight(".h").FontSize("Math.floor(.h * 2 / 3)").Init(ret)
 	return ret
 }
 
-func Img(src string) *Element {
+func Img(opt *Opt, src string) *Element {
 	ret := NewElement(ElementTypeImg, ElementTagImg)
-	ret.SetProperty("src", src)
+	opt.Src(src).Init(ret)
 	return ret
 }
 
-func Svg(src string) *Element {
-	ret := Img(src)
-	ret.SetType(ElementTypeSvg)
-	ret.SetTag(ElementTagSvg)
+func Svg(opt *Opt, src string) *Element {
+	ret := NewElement(ElementTypeSvg, ElementTagSvg)
+	opt.Src(src).Init(ret)
 	return ret
 }
 
-func VDivider() *Element {
+func VDivider(opt *Opt) *Element {
 	ret := NewElement(ElementTypeDivider, ElementTagDiv)
-	ret.BgColor("'black'").W("1")
+	opt.BgColor("'black'").W("1").Init(ret)
 	return ret
 }
 
-func HDivider() *Element {
+func HDivider(opt *Opt) *Element {
 	ret := NewElement(ElementTypeDivider, ElementTagDiv)
-	ret.BgColor("'black'").H("1")
+	opt.BgColor("'black'").H("1").Init(ret)
 	return ret
 }
 
-func VBar() *Element {
+func VBar(opt *Opt) *Element {
 	ret := NewElement(ElementTypeBar, ElementTagDiv)
-	ret.OnMouseDown("bar_handleMouseDown").ZIndex("1").Cursor("'col-resize'").W("20")
+	opt.OnMouseDown("bar_handleMouseDown").ZIndex("1").Cursor("'col-resize'").W("20").Init(ret)
 	return ret
 }
 
-func HBar() *Element {
+func HBar(opt *Opt) *Element {
 	ret := NewElement(ElementTypeBar, ElementTagDiv)
-	ret.OnMouseDown("bar_handleMouseDown").ZIndex("1").Cursor("'row-resize'").H("20")
+	opt.OnMouseDown("bar_handleMouseDown").ZIndex("1").Cursor("'row-resize'").H("20").Init(ret)
 	return ret
 }
 
-func VScrollbar() *Element {
+func VScrollbar(opt *Opt) *Element {
 	ret := NewElement(ElementTypeScrollbar, ElementTagDiv)
-	ret.ZIndex("1").
+	opt.ZIndex("1").
 		BgColor("'#7f7e80'").
 		Opacity("0.5").
 		BorderRadius(".w / 2").
@@ -66,15 +67,19 @@ func VScrollbar() *Element {
 		W(".vertical ? parent.scrollBarWidth : 0").
 		H(".vertical ? 0 : parent.scrollBarWidth").
 		V("0").
-		SetProperty("vertical", "true")
+		SetProperty("vertical", "true").
+		Init(ret)
 	return ret
 }
 
-func HScrollbar() *Element {
-	ret := HScrollbar().SetProperty("vertical", "false")
+func HScrollbar(opt *Opt) *Element {
+	ret := HScrollbar(opt)
+	opt.SetProperty("vertical", "false").Init(ret)
 	return ret
 }
 
-func Iframe() *Element {
-	return NewElement(ElementTypeIframe, ElementTagIframe)
+func Iframe(opt *Opt) *Element {
+	ret := NewElement(ElementTypeIframe, ElementTagIframe)
+	opt.Init(ret)
+	return ret
 }

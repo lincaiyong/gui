@@ -1,32 +1,29 @@
 package com
 
-import (
-	"fmt"
-	"strconv"
-)
-
-func NewContainerOpt() ContainerOpt {
-	ret := ContainerOpt{
-		BaseOpt: NewBaseOpt(),
-	}
-	ret.SetProperty("align", "'none'")
-	ret.SetProperty("childHeight", "0")
-	ret.SetProperty("childWidth", "0")
-	ret.SetProperty("items", "[]")
-	ret.SetProperty("list", "false")
-	ret.SetProperty("minWidth", "0")
-	ret.SetProperty("reuseItem", "false")
-	ret.SetProperty("scrollBarFadeTime", "500")
-	ret.SetProperty("scrollBarMinLength", "20")
-	ret.SetProperty("scrollBarWidth", "6")
-	ret.SetProperty("scrollBarMargin", "0")
-	ret.SetProperty("scrollable", "true")
-	ret.SetProperty("virtual", "false")
+func NewContainerOpt() *ContainerOpt {
+	ret := &ContainerOpt{}
+	ret.BaseOpt = NewBaseOpt[ContainerOpt](ret)
+	ret.Align("'none'").
+		ChildHeight("0").
+		ChildWidth("0").
+		Items("[]").
+		List("false").
+		MinWidth("0").
+		ReuseItem("false").
+		ScrollBarFadeTime("500").
+		ScrollBarMinLength("20").
+		ScrollBarWidth("6").
+		ScrollBarMargin("0").
+		Scrollable("true").
+		Virtual("false").
+		HandleItemUpdated("null").
+		HandleItemCompute("null").
+		HandleItemClick("null")
 	return ret
 }
 
 type ContainerOpt struct {
-	*BaseOpt
+	*BaseOpt[ContainerOpt]
 }
 
 func (o *ContainerOpt) Align(s string) *ContainerOpt       { o.SetProperty("align", s); return o }
@@ -54,42 +51,53 @@ func (o *ContainerOpt) ScrollBarMargin(s string) *ContainerOpt {
 }
 func (o *ContainerOpt) Scrollable(s string) *ContainerOpt { o.SetProperty("scrollable", s); return o }
 func (o *ContainerOpt) Virtual(s string) *ContainerOpt    { o.SetProperty("virtual", s); return o }
+func (o *ContainerOpt) HandleItemCompute(s string) *ContainerOpt {
+	o.SetProperty("handleItemCompute", s)
+	return o
+}
+func (o *ContainerOpt) HandleItemClick(s string) *ContainerOpt {
+	o.SetProperty("handleItemClick", s)
+	return o
+}
+func (o *ContainerOpt) HandleItemUpdated(s string) *ContainerOpt {
+	o.SetProperty("handleItemUpdated", s)
+	return o
+}
 
-func VListContainer(children ...Element) *Element {
-	ret := &Element{}
-	ret.BaseComponent = NewBaseComponent[Element]("div", ret,
-		scrollbar.HScrollbar().NameAs("hBarEle"),
-		scrollbar.VScrollbar().NameAs("vBarEle"),
-	)
-	ret.ScrollLeft("0").ScrollTop("0")
-	ret.itemComp = containeritem.ContainerItem(children...)
-	ret.SetSlots(ret.itemComp)
-	ret.List(true).Virtual(true).Scrollable(true)
+func containerItem(child *Element) *Element {
+	ret := NewElement(ElementTypeContainerItem, ElementTagDiv, child)
+	ret.SetProperty("compute", "null").
+		SetProperty("update", "null").
+		SetProperty("click", "null").
+		SetMethod("onUpdated", `function(k, v) {
+    this.update?.(this, k, v);
+}`)
+	NewOpt().Y("0").X("0").H("0").Init(ret)
 	return ret
 }
 
-func ListContainer(children ...Element) *Element {
-	ret := &Element{}
-	ret.BaseComponent = NewBaseComponent[Element]("div", ret,
-		scrollbar.HScrollbar().NameAs("hBarEle"),
-		scrollbar.VScrollbar().NameAs("vBarEle"),
-	)
-	ret.ScrollLeft("0").ScrollTop("0")
-	ret.itemComp = containeritem.ContainerItem(children...)
-	ret.SetSlots(ret.itemComp)
-	ret.List(true).Virtual(false).Scrollable(true)
+func VListContainer(opt *ContainerOpt, child *Element) *Element {
+	ret := Container(opt, containerItem(child))
+	opt.List("true").Virtual("true").Scrollable("true").Init(ret)
 	return ret
 }
 
-func Container(child Element) *Element {
-	ret := NewElement(ElementTypeContainer, ElementTagDiv
-		HScrollbar().NameAs("hBarEle"),
-		VScrollbar().NameAs("vBarEle"),
+func ListContainer(opt *ContainerOpt, child *Element) *Element {
+	ret := Container(opt, containerItem(child))
+	opt.List("true").Scrollable("true").Init(ret)
+	return ret
+}
+
+func Container(opt *ContainerOpt, child *Element) *Element {
+	ret := NewElement(ElementTypeContainer, ElementTagDiv,
+		HScrollbar(nil),
+		VScrollbar(nil),
 	)
 	ret.SetLocalRoot(true)
-	ret.ScrollLeft("0").ScrollTop("0")
-	ret.SetSlots(child)
-	ret.List(false).Virtual(false).Scrollable(false)
+	ret.SetLocalChildren("hBarEle", 0)
+	ret.SetLocalChildren("hBarEle", 1)
+	ret.SetSlot(child)
+	opt.List("false").Virtual("false").Scrollable("false").ScrollLeft("0").ScrollTop("0").Init(ret)
 	ret.SetProperty("onUpdated", `function(k) {
     // items
     if (k === 'items' && this.list) {

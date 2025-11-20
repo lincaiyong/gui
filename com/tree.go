@@ -1,22 +1,21 @@
 package com
 
-func NewTreeOpt() TreeOpt {
-	ret := TreeOpt{
-		BaseOpt: NewBaseOpt(),
-	}
-	ret.SetProperty("focus", "false")
-	ret.SetProperty("items", "[]")
-	ret.SetProperty("nodeMap", "undefined")
-	ret.SetProperty("onClickItem", "undefined")
-	ret.SetProperty("selectedChildTop", "0")
-	ret.SetProperty("itemHeight", "22")
-	ret.SetProperty("indent", "0")
-	ret.SetProperty("sort", "true")
+func NewTreeOpt() *TreeOpt {
+	ret := &TreeOpt{}
+	ret.BaseOpt = NewBaseOpt[TreeOpt](ret)
+	ret.Focus("false").
+		Items("[]").
+		NodeMap("undefined").
+		OnClickItem("undefined").
+		SelectedChildTop("0").
+		ItemHeight("22").
+		Indent("0").
+		Sort("true")
 	return ret
 }
 
 type TreeOpt struct {
-	*BaseOpt
+	*BaseOpt[TreeOpt]
 }
 
 func (o *TreeOpt) Focus(s string) *TreeOpt            { o.SetProperty("focus", s); return o }
@@ -28,25 +27,31 @@ func (o *TreeOpt) ItemHeight(s string) *TreeOpt       { o.SetProperty("itemHeigh
 func (o *TreeOpt) Indent(s string) *TreeOpt           { o.SetProperty("indent", s); return o }
 func (o *TreeOpt) Sort(s string) *TreeOpt             { o.SetProperty("sort", s); return o }
 
-func Tree() *Element {
+func Tree(opt *TreeOpt) *Element {
 	ret := NewElement(ElementTypeTree, ElementTagDiv,
-		Div().X("10").Y("this.selectedChildTop-next.scrollTop").W("parent.w-20").H("this.itemHeight").
-			BorderRadius("4").BgColor("this.focus ? g.theme.treeFocusSelectedBgColor : g.theme.treeSelectedBgColor"),
-		//NameAs("selectedEle"),
+		Div(NewOpt().X("10").Y("this.selectedChildTop-next.scrollTop").W("parent.w-20").H("this.itemHeight").
+			BorderRadius("4").BgColor("this.focus ? g.theme.treeFocusSelectedBgColor : g.theme.treeSelectedBgColor")),
 		VListContainer(
-			//.NameAs("arrowEle").
-			Svg("parent.data.collapsed ? 'svg/arrowRight.svg' : 'svg/arrowDown.svg'").
-				X("this.indent + parent.data.depth * 20 + 4").Y("parent.h/2-.h/2").W("17").H(".w").V("parent.data.leaf ? 0 : 1").Color(ColorGray110),
-			// NameAs("iconEle")
-			Img("''").X("prev.x2+4").Y("parent.h/2-.h/2").W("16").H(".w"),
-			Text("parent.data.text").X("prev.x2+4").Y("1").H("this.itemHeight - 2 * .y").Cursor("'default'"),
-		).Align("'fill'").X("10").W("parent.w - .x").
-			ItemCompute("Tree.computeItem").
-			ItemOnClick("Tree.clickItem").
-			ItemOnUpdated("Tree.updateItem"),
+			NewContainerOpt().Align("'fill'").X("10").W("parent.w - .x").
+				HandleItemCompute("tree_computeItem").
+				HandleItemClick("tree_clickItem").
+				HandleItemUpdated("tree_updateItem"),
+			Div(nil,
+				Svg(NewOpt().X("this.indent + parent.data.depth * 20 + 4").Y("parent.h/2-.h/2").W("17").H(".w").
+					V("parent.data.leaf ? 0 : 1").Color(ColorGray110),
+					"parent.data.collapsed ? 'svg/arrowRight.svg' : 'svg/arrowDown.svg'"),
+				Img(NewOpt().X("prev.x2+4").Y("parent.h/2-.h/2").W("16").H(".w"), "''"),
+				Text(NewOpt().X("prev.x2+4").Y("1").H("this.itemHeight - 2 * .y").Cursor("'default'"), "parent.data.text"),
+			),
+		),
 	)
 	ret.SetLocalRoot(true)
-	// NameAs("containerEle").
+	ret.SetLocalChildren("selectedEle", 0)
+	ret.SetLocalChildren("containerEle", 1)
+	ret.SetLocalChildren("arrowEle", 1, 0)
+	ret.SetLocalChildren("iconEle", 1, 1)
+
+	opt.Init(ret)
 	ret.SetMethod("onUpdated", `function(k, v) {
     if (k === 'items') {
         this.nodeMap = tree_makeNodeMap(v, this.sort);

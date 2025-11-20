@@ -4,16 +4,15 @@ import (
 	"fmt"
 )
 
-func NewEditorOpt() EditorOpt {
-	ret := EditorOpt{
-		BaseOpt: NewBaseOpt(),
-	}
+func NewEditorOpt() *EditorOpt {
+	ret := &EditorOpt{}
+	ret.BaseOpt = NewBaseOpt[EditorOpt](ret)
 	ret.Value("''").Language("'go'").ShowLineNo(true).OnCursorPositionChange("null")
 	return ret
 }
 
 type EditorOpt struct {
-	*BaseOpt
+	*BaseOpt[EditorOpt]
 }
 
 func (o *EditorOpt) Value(s string) *EditorOpt {
