@@ -7,17 +7,33 @@ import (
 	"strings"
 )
 
-var mm = map[string]bool{
+var relations = map[string]bool{
 	"":       true,
 	"parent": true,
 	"child":  true,
 	"prev":   true,
 	"next":   true,
-	"this":   true,
+	"local":  true,
 	"root":   true,
 }
 
-func Visit(node *parser.Node) (string, string, error) {
+func convertExpr(s string) (string, string, error) {
+	tokens, err := parser.Tokenize(s)
+	if err != nil {
+		return s, "[]", nil
+	}
+	node, err := parser.Parse(tokens)
+	if err != nil {
+		return "", "", err
+	}
+	s1, s2, err := visit(node)
+	if err != nil {
+		return "", "", err
+	}
+	return s1, s2, nil
+}
+
+func visit(node *parser.Node) (string, string, error) {
 	v := Visitor{
 		m: map[string]struct{}{},
 	}
@@ -56,7 +72,7 @@ func (v *Visitor) visit(node *parser.Node) string {
 		if node.SelectorTarget() == nil {
 			v.m[fmt.Sprintf("'.%s'", key)] = struct{}{}
 			return fmt.Sprintf("e.%s", key)
-		} else if node.SelectorTarget().Type() == parser.NodeTypeIdent && mm[node.SelectorTarget().Ident()] {
+		} else if node.SelectorTarget().Type() == parser.NodeTypeIdent && relations[node.SelectorTarget().Ident()] {
 			v.m[fmt.Sprintf("'%s.%s'", node.SelectorTarget().Ident(), key)] = struct{}{}
 			return fmt.Sprintf("%s.%s", target, key)
 		} else {
@@ -89,13 +105,8 @@ func (v *Visitor) visit(node *parser.Node) string {
 		return node.Number()
 	case parser.NodeTypeIdent:
 		i := node.Ident()
-		if mm[i] {
-			if i == "parent" {
-				return "e.parent"
-			} else if i == "root" {
-				return "g.root"
-			}
-			i = fmt.Sprintf("e._('%s')", i)
+		if relations[i] {
+			i = fmt.Sprintf("e.%s", i)
 		}
 		return i
 	default:

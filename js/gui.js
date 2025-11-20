@@ -1108,45 +1108,45 @@ const g = {
     }
 };
 
-const root = {
-    tag: 'div',
-    id: 'div',
-    depth: 0,
-    properties: {
-        ch: [e => ((e.h - e.borderTop) - e.borderBottom), ['.borderBottom', '.borderTop', '.h']],
-        cw: [e => ((e.w - e.borderLeft) - e.borderRight), ['.borderLeft', '.borderRight', '.w']],
-        hovered: [e => e.hoveredByMouse, ['.hoveredByMouse']],
-        x2: [e => (e.x + e.w), ['.w', '.x']],
-        y2: [e => (e.y + e.h), ['.h', '.y']],
-    },
-    methods: {},
-    children: [
-        {
-            tag: 'span',
-            id: 'span',
-            depth: 1,
-            properties: {
-                ch: [e => ((e.h - e.borderTop) - e.borderBottom), ['.borderBottom', '.borderTop', '.h']],
-                cw: [e => ((e.w - e.borderLeft) - e.borderRight), ['.borderLeft', '.borderRight', '.w']],
-                fontSize: [e => Math.floor(((e.h * 2) / 3)), ['.h']],
-                h: [e => 200, []],
-                hovered: [e => e.hoveredByMouse, ['.hoveredByMouse']],
-                innerText: [e => 'hello world', []],
-                lineHeight: [e => e.h, ['.h']],
-                v: [e => e.parent.v, ['parent.v']],
-                w: [e => g.textWidth(e.innerText, e.fontFamily, e.fontSize), ['.fontFamily', '.fontSize', '.innerText']],
-                x: [e => ((e.parent.w / 2) - (e.w / 2)), ['.w', 'parent.w']],
-                x2: [e => (e.x + e.w), ['.w', '.x']],
-                y: [e => 100, []],
-                y2: [e => (e.y + e.h), ['.h', '.y']],
-                zIndex: [e => e.parent.zIndex, ['parent.zIndex']],
-            },
-            methods: {},
-            children: [],
-            slot: null,
-        },
-    ],
-    slot: null,
-};
-
-g.createAll(document.body, root);
+// const root = {
+//     tag: 'div',
+//     id: 'div',
+//     depth: 0,
+//     properties: {
+//         ch: [e => ((e.h - e.borderTop) - e.borderBottom), ['.borderBottom', '.borderTop', '.h']],
+//         cw: [e => ((e.w - e.borderLeft) - e.borderRight), ['.borderLeft', '.borderRight', '.w']],
+//         hovered: [e => e.hoveredByMouse, ['.hoveredByMouse']],
+//         x2: [e => (e.x + e.w), ['.w', '.x']],
+//         y2: [e => (e.y + e.h), ['.h', '.y']],
+//     },
+//     methods: {},
+//     children: [
+//         {
+//             tag: 'span',
+//             id: 'span',
+//             depth: 1,
+//             properties: {
+//                 ch: [e => ((e.h - e.borderTop) - e.borderBottom), ['.borderBottom', '.borderTop', '.h']],
+//                 cw: [e => ((e.w - e.borderLeft) - e.borderRight), ['.borderLeft', '.borderRight', '.w']],
+//                 fontSize: [e => Math.floor(((e.h * 2) / 3)), ['.h']],
+//                 h: [e => 200, []],
+//                 hovered: [e => e.hoveredByMouse, ['.hoveredByMouse']],
+//                 innerText: [e => 'hello world', []],
+//                 lineHeight: [e => e.h, ['.h']],
+//                 v: [e => e.parent.v, ['parent.v']],
+//                 w: [e => g.textWidth(e.innerText, e.fontFamily, e.fontSize), ['.fontFamily', '.fontSize', '.innerText']],
+//                 x: [e => ((e.parent.w / 2) - (e.w / 2)), ['.w', 'parent.w']],
+//                 x2: [e => (e.x + e.w), ['.w', '.x']],
+//                 y: [e => 100, []],
+//                 y2: [e => (e.y + e.h), ['.h', '.y']],
+//                 zIndex: [e => e.parent.zIndex, ['parent.zIndex']],
+//             },
+//             methods: {},
+//             children: [],
+//             slot: null,
+//         },
+//     ],
+//     slot: null,
+// };
+//
+// g.createAll(document.body, root);
