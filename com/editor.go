@@ -4,23 +4,36 @@ import (
 	"fmt"
 )
 
-func Compare() *Element {
-	ret := NewElement("compare", "div")
-	ret.SetMethod("onCreated", `function() {
-    const leftModel = monaco.editor.createModel('原始文本', 'text/plain');
-    const rightModel = monaco.editor.createModel('修改后的文本', 'text/plain');
-
-    this._editor = monaco.editor.createDiffEditor(this.ref, {
-        automaticLayout: true,
-    });
-    this._editor.setModel({
-        original: leftModel,
-        modified: rightModel
-    });
-}`).SetMethod("onDestroy", `function() {
-    this._editor.dispose();
-}`)
+func NewEditorOpt() EditorOpt {
+	ret := EditorOpt{
+		BaseOpt: NewBaseOpt(),
+	}
+	ret.Value("''").Language("'go'").ShowLineNo(true).OnCursorPositionChange("null")
 	return ret
+}
+
+type EditorOpt struct {
+	*BaseOpt
+}
+
+func (o *EditorOpt) Value(s string) *EditorOpt {
+	o.SetProperty("value", s)
+	return o
+}
+
+func (o *EditorOpt) Language(s string) *EditorOpt {
+	o.SetProperty("language", s)
+	return o
+}
+
+func (o *EditorOpt) ShowLineNo(b bool) *EditorOpt {
+	o.SetProperty("showLineNo", fmt.Sprintf("%v", b))
+	return o
+}
+
+func (o *EditorOpt) OnCursorPositionChange(s string) *EditorOpt {
+	o.SetProperty("onCursorPositionChange", s)
+	return o
 }
 
 func Editor(opt EditorOpt) *Element {
@@ -72,34 +85,4 @@ func Editor(opt EditorOpt) *Element {
 }`)
 	opt.Init(ret)
 	return ret
-}
-
-func NewEditorOpt() EditorOpt {
-	ret := EditorOpt{}
-	ret.Value("''").Language("'go'").ShowLineNo(true).OnCursorPositionChange("null")
-	return ret
-}
-
-type EditorOpt struct {
-	*BaseOpt
-}
-
-func (o *EditorOpt) Value(s string) *EditorOpt {
-	o.SetProperty("value", s)
-	return o
-}
-
-func (o *EditorOpt) Language(s string) *EditorOpt {
-	o.SetProperty("language", s)
-	return o
-}
-
-func (o *EditorOpt) ShowLineNo(b bool) *EditorOpt {
-	o.SetProperty("showLineNo", fmt.Sprintf("%v", b))
-	return o
-}
-
-func (o *EditorOpt) OnCursorPositionChange(s string) *EditorOpt {
-	o.SetProperty("onCursorPositionChange", s)
-	return o
 }
