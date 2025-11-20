@@ -16,6 +16,17 @@ import (
 	"strings"
 )
 
+import "unicode"
+
+func PascalCase(s string) string {
+	if s == "" {
+		return ""
+	}
+	r := []rune(s)
+	r[0] = unicode.ToUpper(r[0])
+	return string(r)
+}
+
 var baseUrl = "http://127.0.0.1:9123"
 
 func SetBaseUrl(url string) {

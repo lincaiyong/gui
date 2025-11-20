@@ -1,4 +1,4 @@
-package printer
+package gui
 
 import (
 	"fmt"

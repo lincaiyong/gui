@@ -1,4 +1,4 @@
-package com
+package gui
 
 import "strconv"
 

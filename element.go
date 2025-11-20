@@ -1,4 +1,4 @@
-package com
+package gui
 
 type ElementType string
 

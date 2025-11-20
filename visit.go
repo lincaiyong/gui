@@ -1,4 +1,4 @@
-package visit
+package gui
 
 import (
 	"fmt"

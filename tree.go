@@ -1,4 +1,4 @@
-package com
+package gui
 
 func NewTreeOpt() *TreeOpt {
 	ret := &TreeOpt{}

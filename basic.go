@@ -1,4 +1,4 @@
-package com
+package gui
 
 func Div(opt *Opt, children ...*Element) *Element {
 	ret := NewElement(ElementTypeDiv, ElementTagDiv, children...)

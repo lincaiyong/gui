@@ -1,4 +1,4 @@
-package com
+package gui
 
 func NewButtonOpt() *ButtonOpt {
 	ret := &ButtonOpt{}

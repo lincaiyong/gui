@@ -1,4 +1,4 @@
-package com
+package gui
 
 func Compare(opt *Opt) *Element {
 	ret := NewElement(ElementTypeCompare, ElementTagDiv)
