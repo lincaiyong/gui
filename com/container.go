@@ -86,6 +86,7 @@ func Container(child Element) *Element {
 		HScrollbar().NameAs("hBarEle"),
 		VScrollbar().NameAs("vBarEle"),
 	)
+	ret.SetLocalRoot(true)
 	ret.ScrollLeft("0").ScrollTop("0")
 	ret.SetSlots(child)
 	ret.List(false).Virtual(false).Scrollable(false)

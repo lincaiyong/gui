@@ -45,6 +45,7 @@ func Tree() *Element {
 			ItemOnClick("Tree.clickItem").
 			ItemOnUpdated("Tree.updateItem"),
 	)
+	ret.SetLocalRoot(true)
 	// NameAs("containerEle").
 	ret.SetMethod("onUpdated", `function(k, v) {
     if (k === 'items') {

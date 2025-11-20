@@ -25,6 +25,7 @@ func Button(opt ButtonOpt) *Element {
 		Svg("parent.svg").X("4").Y(".x").W("parent.w - 2 * .x").H(".w").Color("parent.color"),
 		Div().X("prev.x2 - .w + 1").Y("prev.y - 1").W("6").H(".w").V("0").BorderRadius("3"),
 	)
+	ret.SetLocalRoot(true)
 	ret.W("24").H(".w").BorderRadius("6").
 		BgColor(".selected ? '#3475F0' : ''").
 		Color(".selected ? '#FFFFFF' : '6C707E'").
@@ -39,6 +40,7 @@ func SourceRootButton() *Element {
 		Text("parent.text").X("next.x2+4").Y("1").H("parent.h-2").Color(ColorGray110),
 		Svg(SvgSourceRootFileLayer).X(".y-2").Y("parent.h/2-.h/2+1").W("8").H(".w").Color("parent.color"),
 	)
+	ret.SetLocalRoot(true)
 	ret.W("child.w + 21").H("20").BorderRadius("3").
 		BgColor("''").Color("'6C707E'").
 		OnHover("button_handleHover").
@@ -50,6 +52,7 @@ func SourceDirButton() *Element {
 	ret := NewElement("button", "div",
 		Text("parent.text").X("2").Y("1").H("parent.h-2").Color(ColorGray110),
 	)
+	ret.SetLocalRoot(true)
 	ret.W("child.w + 4").H("20").BorderRadius("3").
 		BgColor("''").Color("'6C707E'").
 		OnHover("button_handleHover").
@@ -62,6 +65,7 @@ func SourceFileButton() *Element {
 		Text("parent.text").X("next.x2+4").Y("1").H("parent.h-2").Color(ColorGray110),
 		Svg("'svg/go.svg'").X("3").Y("2").W("16").H(".w"),
 	)
+	ret.SetLocalRoot(true)
 	ret.W("child.w + 26").H("20").BorderRadius("3").
 		BgColor("''").Color("'6C707E'").
 		OnHover("button_handleHover").
@@ -76,6 +80,7 @@ func ToolButton() *Element {
 			BorderRadius("4").BgColor(ColorOrange).
 			BorderColor(ColorWhite).BorderLeft(1).BorderRight(1).BorderTop(1).BorderBottom(1),
 	)
+	ret.SetLocalRoot(true)
 	ret.W("24").H(".w").BorderRadius("6").
 		BgColor("''").Color("'6C707E'").
 		OnHover("button_handleHover").

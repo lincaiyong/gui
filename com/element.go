@@ -17,11 +17,20 @@ type Element struct {
 	type_      string
 	tag        string
 	name       string
+	localRoot  bool
 	depth      int
 	properties map[string]string
 	methods    map[string]string
 	children   []*Element
 	slots      []*Element
+}
+
+func (e *Element) LocalRoot() bool {
+	return e.localRoot
+}
+
+func (e *Element) SetLocalRoot(localRoot bool) {
+	e.localRoot = localRoot
 }
 
 func (e *Element) SetTag(tag string) {
