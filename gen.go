@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/lincaiyong/gui/com"
-	"github.com/lincaiyong/gui/com/root"
 	"github.com/lincaiyong/gui/parser"
 	"github.com/lincaiyong/gui/printer"
 	"github.com/lincaiyong/gui/utils"
@@ -137,9 +136,6 @@ func buildPageModel(page com.Component) (string, error) {
 	code = strings.TrimRight(code, ",")
 	return "g.model = " + code + ";", nil
 }
-
-//go:embed js/gui.js
-var guiJs string
 
 func MakePage(c *gin.Context, title string, page *root.Component) {
 	html, err := MakeHtml(title, page)

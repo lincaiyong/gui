@@ -12,7 +12,7 @@ function tree_computeItem(container, index) {
 }
 
 function tree_clickItem(itemEle, ev) {
-    const treeEle = itemEle._('this');
+    const treeEle = itemEle.local;
     treeEle.selectChild(itemEle, true);
     // 通知发生点击事件
     if (treeEle.onClickItem instanceof Function) {
@@ -38,7 +38,7 @@ function tree_clickItem(itemEle, ev) {
 function tree_updateItem(itemEle, k, v) {
     if (k === 'data') {
         if (v.leaf) {
-            const ext = v.key.substring(v.key.lastIndexOf('.')+1);
+            const ext = v.key.substring(v.key.lastIndexOf('.') + 1);
             let src = 'svg/text.svg';
             switch (ext) {
                 case 'go':

@@ -1,6 +1,6 @@
 function bar_handleMouseDown(ele, mouseDownEvent) {
-    const prev = ele._('prev');
-    const next = ele._('next');
+    const prev = ele.prev;
+    const next = ele.next;
     const state = {prevX: mouseDownEvent.clientX, prevY: mouseDownEvent.clientY};
     const cancelMouseMoveListener = g.event.addListener(window, 'mousemove', ev => {
         const safeDist = 10;

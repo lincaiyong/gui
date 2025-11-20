@@ -84,7 +84,7 @@ class BaseElement {
         const props = Object.assign({}, this._defaultProperties, model.properties || {});
         for (const k in props) {
             const [computeFunc, sources] = props[k];
-            const sourceResolver = source => this._(source);
+            const sourceResolver = source => this.resolveSrc(source);
             this.properties[k] = new Property(this, k, sources, sourceResolver, computeFunc);
             if (k === 'hovered') {
                 this.properties[k].onUpdated(v => {
@@ -99,7 +99,7 @@ class BaseElement {
         }
     }
 
-    get root() {
+    get local() {
         const depth = this.model.depth || 0;
         if (depth === 0) {
             return this;
@@ -109,6 +109,30 @@ class BaseElement {
             current = current.parent;
         }
         return current || this;
+    }
+
+    get child() {
+        return this.children.length > 0 ? this.children[0] : null;
+    }
+
+    get prev() {
+        if (this.parent && this.parent.children && this.parent.children.length > 0) {
+            const selfIndex = this.parent.children.indexOf(this);
+            if (selfIndex > 0) {
+                return this.parent.children[selfIndex - 1];
+            }
+        }
+        return null;
+    }
+
+    get next() {
+        if (this.parent && this.parent.children && this.parent.children.length > 0) {
+            const selfIndex = this.parent.children.indexOf(this);
+            if (selfIndex >= 0 && selfIndex < this.parent.children.length - 1) {
+                return this.parent.children[selfIndex + 1];
+            }
+        }
+        return null;
     }
 
     _createAll(parent) {
@@ -212,51 +236,24 @@ class BaseElement {
         }
     }
 
-    _(source) {
-        return this._resolve(source);
-    }
-
-    _resolve(source) {
+    resolveSrc(source) {
         if (!source.includes('.')) {
-            return this._resolveEle(source);
+            return this.resolveEle(source);
         }
         const [e, p] = source.split('.', 2);
-        const target = this._resolveEle(e);
+        const target = this.resolveEle(e);
         return target?.properties[p];
     }
 
-    _resolveEle(name) {
+    resolveEle(name) {
         if (name === '') {
             return this;
         } else if (name === 'root') {
             return g.root;
-        } else if (name === 'this') {
-            return this.root;
-        } else if (name === 'parent') {
-            return this.parent;
-        } else if (name === 'child') {
-            return this.children?.[0];
-        } else if (name === 'prev' || name === 'next') {
-            const siblings = this.parent?.children;
-            if (!siblings) {
-                return null;
-            }
-            const index = siblings.indexOf(this);
-            if (index === -1) {
-                return null;
-            }
-            const targetIndex = index + (name === 'prev' ? -1 : 1);
-            if (targetIndex < 0 || targetIndex >= siblings.length) {
-                return null;
-            }
-            return siblings[targetIndex];
-        } else {
-            const m = name.match(/^child([0-9])$/);
-            if (m) {
-                return this.children[parseInt(m[1])];
-            }
+        } else if (['local', 'parent', 'child', 'prev', 'next'].includes(name)) {
             return this[name];
         }
+        return null;
     }
 
     get _defaultProperties() {
