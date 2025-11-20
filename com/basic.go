@@ -80,3 +80,7 @@ func HScrollbar() *Element {
 	ret := HScrollbar().SetProperty("vertical", "false")
 	return ret
 }
+
+func Iframe() *Element {
+	return NewElement("iframe", "iframe")
+}

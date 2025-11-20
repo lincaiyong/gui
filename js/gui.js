@@ -417,6 +417,10 @@ class BaseElement {
         return this.properties.placeholder.value;
     }
 
+    get srcdoc() {
+        return this.properties.srcdoc.value;
+    }
+
     get lineHeight() {
         return this.properties.lineHeight.value;
     }
@@ -718,6 +722,13 @@ class BaseElement {
         if (typeof (v) === 'string' && this.tag === 'input') {
             this.properties.placeholder.value = v;
             this.ref.placeholder = v;
+        }
+    }
+
+    set srcdoc(v) {
+        if (typeof (v) === 'string' && this.tag === 'iframe') {
+            this.properties.srcdoc.value = v;
+            this.ref.srcdoc = v;
         }
     }
 

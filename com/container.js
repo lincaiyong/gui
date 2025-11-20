@@ -1,13 +1,9 @@
-function _updateList() {
+function container_updateList() {
     if (!this.list) {
         return;
     }
     const data = this.items;
-
-    g.util.assert(data instanceof Array);
     const computeFunc = this.model.slot[0].properties.compute[0]();
-    g.util.assert(computeFunc instanceof Function);
-
     const scrollLeft = this.scrollLeft || 0;
     const scrollTop = this.scrollTop || 0;
     const RESERVED_COUNT = 2;
@@ -18,7 +14,6 @@ function _updateList() {
     let prevItem = null;
     for (let i = 0; i < data.length; i++) {
         const item = computeFunc(this, i, prevItem);
-        g.util.assert(typeof(item.key) === 'string');
         computedItems.push(item);
         prevItem = item;
 
@@ -43,7 +38,6 @@ function _updateList() {
         for (let i = RESERVED_COUNT; i < this.children.length; i++) {
             const child = this.children[i];
             const key = child.data.key;
-            g.util.assert(typeof(key) === 'string');
             if (key in old) {
                 old[key].push(child);
             } else {
@@ -54,7 +48,6 @@ function _updateList() {
         const hitKey = {};
         visible.forEach(i => {
             const key = computedItems[i].key;
-            g.util.assert(typeof(key) === 'string');
             if (key in old && old[key].length > 0) {
                 hitKey[i] = old[key].shift();
             }
@@ -74,10 +67,7 @@ function _updateList() {
                 nonHitKey.push(child);
             }
         });
-        other.forEach(t => g.removeElement(t));
-
-        g.log.trace(`total: ${visible.length}, hit: ${Object.values(hitKey).length}, non hit: ${nonHitKey.length}`);
-
+        other.forEach(t => g.destroyElement(t));
         visible.forEach(i => {
             const item = computedItems[i];
             const child = hitKey[i] || nonHitKey.shift();
@@ -90,7 +80,7 @@ function _updateList() {
     } else {
         while (this.children.length > visible.length + 2) {
             const child = this.children[this.children.length - 1];
-            g.removeElement(child);
+            g.destroyElement(child);
         }
         while (this.children.length < visible.length + 2) {
             g.createElement(this.model.slot[0], this);

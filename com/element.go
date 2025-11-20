@@ -375,3 +375,8 @@ func (e *Element) Placeholder(s string) *Element {
 	e.SetProperty("placeholder", s)
 	return e
 }
+
+func (e *Element) SrcDoc(s string) *Element {
+	e.SetProperty("srcdoc", s)
+	return e
+}
