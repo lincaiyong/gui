@@ -1,6 +1,7 @@
 package gui
 
 import (
+	"reflect"
 	"sort"
 	"unicode"
 )
@@ -14,10 +15,10 @@ func pascalCase(s string) string {
 	return string(r)
 }
 
-func sortedKeys(m map[string]string) []string {
-	keys := make([]string, 0, len(m))
-	for k := range m {
-		keys = append(keys, k)
+func sortedKeys(m any) []string {
+	keys := make([]string, 0)
+	for _, k := range reflect.ValueOf(m).MapKeys() {
+		keys = append(keys, k.String())
 	}
 	sort.Strings(keys)
 	return keys

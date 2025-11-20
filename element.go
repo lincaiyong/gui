@@ -33,13 +33,12 @@ const (
 
 func NewElement(type_ ElementType, tag ElementTag, children ...*Element) *Element {
 	return &Element{
-		type_:         type_,
-		tag:           tag,
-		name:          string(tag),
-		properties:    map[string]string{},
-		methods:       map[string]string{},
-		children:      children,
-		localChildren: map[string][]int{},
+		type_:      type_,
+		tag:        tag,
+		name:       string(tag),
+		properties: map[string]string{},
+		methods:    map[string]string{},
+		children:   children,
 	}
 }
 
@@ -54,7 +53,29 @@ type Element struct {
 	slot       *Element
 
 	localRoot     bool
-	localChildren map[string][]int
+	localChildren []*Element
+	localName     string
+	localIndex    []int
+}
+
+func (e *Element) LocalIndex() []int {
+	return e.localIndex
+}
+
+func (e *Element) SetLocalIndex(localIndex []int) {
+	e.localIndex = localIndex
+}
+
+func (e *Element) LocalName() string {
+	return e.localName
+}
+
+func (e *Element) SetLocalName(localName string) {
+	e.localName = localName
+}
+
+func (e *Element) SetDepth(depth int) {
+	e.depth = depth
 }
 
 func (e *Element) Type() ElementType {
@@ -65,12 +86,12 @@ func (e *Element) SetType(type_ ElementType) {
 	e.type_ = type_
 }
 
-func (e *Element) LocalChildren() map[string][]int {
+func (e *Element) LocalChildren() []*Element {
 	return e.localChildren
 }
 
-func (e *Element) SetLocalChildren(k string, v ...int) {
-	e.localChildren[k] = v
+func (e *Element) AddLocalChildren(ele *Element) {
+	e.localChildren = append(e.localChildren, ele)
 }
 
 func (e *Element) LocalRoot() bool {

@@ -4,13 +4,13 @@ import (
 	"embed"
 	_ "embed"
 	"fmt"
-	"github.com/lincaiyong/gui/parser"
 	"io/fs"
-	"reflect"
+	"strconv"
 	"strings"
 )
 
 func GenModel(root *Element) (string, error) {
+	walkTree(root, root, 0, nil)
 	pr := NewPrinter()
 	err := genModel(root, 0, pr)
 	if err != nil {
@@ -79,21 +79,10 @@ func copyJsCode(pr *Printer) error {
 }
 
 func genModel(ele *Element, depth int, pr *Printer) error {
-	t := reflect.ValueOf(ele).Type().Elem()
 	pr.Put("{").Push()
 	{
-		s := t.Name()
-		if s == "Component" {
-			s = t.String()
-			s = s[:strings.Index(s, ".")]
-			s = pascalCase(s)
-		}
-		compName := ele.Name()
-		if compName == "" {
-			compName = ele.Tag()
-		}
 		pr.Put("tag: '%s',", ele.Tag())
-		pr.Put("id: '%s',", compName)
+		pr.Put("name: '%s',", ele.Name())
 		pr.Put("depth: %d,", depth)
 		props := make(map[string]string)
 		if depth > 0 {
@@ -104,7 +93,7 @@ func genModel(ele *Element, depth int, pr *Printer) error {
 			props["y"] = "-parent.scrollTop"
 			props["zIndex"] = "parent.zIndex"
 		}
-		for k, v := range ele.Props() {
+		for k, v := range ele.Properties() {
 			props[k] = v
 		}
 		if len(props) == 0 {
@@ -120,31 +109,12 @@ func genModel(ele *Element, depth int, pr *Printer) error {
 			}
 			pr.Pop().Put("},")
 		}
-		children := ele.Children()
-		slots := ele.Slots()
-		var childrenDepth int
-		if s == "Div" {
-			children = slots
-			slots = nil
-			childrenDepth = depth + 1
-		} else if s == "Containeritem" { // 允许child通过this访问祖先
-			childrenDepth = depth + 1
-		} else {
-			childrenDepth = 1
-		}
-		if len(children) > 0 {
+		if len(ele.Children()) > 0 {
 			pr.Put("children: [").Push()
-			for _, tmp := range children {
-				err := genModel(tmp, childrenDepth, pr)
-				if err != nil {
-					return err
+			for _, tmp := range ele.Children() {
+				if ele.LocalRoot() {
+					depth = 0
 				}
-			}
-			pr.Pop().Put("],")
-		}
-		if len(slots) > 0 {
-			pr.Put("slot: [").Push()
-			for _, tmp := range slots {
 				err := genModel(tmp, depth+1, pr)
 				if err != nil {
 					return err
@@ -152,7 +122,44 @@ func genModel(ele *Element, depth int, pr *Printer) error {
 			}
 			pr.Pop().Put("],")
 		}
+		named := ele.LocalChildren()
+		if len(named) > 0 {
+			pr.Put("named: {").Push()
+			for _, k := range sortedKeys(named) {
+				idx := named[k]
+				items := make([]string, len(idx))
+				for i, v := range idx {
+					items[i] = strconv.Itoa(v)
+				}
+				pr.Put("%s: [%s],", k, strings.Join(items, ", "))
+			}
+			pr.Pop().Put("},")
+		}
+		if ele.Slot() != nil {
+			tmpPr := NewPrinter()
+			err := genModel(ele.Slot(), depth+1, tmpPr)
+			if err != nil {
+				return err
+			}
+			pr.Put("slot: %s,", tmpPr.Code())
+		}
 	}
 	pr.Pop().Put("},")
 	return nil
+}
+
+func walkTree(ele *Element, localRoot *Element, depth int, index []int) {
+	ele.SetDepth(depth)
+	ele.SetLocalIndex(index)
+	localRoot.AddLocalChildren(ele)
+	if ele.LocalRoot() {
+		localRoot = ele
+		depth = 0
+	}
+	for i, child := range ele.Children() {
+		walkTree(child, localRoot, depth+1, append(index, i))
+	}
+	if ele.Slot() != nil {
+		walkTree(ele.Slot(), localRoot, depth+1, nil)
+	}
 }

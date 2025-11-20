@@ -73,7 +73,7 @@ class BaseElement {
         this.parent = parent;
         this.model = model;
         this.tag = model.tag;
-        this.id = parent ? `${parent.id}.${model.id}` : model.id;
+        this.id = parent ? `${parent.id}.${model.name}` : model.name;
         this.ref = document.createElement(model.tag);
         this.ref.style.position = model.position || 'absolute';
         this.ref.style.overflow = model.overflow || 'hidden';
@@ -1110,7 +1110,7 @@ const g = {
 
 // const root = {
 //     tag: 'div',
-//     id: 'div',
+//     name: 'div',
 //     depth: 0,
 //     properties: {
 //         ch: [e => ((e.h - e.borderTop) - e.borderBottom), ['.borderBottom', '.borderTop', '.h']],
@@ -1119,11 +1119,10 @@ const g = {
 //         x2: [e => (e.x + e.w), ['.w', '.x']],
 //         y2: [e => (e.y + e.h), ['.h', '.y']],
 //     },
-//     methods: {},
 //     children: [
 //         {
 //             tag: 'span',
-//             id: 'span',
+//             name: 'span',
 //             depth: 1,
 //             properties: {
 //                 ch: [e => ((e.h - e.borderTop) - e.borderBottom), ['.borderBottom', '.borderTop', '.h']],
@@ -1146,6 +1145,9 @@ const g = {
 //             slot: null,
 //         },
 //     ],
+//     named: {
+//          hBarEle: [1],
+//     },
 //     slot: null,
 // };
 //
