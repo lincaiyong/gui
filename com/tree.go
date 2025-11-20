@@ -29,7 +29,7 @@ func (o *TreeOpt) Indent(s string) *TreeOpt           { o.SetProperty("indent", 
 func (o *TreeOpt) Sort(s string) *TreeOpt             { o.SetProperty("sort", s); return o }
 
 func Tree() *Element {
-	ret := NewElement("tree", "div",
+	ret := NewElement(ElementTypeTree, ElementTagDiv,
 		Div().X("10").Y("this.selectedChildTop-next.scrollTop").W("parent.w-20").H("this.itemHeight").
 			BorderRadius("4").BgColor("this.focus ? g.theme.treeFocusSelectedBgColor : g.theme.treeSelectedBgColor"),
 		//NameAs("selectedEle"),

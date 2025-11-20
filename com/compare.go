@@ -1,7 +1,7 @@
 package com
 
 func Compare() *Element {
-	ret := NewElement("compare", "div")
+	ret := NewElement(ElementTypeCompare, ElementTagDiv)
 	ret.SetMethod("onCreated", `function() {
     const leftModel = monaco.editor.createModel('原始文本', 'text/plain');
     const rightModel = monaco.editor.createModel('修改后的文本', 'text/plain');

@@ -82,7 +82,7 @@ func ListContainer(children ...Element) *Element {
 }
 
 func Container(child Element) *Element {
-	ret := NewElement("container", "div"
+	ret := NewElement(ElementTypeContainer, ElementTagDiv
 		HScrollbar().NameAs("hBarEle"),
 		VScrollbar().NameAs("vBarEle"),
 	)

@@ -1,67 +1,61 @@
 package com
 
 func Div() *Element {
-	return NewElement("div", "div")
+	return NewElement(ElementTypeDiv, ElementTagDiv)
 }
 
 func Text(text string) *Element {
-	ret := NewElement("text", "span")
+	ret := NewElement(ElementTypeText, ElementTagSpan)
 	ret.InnerText(text).FontSize("Math.floor(.h * 2 / 3)").LineHeight(".h").
 		W("g.textWidth(.innerText, .fontFamily, .fontSize)")
 	return ret
 }
 
 func Input() *Element {
-	ret := NewElement("input", "input")
+	ret := NewElement(ElementTypeInput, ElementTagInput)
 	ret.LineHeight(".h").FontSize("Math.floor(.h * 2 / 3)")
 	return ret
 }
 
 func Img(src string) *Element {
-	ret := NewElement("img", "img")
+	ret := NewElement(ElementTypeImg, ElementTagImg)
 	ret.SetProperty("src", src)
-	ret.SetMethod("onUpdated", `function(k, v) {
-    if (k === 'src' && this.tag === 'svg') {
-		g.fetchRes('./res/' + v).then(data => this.ref.innerHTML = data).catch(err => g.log.error(err));
-	} else if (k === 'src' && this.tag === 'img') {
-		this.ref.setAttribute(k, './res/' + v);
-	}
-}`)
 	return ret
 }
 
 func Svg(src string) *Element {
 	ret := Img(src)
-	ret.SetTag("svg")
+	ret.SetType(ElementTypeSvg)
+	ret.SetTag(ElementTagSvg)
 	return ret
 }
 
 func VDivider() *Element {
-	ret := NewElement("divider", "div")
+	ret := NewElement(ElementTypeDivider, ElementTagDiv)
 	ret.BgColor("'black'").W("1")
 	return ret
 }
 
 func HDivider() *Element {
-	ret := NewElement("divider", "div")
+	ret := NewElement(ElementTypeDivider, ElementTagDiv)
 	ret.BgColor("'black'").H("1")
 	return ret
 }
 
 func VBar() *Element {
-	ret := NewElement("bar", "div")
+	ret := NewElement(ElementTypeBar, ElementTagDiv)
 	ret.OnMouseDown("bar_handleMouseDown").ZIndex("1").Cursor("'col-resize'").W("20")
 	return ret
 }
 
 func HBar() *Element {
-	ret := NewElement("bar", "div")
+	ret := NewElement(ElementTypeBar, ElementTagDiv)
 	ret.OnMouseDown("bar_handleMouseDown").ZIndex("1").Cursor("'row-resize'").H("20")
 	return ret
 }
 
 func VScrollbar() *Element {
-	ret := NewElement("scrollbar", "div")
+	ret := NewElement(ElementTypeScrollbar, ElementTagDiv)
 	ret.ZIndex("1").
 		BgColor("'#7f7e80'").
 		Opacity("0.5").
@@ -82,5 +76,5 @@ func HScrollbar() *Element {
 }
 
 func Iframe() *Element {
-	return NewElement("iframe", "iframe")
+	return NewElement(ElementTypeIframe, ElementTagIframe)
 }

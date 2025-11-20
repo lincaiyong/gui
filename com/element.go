@@ -2,27 +2,77 @@ package com
 
 import "strconv"
 
-func NewElement(type_, tag string, children ...*Element) *Element {
+type ElementType string
+
+const (
+	ElementTypeDiv           ElementType = "div"
+	ElementTypeText          ElementType = "text"
+	ElementTypeInput         ElementType = "input"
+	ElementTypeImg           ElementType = "img"
+	ElementTypeSvg           ElementType = "svg"
+	ElementTypeDivider       ElementType = "divider"
+	ElementTypeBar           ElementType = "bar"
+	ElementTypeScrollbar     ElementType = "scrollbar"
+	ElementTypeIframe        ElementType = "iframe"
+	ElementTypeButton        ElementType = "button"
+	ElementTypeCompare       ElementType = "compare"
+	ElementTypeContainer     ElementType = "container"
+	ElementTypeContainerItem ElementType = "container_item"
+	ElementTypeEditor        ElementType = "editor"
+	ElementTypeTree          ElementType = "tree"
+)
+
+type ElementTag string
+
+const (
+	ElementTagDiv    ElementTag  = "div"
+	ElementTagSpan   ElementTag  = "span"
+	ElementTagSvg    ElementTag  = "svg"
+	ElementTagImg    ElementTag  = "img"
+	ElementTagInput  ElementTag  = "input"
+	ElementTagIframe ElementType = "iframe"
+)
+
+func NewElement(type_ ElementType, tag ElementTag, children ...*Element) *Element {
 	return &Element{
-		type_:      type_,
-		tag:        tag,
-		name:       tag,
-		properties: map[string]string{},
-		methods:    map[string]string{},
-		children:   children,
+		type_:         type_,
+		tag:           tag,
+		name:          string(tag),
+		properties:    map[string]string{},
+		methods:       map[string]string{},
+		children:      children,
+		localChildren: map[string][]int{},
 	}
 }
 
 type Element struct {
-	type_      string
-	tag        string
+	type_      ElementType
+	tag        ElementTag
 	name       string
-	localRoot  bool
 	depth      int
 	properties map[string]string
 	methods    map[string]string
 	children   []*Element
 	slots      []*Element
+
+	localRoot     bool
+	localChildren map[string][]int
+}
+
+func (e *Element) Type() ElementType {
+	return e.type_
+}
+
+func (e *Element) SetType(type_ ElementType) {
+	e.type_ = type_
+}
+
+func (e *Element) LocalChildren() map[string][]int {
+	return e.localChildren
+}
+
+func (e *Element) SetLocalChildren(k string, v []int) {
+	e.localChildren[k] = v
 }
 
 func (e *Element) LocalRoot() bool {
@@ -33,11 +83,11 @@ func (e *Element) SetLocalRoot(localRoot bool) {
 	e.localRoot = localRoot
 }
 
-func (e *Element) SetTag(tag string) {
+func (e *Element) SetTag(tag ElementTag) {
 	e.tag = tag
 }
 
-func (e *Element) Tag() string {
+func (e *Element) Tag() ElementTag {
 	return e.tag
 }
 

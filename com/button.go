@@ -21,7 +21,7 @@ func (o *ButtonOpt) Text(s string) *ButtonOpt     { o.SetProperty("text", s); re
 func (o *ButtonOpt) Flag(s string) *ButtonOpt     { o.SetProperty("flag", s); return o }
 
 func Button(opt ButtonOpt) *Element {
-	ret := NewElement("button", "div",
+	ret := NewElement(ElementTypeButton, ElementTagDiv,
 		Svg("parent.svg").X("4").Y(".x").W("parent.w - 2 * .x").H(".w").Color("parent.color"),
 		Div().X("prev.x2 - .w + 1").Y("prev.y - 1").W("6").H(".w").V("0").BorderRadius("3"),
 	)
@@ -36,7 +36,7 @@ func Button(opt ButtonOpt) *Element {
 }
 
 func SourceRootButton() *Element {
-	ret := NewElement("button", "div",
+	ret := NewElement(ElementTypeButton, ElementTagDiv,
 		Text("parent.text").X("next.x2+4").Y("1").H("parent.h-2").Color(ColorGray110),
 		Svg(SvgSourceRootFileLayer).X(".y-2").Y("parent.h/2-.h/2+1").W("8").H(".w").Color("parent.color"),
 	)
@@ -49,7 +49,7 @@ func SourceRootButton() *Element {
 }
 
 func SourceDirButton() *Element {
-	ret := NewElement("button", "div",
+	ret := NewElement(ElementTypeButton, ElementTagDiv,
 		Text("parent.text").X("2").Y("1").H("parent.h-2").Color(ColorGray110),
 	)
 	ret.SetLocalRoot(true)
@@ -61,7 +61,7 @@ func SourceDirButton() *Element {
 }
 
 func SourceFileButton() *Element {
-	ret := NewElement("button", "div",
+	ret := NewElement(ElementTypeButton, ElementTagDiv,
 		Text("parent.text").X("next.x2+4").Y("1").H("parent.h-2").Color(ColorGray110),
 		Svg("'svg/go.svg'").X("3").Y("2").W("16").H(".w"),
 	)
@@ -74,7 +74,7 @@ func SourceFileButton() *Element {
 }
 
 func ToolButton() *Element {
-	ret := NewElement("button", "div",
+	ret := NewElement(ElementTypeButton, ElementTagDiv,
 		Svg("parent.svg").X("4").Y(".x").W("parent.w - 2 * .x").H(".w").Color("parent.color"),
 		Div().X("prev.x2 - .w + 1").Y("prev.y - 1").W("8").H(".w").V("parent.flag").
 			BorderRadius("4").BgColor(ColorOrange).

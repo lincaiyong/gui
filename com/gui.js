@@ -418,6 +418,10 @@ class BaseElement {
         return this.properties.srcdoc.value;
     }
 
+    get src() {
+        return this.properties.src.value;
+    }
+
     get lineHeight() {
         return this.properties.lineHeight.value;
     }
@@ -726,6 +730,17 @@ class BaseElement {
         if (typeof (v) === 'string' && this.tag === 'iframe') {
             this.properties.srcdoc.value = v;
             this.ref.srcdoc = v;
+        }
+    }
+
+    set src(v) {
+        if (typeof (v) === 'string' && (this.tag === 'svg' || this.tag === 'img')) {
+            this.properties.src.value = v;
+            if (this.tag === 'img') {
+                this.ref.setAttribute(k, v);
+            } else {
+                g.fetchRes(v).then(data => this.ref.innerHTML = data).catch(err => g.log.error(err));
+            }
         }
     }
 

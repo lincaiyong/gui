@@ -37,7 +37,7 @@ func (o *EditorOpt) OnCursorPositionChange(s string) *EditorOpt {
 }
 
 func Editor(opt EditorOpt) *Element {
-	ret := NewElement("editor", "div")
+	ret := NewElement(ElementTypeEditor, ElementTagDiv)
 	ret.SetMethod("onCreated", `function() {
     let lineNumbers = 'on';
     if (!this.showLineNo) {
