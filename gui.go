@@ -17,20 +17,20 @@ func GenModel(root *Element) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return fmt.Sprintf("const root = %s;", strings.TrimRight(pr.Code(), ",")), nil
+	return strings.TrimRight(pr.Code(), ","), nil
 }
 
 func GenHtml(title string, root *Element) (string, error) {
+	pr := NewPrinter().Push().Push()
+	err := copyJsCode(pr)
+	if err != nil {
+		return "", fmt.Errorf("fail to copy js code: %w", err)
+	}
 	model, err := GenModel(root)
 	if err != nil {
 		return "", fmt.Errorf("fail to gen model: %w", err)
 	}
-	pr := NewPrinter().Push().Push()
-	err = copyJsCode(pr)
-	if err != nil {
-		return "", fmt.Errorf("fail to copy js code: %w", err)
-	}
-	pr.Put(model)
+	pr.Put("const root = %s;", model)
 	code := pr.Code()
 	html := `<!DOCTYPE html>
 <html lang="en">
@@ -116,7 +116,7 @@ func genModel(ele *Element, depth int, pr *Printer) error {
 		if len(ele.Children()) > 0 {
 			pr.Put("children: [").Push()
 			for _, tmp := range ele.Children() {
-				if ele.LocalRoot() {
+				if ele.IsLocalRoot() {
 					depth = 0
 				}
 				err := genModel(tmp, depth+1, pr)
@@ -126,31 +126,23 @@ func genModel(ele *Element, depth int, pr *Printer) error {
 			}
 			pr.Pop().Put("],")
 		}
-		namedChildren := make([]*Element, 0)
-		for _, child := range ele.LocalChildren() {
-			if child.LocalName() != "" {
-				namedChildren = append(namedChildren, child)
+		namedElements := make([]*Element, 0)
+		for _, e := range ele.LocalElements() {
+			if strings.HasSuffix(e.Name(), "Ele") {
+				namedElements = append(namedElements, e)
 			}
 		}
-		if len(namedChildren) > 0 {
+		if len(namedElements) > 0 {
 			pr.Put("named: {").Push()
-			for _, child := range namedChildren {
-				idx := child.LocalIndex()
+			for _, child := range namedElements {
+				idx := child.SelfIndex()
 				items := make([]string, len(idx))
 				for i, v := range idx {
 					items[i] = strconv.Itoa(v)
 				}
-				pr.Put("%s: [%s],", child.LocalName(), strings.Join(items, ", "))
+				pr.Put("%s: [%s],", child.Name(), strings.Join(items, ", "))
 			}
 			pr.Pop().Put("},")
-		}
-		if ele.Slot() != nil {
-			tmpPr := NewPrinter()
-			err := genModel(ele.Slot(), depth+1, tmpPr)
-			if err != nil {
-				return err
-			}
-			pr.Put("slot: %s,", tmpPr.Code())
 		}
 	}
 	pr.Pop().Put("},")
@@ -158,17 +150,13 @@ func genModel(ele *Element, depth int, pr *Printer) error {
 }
 
 func walkTree(ele *Element, localRoot *Element, depth int, index []int) {
-	ele.SetDepth(depth)
-	ele.SetLocalIndex(index)
-	localRoot.AddLocalChildren(ele)
-	if ele.LocalRoot() {
+	ele.SetSelfIndex(index)
+	localRoot.AddLocalElement(ele)
+	if ele.IsLocalRoot() {
 		localRoot = ele
 		depth = 0
 	}
 	for i, child := range ele.Children() {
 		walkTree(child, localRoot, depth+1, append(index, i))
-	}
-	if ele.Slot() != nil {
-		walkTree(ele.Slot(), localRoot, depth+1, nil)
 	}
 }

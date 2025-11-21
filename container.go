@@ -90,11 +90,11 @@ func ListContainer(opt *ContainerOpt, child *Element) *Element {
 
 func Container(opt *ContainerOpt, child *Element) *Element {
 	ret := NewElement(ElementTypeContainer, ElementTagDiv,
-		HScrollbar(nil).SetLocalName("hBarEle"),
-		VScrollbar(nil).SetLocalName("vBarEle"),
+		HScrollbar(nil).SetName("hBarEle"),
+		VScrollbar(nil).SetName("vBarEle"),
 	)
-	ret.SetLocalRoot(true)
-	ret.SetSlot(child)
+	ret.SetLocalRoot()
+	//ret.SetSeed(child)
 	opt.List("false").Virtual("false").Scrollable("false").ScrollLeft("0").ScrollTop("0").Init(ret)
 	ret.SetProperty("onUpdated", `function(k) {
     // items

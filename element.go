@@ -50,41 +50,25 @@ func NewElement(type_ ElementType, tag ElementTag, children ...*Element) *Elemen
 type Element struct {
 	type_      ElementType
 	tag        ElementTag
-	name       string
-	depth      int
 	properties map[string]string
 	methods    map[string]string
 	children   []*Element
-	slot       *Element
 
-	localRoot     bool
-	localChildren []*Element
-	localName     string
-	localIndex    []int
+	name      string
+	selfIndex []int
+
+	isLocalRoot   bool
+	localElements []*Element
+
+	seed *Element
 }
 
-func (e *Element) LocalIndex() []int {
-	return e.localIndex
+func (e *Element) SelfIndex() []int {
+	return e.selfIndex
 }
 
-func (e *Element) SetLocalIndex(localIndex []int) {
-	e.localIndex = localIndex
-}
-
-func (e *Element) LocalName() string {
-	return e.localName
-}
-
-func (e *Element) SetLocalName(localName string) *Element {
-	if !strings.HasSuffix(localName, "Ele") {
-		log.FatalLog("local name must end with 'Ele': %s", localName)
-	}
-	e.localName = localName
-	return e
-}
-
-func (e *Element) SetDepth(depth int) {
-	e.depth = depth
+func (e *Element) SetSelfIndex(index []int) {
+	e.selfIndex = index
 }
 
 func (e *Element) Type() ElementType {
@@ -95,20 +79,20 @@ func (e *Element) SetType(type_ ElementType) {
 	e.type_ = type_
 }
 
-func (e *Element) LocalChildren() []*Element {
-	return e.localChildren
+func (e *Element) LocalElements() []*Element {
+	return e.localElements
 }
 
-func (e *Element) AddLocalChildren(ele *Element) {
-	e.localChildren = append(e.localChildren, ele)
+func (e *Element) AddLocalElement(ele *Element) {
+	e.localElements = append(e.localElements, ele)
 }
 
-func (e *Element) LocalRoot() bool {
-	return e.localRoot
+func (e *Element) IsLocalRoot() bool {
+	return e.isLocalRoot
 }
 
-func (e *Element) SetLocalRoot(localRoot bool) {
-	e.localRoot = localRoot
+func (e *Element) SetLocalRoot() {
+	e.isLocalRoot = true
 }
 
 func (e *Element) SetTag(tag ElementTag) {
@@ -124,12 +108,11 @@ func (e *Element) Name() string {
 }
 
 func (e *Element) SetName(name string) *Element {
+	if !strings.HasSuffix(name, "Ele") {
+		log.FatalLog("local name must end with 'Ele': %s", name)
+	}
 	e.name = name
 	return e
-}
-
-func (e *Element) Depth() int {
-	return e.depth
 }
 
 func (e *Element) Properties() map[string]string {
@@ -152,13 +135,4 @@ func (e *Element) SetMethod(k, v string) *Element {
 
 func (e *Element) Children() []*Element {
 	return e.children
-}
-
-func (e *Element) Slot() *Element {
-	return e.slot
-}
-
-func (e *Element) SetSlot(slot *Element) *Element {
-	e.slot = slot
-	return e
 }
