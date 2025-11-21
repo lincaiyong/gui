@@ -1,8 +1,7 @@
 package gui
 
 import (
-	"github.com/lincaiyong/log"
-	"strings"
+	"fmt"
 )
 
 type ElementType string
@@ -110,10 +109,7 @@ func (e *Element) Name() string {
 }
 
 func (e *Element) SetName(name string) *Element {
-	if !strings.HasSuffix(name, "Ele") {
-		log.FatalLog("local name must end with 'Ele': %s", name)
-	}
-	e.name = name
+	e.name = fmt.Sprintf("%sEle", name)
 	return e
 }
 

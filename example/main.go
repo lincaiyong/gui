@@ -12,9 +12,9 @@ func main() {
 			r.GET("/res/*filepath", HandleRes())
 			r.GET("/hello", func(c *gin.Context) {
 				comp := Div(NewOpt(),
-					Text(NewOpt().H("200").X("parent.w/2-.w/2").Y("100"), "'hello world'"),
+					Text(NewOpt().H("200").X("parent.w/2-.w/2").Y("100"), "'hello world'").SetName("text1"),
 					HDivider(NewOpt().Y("prev.y2")),
-					Text(NewOpt().H("200").X("parent.w/2-.w/2").Y("prev.y2"), "'hello world'"),
+					Text(NewOpt().H("200").X("parent.w/2-.w/2").Y("prev.y2"), "'hello world'").SetName("text2"),
 				)
 				HandlePage(c, "example", comp)
 			})

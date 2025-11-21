@@ -1037,6 +1037,17 @@ const g = {
         for (const k in model.methods || {}) {
             instance[k] = model.methods[k];
         }
+        for (const k in model.named || {}) {
+            Object.defineProperty(instance, k, {
+                get() {
+                    let ele = instance;
+                    for (const i of model.named[k]) {
+                        ele = ele.children[i];
+                    }
+                    return ele
+                },
+            });
+        }
         return instance;
     },
     destroyElement(e) {
