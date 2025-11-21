@@ -5,6 +5,8 @@ import (
 	_ "embed"
 	"fmt"
 	"io/fs"
+	"path/filepath"
+	"strconv"
 	"strings"
 )
 
@@ -47,7 +49,7 @@ func GenHtml(title string, root *Element) (string, error) {
 <body>
     <script src="res/vs/loader.js"></script>
     <script>
-		{{code}}
+{{code}}
         require.config({paths: {'vs': 'res/vs'}});
         require(['vs/editor/editor.main'], () => g.createAll(document.body, root));
     </script>
@@ -62,13 +64,16 @@ func GenHtml(title string, root *Element) (string, error) {
 var jsEmbed embed.FS
 
 func copyJsCode(pr *Printer) error {
-	items, err := fs.ReadDir(jsEmbed, ".")
+	items, err := fs.ReadDir(jsEmbed, "js")
 	if err != nil {
 		return err
 	}
 	for _, item := range items {
+		if item.IsDir() {
+			continue
+		}
 		var b []byte
-		b, err = fs.ReadFile(jsEmbed, item.Name())
+		b, err = fs.ReadFile(jsEmbed, filepath.Join("js", item.Name()))
 		if err != nil {
 			return err
 		}
@@ -121,17 +126,22 @@ func genModel(ele *Element, depth int, pr *Printer) error {
 			}
 			pr.Pop().Put("],")
 		}
-		named := ele.LocalChildren()
-		if len(named) > 0 {
+		namedChildren := make([]*Element, 0)
+		for _, child := range ele.LocalChildren() {
+			if child.LocalName() != "" {
+				namedChildren = append(namedChildren, child)
+			}
+		}
+		if len(namedChildren) > 0 {
 			pr.Put("named: {").Push()
-			//for _, k := range sortedKeys(named) {
-			//	idx := named[k]
-			//	items := make([]string, len(idx))
-			//	for i, v := range idx {
-			//		items[i] = strconv.Itoa(v)
-			//	}
-			//	pr.Put("%s: [%s],", k, strings.Join(items, ", "))
-			//}
+			for _, child := range namedChildren {
+				idx := child.LocalIndex()
+				items := make([]string, len(idx))
+				for i, v := range idx {
+					items[i] = strconv.Itoa(v)
+				}
+				pr.Put("%s: [%s],", child.LocalName(), strings.Join(items, ", "))
+			}
 			pr.Pop().Put("},")
 		}
 		if ele.Slot() != nil {

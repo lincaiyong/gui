@@ -9,7 +9,7 @@ func NewPrinter() *Printer {
 	return &Printer{
 		sb:         &strings.Builder{},
 		indent:     "",
-		indentChar: "  ",
+		indentChar: "    ",
 	}
 }
 
