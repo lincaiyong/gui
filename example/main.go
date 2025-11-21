@@ -20,11 +20,11 @@ func main() {
 							Editor(NewEditorOpt().X("20").Y("0").W("800").H("next.y - .y").BgColor(ColorBlue)).SetName("editor"),
 							HBar(NewOpt().BgColor(ColorBlue).Opacity("0.1").Y("parent.h/2").W("parent.w")),
 							Div(NewOpt().X("20").Y("prev.y2").W("800").H("parent.h-prev.y2").BgColor(ColorYellow),
-								VListContainer(NewContainerOpt().HandleItemCompute("Root.computeItem").HandleItemUpdated("Root.updateItem"),
-									Div(NewOpt().OnHover("Root.hoverItem"),
+								ListContainer(NewContainerOpt().HandleItemCompute("onComputeItem").HandleItemUpdated("onUpdateItem"),
+									Div(NewOpt().OnHover("onHoverItem"),
 										Text(NewOpt(), "''"),
 									),
-								),
+								).SetName("container"),
 							),
 						),
 						VBar(NewOpt().X("parent.w/2").BgColor(ColorBlue).Opacity("0.1")),
@@ -38,6 +38,24 @@ func main() {
 				)
 				HandlePage(c, "example", root, `function onText1Click() {
 	console.log(...arguments);
+}
+function onComputeItem(containerEle, idx, prev) {
+    return {
+        key: ''+idx,
+        x: 0,
+        y: 20 * idx,
+        w: 200,
+        h: 20,
+        text: 'hello world!' + idx,
+    }
+}
+function onUpdateItem(k, v) {
+	if (k === 'data') {
+        this.child.innerText = v?.text || '';
+    }
+}
+function onHoverItem(ele, hovered) {
+    ele.backgroundColor = hovered ? '#888' : '#eee';
 }`)
 			})
 			return nil

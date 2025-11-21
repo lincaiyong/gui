@@ -73,7 +73,7 @@ func VScrollbar(opt *Opt) *Element {
 }
 
 func HScrollbar(opt *Opt) *Element {
-	ret := HScrollbar(opt)
+	ret := VScrollbar(opt)
 	opt.SetProperty("vertical", "false").Init(ret)
 	return ret
 }

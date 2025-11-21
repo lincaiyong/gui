@@ -60,8 +60,8 @@ function container_updateList() {
             if (!child) {
                 child = other.shift();
                 if (!child) {
-                    child = g.createElement(this.model.itemModel, this);
-                    ['x', 'y', 'w', 'h'].forEach(k => child._properties[k].reset());
+                    child = g.createElement(null, this, this.model.itemModel);
+                    ['x', 'y', 'w', 'h'].forEach(k => child.properties[k].reset());
                 }
                 nonHitKey.push(child);
             }
@@ -82,7 +82,7 @@ function container_updateList() {
             g.destroyElement(child);
         }
         while (this.children.length < visible.length + 2) {
-            g.createElement(this.model.itemModel, this);
+            g.createElement(null, this, this.model.itemModel);
         }
         for (let i = 0; i < visible.length; i++) {
             const child = this.children[i + RESERVED_COUNT];
@@ -112,7 +112,7 @@ function container_updateList() {
         if (mh - scrollTop < this.ch) {
             this.scrollTop = Math.max(mh - this.ch, 0);
         }
-        this.children[0].show(true); // hScrollBar
-        this.children[1].show(true); // vScrollBar
+        this.hBar.show(true);
+        this.vBar.show(true);
     }
 }

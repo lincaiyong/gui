@@ -16,7 +16,6 @@ func NewContainerOpt() *ContainerOpt {
 		ScrollBarMargin("0").
 		Scrollable("true").
 		Virtual("false").
-		HandleItemUpdated("null").
 		HandleItemCompute("null").
 		HandleItemClick("null")
 	return ret
@@ -24,6 +23,7 @@ func NewContainerOpt() *ContainerOpt {
 
 type ContainerOpt struct {
 	*BaseOpt[ContainerOpt]
+	onItemUpdated string
 }
 
 func (o *ContainerOpt) Align(s string) *ContainerOpt       { o.SetProperty("align", s); return o }
@@ -60,7 +60,7 @@ func (o *ContainerOpt) HandleItemClick(s string) *ContainerOpt {
 	return o
 }
 func (o *ContainerOpt) HandleItemUpdated(s string) *ContainerOpt {
-	o.SetProperty("handleItemUpdated", s)
+	o.onItemUpdated = s
 	return o
 }
 
@@ -78,9 +78,11 @@ func ListContainer(opt *ContainerOpt, child *Element) *Element {
 
 func Container(opt *ContainerOpt, child *Element) *Element {
 	NewOpt().Y("0").X("0").H("0").Init(child)
+	child.SetProperty("data", "null")
+	child.SetMethod("onUpdated", opt.onItemUpdated)
 	ret := NewElement(ElementTypeContainer, ElementTagDiv,
-		HScrollbar(nil),
-		VScrollbar(nil),
+		HScrollbar(NewOpt()),
+		VScrollbar(NewOpt()),
 		child,
 	)
 	opt.List("false").Virtual("false").Scrollable("false").ScrollLeft("0").ScrollTop("0").Init(ret)
@@ -119,7 +121,7 @@ func Container(opt *ContainerOpt, child *Element) *Element {
 }`)
 	ret.SetMethod("onCreated", `function() {
     if (!this.list) {
-        const child = g.createElement(this.model.itemModel, this);
+        const child = g.createElement(null, this.model.itemModel, this);
         this.childWidth = child.w;
         this.childHeight = child.h;
         child.onUpdated((k, v) => {

@@ -78,7 +78,7 @@ class BaseElement {
         this.ref.style.position = model.position || 'absolute';
         this.ref.style.overflow = model.overflow || 'hidden';
         this.ref.style.boxSizing = 'border-box';
-        this.children = (model.children || []).map(child => g.createElement(this, child));
+        this.children = (model.children || []).map(child => new BaseElement(this, child));
         this._sideEffects = {};
         for (const k in model.methods || {}) {
             this[k] = model.methods[k];
@@ -1044,21 +1044,21 @@ class BaseElement {
 
 const g = {
     root: null,
-    createAll(domElement, model) {
+    createAll(dom, model) {
         document.documentElement.style.overflow = 'hidden';
         if (g.root) {
             g.root.destroyElement();
         }
-        g.root = g.createElement(null, model);
-        g.root._create(domElement);
+        g.root = g.createElement(dom, null, model);
         const resize = () => [g.root.w, g.root.h] = [window.innerWidth, window.innerHeight];
         g.addListener(window, 'resize', g.debounce(resize, 20));
         resize();
         g.root.v = 1;
         g.root._checkLoop();
     },
-    createElement(parent, model) {
+    createElement(dom, parent, model) {
         const instance = new BaseElement(parent, model);
+        instance._create(dom || parent);
         return instance;
     },
     destroyElement(e) {

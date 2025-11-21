@@ -2,13 +2,13 @@ class Scrollbar {
     constructor(container, vh) {
         this.vertical = vh === 'v';
         this.container = container;
-        this.bar = this.vertical ? container.vBarEle : container.hBarEle;
+        this.bar = this.vertical ? container.children[1] : container.children[0];
         if (this.vertical) {
-            this.bar._properties.y.reset();
-            this.bar._properties.h.reset();
+            this.bar.properties.y.reset();
+            this.bar.properties.h.reset();
         } else {
-            this.bar._properties.x.reset();
-            this.bar._properties.w.reset();
+            this.bar.properties.x.reset();
+            this.bar.properties.w.reset();
         }
 
         const _fade = () => this.active = false;

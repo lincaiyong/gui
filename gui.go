@@ -133,7 +133,7 @@ func genModel(ele *Element, depth int, pr *Printer) error {
 				m := ele.methods[k]
 				pr.Put("%s: %s,", k, m)
 			}
-			pr.Pop().Put("}")
+			pr.Pop().Put("},")
 		}
 		if len(children) > 0 {
 			pr.Put("children: [").Push()
