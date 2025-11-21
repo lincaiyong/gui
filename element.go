@@ -37,12 +37,18 @@ const (
 
 func NewElement(type_ ElementType, tag ElementTag, children ...*Element) *Element {
 	return &Element{
-		type_:      type_,
-		tag:        tag,
-		properties: map[string]string{},
-		methods:    map[string]string{},
-		children:   children,
-		name:       string(tag),
+		type_: type_,
+		tag:   tag,
+		properties: map[string]string{
+			"ch":      ".h - .borderTop - .borderBottom",
+			"cw":      ".w - .borderLeft - .borderRight",
+			"hovered": ".hoveredByMouse",
+			"x2":      ".x + .w",
+			"y2":      ".y + .h",
+		},
+		methods:  map[string]string{},
+		children: children,
+		name:     string(tag),
 	}
 }
 
