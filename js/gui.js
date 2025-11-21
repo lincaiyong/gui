@@ -80,7 +80,20 @@ class BaseElement {
         this.ref.style.boxSizing = 'border-box';
         this.children = (model.children || []).map(child => g.createElement(this, child));
         this._sideEffects = {};
-
+        for (const k in model.methods || {}) {
+            this[k] = model.methods[k];
+        }
+        for (const k in model.named || {}) {
+            Object.defineProperty(this, k, {
+                get() {
+                    let ele = this;
+                    for (const i of model.named[k]) {
+                        ele = ele.children[i];
+                    }
+                    return ele
+                },
+            });
+        }
         const props = Object.assign({}, this._defaultProperties, model.properties || {});
         for (const k in props) {
             const [computeFunc, sources] = props[k];
@@ -94,6 +107,18 @@ class BaseElement {
             } else {
                 this.properties[k].onUpdated(v => {
                     this.onUpdated?.(k, v);
+                });
+            }
+            if (!(k in this._defaultProperties)) {
+                Object.defineProperty(this, k, {
+                    get() {
+                        return this.properties[k].value;
+                    },
+                    set(v) {
+                        if (this[k] !== v) {
+                            this.properties[k].value = v;
+                        }
+                    },
                 });
             }
         }
@@ -152,12 +177,12 @@ class BaseElement {
     _initAll() {
         Object.values(this.properties).forEach(p => p.update());
         this.children.forEach(child => child._initAll());
+        this.onCreated?.();
     }
 
     _create(parent) {
         this._createAll(parent);
         this._initAll();
-        this.onCreated?.();
     }
 
     _unInitAll() {
@@ -1034,20 +1059,6 @@ const g = {
     },
     createElement(parent, model) {
         const instance = new BaseElement(parent, model);
-        for (const k in model.methods || {}) {
-            instance[k] = model.methods[k];
-        }
-        for (const k in model.named || {}) {
-            Object.defineProperty(instance, k, {
-                get() {
-                    let ele = instance;
-                    for (const i of model.named[k]) {
-                        ele = ele.children[i];
-                    }
-                    return ele
-                },
-            });
-        }
         return instance;
     },
     destroyElement(e) {

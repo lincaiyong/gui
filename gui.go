@@ -20,11 +20,14 @@ func GenModel(root *Element) (string, error) {
 	return strings.TrimRight(pr.Code(), ","), nil
 }
 
-func GenHtml(title string, root *Element) (string, error) {
+func GenHtml(title string, root *Element, jsCode ...string) (string, error) {
 	pr := NewPrinter().Push().Push()
 	err := copyJsCode(pr)
 	if err != nil {
 		return "", fmt.Errorf("fail to copy js code: %w", err)
+	}
+	for _, js := range jsCode {
+		pr.Put(js)
 	}
 	model, err := GenModel(root)
 	if err != nil {
@@ -123,6 +126,14 @@ func genModel(ele *Element, depth int, pr *Printer) error {
 				return err
 			}
 			pr.Put("itemModel: %s", tmpPr.Code())
+		}
+		if len(ele.methods) > 0 {
+			pr.Put("methods: {").Push()
+			for _, k := range sortedKeys(ele.methods) {
+				m := ele.methods[k]
+				pr.Put("%s: %s,", k, m)
+			}
+			pr.Pop().Put("}")
 		}
 		if len(children) > 0 {
 			pr.Put("children: [").Push()

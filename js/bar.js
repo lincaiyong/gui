@@ -2,7 +2,7 @@ function bar_handleMouseDown(ele, mouseDownEvent) {
     const prev = ele.prev;
     const next = ele.next;
     const state = {prevX: mouseDownEvent.clientX, prevY: mouseDownEvent.clientY};
-    const cancelMouseMoveListener = g.event.addListener(window, 'mousemove', ev => {
+    const cancelMouseMoveListener = g.addListener(window, 'mousemove', ev => {
         const safeDist = 10;
         if (ele.cursor === 'col-resize') {
             const newX = ele.x + ev.clientX - state.prevX;
@@ -26,7 +26,7 @@ function bar_handleMouseDown(ele, mouseDownEvent) {
             }
         }
     });
-    g.event.onceListener(window, 'mouseup', () => {
+    g.onceListener(window, 'mouseup', () => {
         cancelMouseMoveListener();
     });
 }

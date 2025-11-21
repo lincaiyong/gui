@@ -64,8 +64,8 @@ func HandleRes() gin.HandlerFunc {
 	}
 }
 
-func HandlePage(c *gin.Context, title string, page *Element) {
-	html, err := GenHtml(title, page)
+func HandlePage(c *gin.Context, title string, page *Element, jsCode ...string) {
+	html, err := GenHtml(title, page, jsCode...)
 	if err != nil {
 		log.ErrorLog("fail to gen html: %v", err)
 		c.String(http.StatusInternalServerError, fmt.Sprintf("fail to gen html: %v", err))
