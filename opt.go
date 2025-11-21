@@ -34,9 +34,6 @@ func (o *BaseOpt[T]) Properties() map[string]string {
 }
 
 func (o *BaseOpt[T]) Init(e *Element) {
-	if o == nil {
-		return
-	}
 	for k, v := range o.properties {
 		e.SetProperty(k, v)
 	}

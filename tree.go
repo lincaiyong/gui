@@ -30,26 +30,25 @@ func (o *TreeOpt) Sort(s string) *TreeOpt             { o.SetProperty("sort", s)
 func Tree(opt *TreeOpt) *Element {
 	ret := NewElement(ElementTypeTree, ElementTagDiv,
 		Div(NewOpt().X("10").Y("this.selectedChildTop-next.scrollTop").W("parent.w-20").H("this.itemHeight").
-			BorderRadius("4").BgColor("this.focus ? g.theme.treeFocusSelectedBgColor : g.theme.treeSelectedBgColor")),
+			BorderRadius("4").BgColor("this.focus ? g.theme.treeFocusSelectedBgColor : g.theme.treeSelectedBgColor")).
+			SetLocalName("selectedEle"),
 		VListContainer(
 			NewContainerOpt().Align("'fill'").X("10").W("parent.w - .x").
 				HandleItemCompute("tree_computeItem").
 				HandleItemClick("tree_clickItem").
 				HandleItemUpdated("tree_updateItem"),
-			Div(nil,
+			Div(NewOpt(),
 				Svg(NewOpt().X("this.indent + parent.data.depth * 20 + 4").Y("parent.h/2-.h/2").W("17").H(".w").
 					V("parent.data.leaf ? 0 : 1").Color(ColorGray110),
-					"parent.data.collapsed ? 'svg/arrowRight.svg' : 'svg/arrowDown.svg'"),
-				Img(NewOpt().X("prev.x2+4").Y("parent.h/2-.h/2").W("16").H(".w"), "''"),
+					"parent.data.collapsed ? 'svg/arrowRight.svg' : 'svg/arrowDown.svg'").
+					SetLocalName("arrowEle"),
+				Img(NewOpt().X("prev.x2+4").Y("parent.h/2-.h/2").W("16").H(".w"), "''").
+					SetLocalName("iconEle"),
 				Text(NewOpt().X("prev.x2+4").Y("1").H("this.itemHeight - 2 * .y").Cursor("'default'"), "parent.data.text"),
 			),
-		),
+		).SetLocalName("containerEle"),
 	)
 	ret.SetLocalRoot(true)
-	ret.SetLocalChildren("selectedEle", 0)
-	ret.SetLocalChildren("containerEle", 1)
-	ret.SetLocalChildren("arrowEle", 1, 0)
-	ret.SetLocalChildren("iconEle", 1, 1)
 
 	opt.Init(ret)
 	ret.SetMethod("onUpdated", `function(k, v) {

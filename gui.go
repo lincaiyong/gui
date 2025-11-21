@@ -5,7 +5,6 @@ import (
 	_ "embed"
 	"fmt"
 	"io/fs"
-	"strconv"
 	"strings"
 )
 
@@ -125,14 +124,14 @@ func genModel(ele *Element, depth int, pr *Printer) error {
 		named := ele.LocalChildren()
 		if len(named) > 0 {
 			pr.Put("named: {").Push()
-			for _, k := range sortedKeys(named) {
-				idx := named[k]
-				items := make([]string, len(idx))
-				for i, v := range idx {
-					items[i] = strconv.Itoa(v)
-				}
-				pr.Put("%s: [%s],", k, strings.Join(items, ", "))
-			}
+			//for _, k := range sortedKeys(named) {
+			//	idx := named[k]
+			//	items := make([]string, len(idx))
+			//	for i, v := range idx {
+			//		items[i] = strconv.Itoa(v)
+			//	}
+			//	pr.Put("%s: [%s],", k, strings.Join(items, ", "))
+			//}
 			pr.Pop().Put("},")
 		}
 		if ele.Slot() != nil {

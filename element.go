@@ -1,5 +1,10 @@
 package gui
 
+import (
+	"github.com/lincaiyong/log"
+	"strings"
+)
+
 type ElementType string
 
 const (
@@ -70,8 +75,12 @@ func (e *Element) LocalName() string {
 	return e.localName
 }
 
-func (e *Element) SetLocalName(localName string) {
+func (e *Element) SetLocalName(localName string) *Element {
+	if !strings.HasSuffix(localName, "Ele") {
+		log.FatalLog("local name must end with 'Ele': %s", localName)
+	}
 	e.localName = localName
+	return e
 }
 
 func (e *Element) SetDepth(depth int) {
