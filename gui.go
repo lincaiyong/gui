@@ -113,9 +113,20 @@ func genModel(ele *Element, depth int, pr *Printer) error {
 			}
 			pr.Pop().Put("},")
 		}
-		if len(ele.Children()) > 0 {
+		children := ele.Children()
+		if ele.Type() == ElementTypeContainer {
+			child := children[2]
+			children = []*Element{children[0], children[1]}
+			tmpPr := NewPrinter()
+			err := genModel(child, depth+1, tmpPr)
+			if err != nil {
+				return err
+			}
+			pr.Put("itemModel: %s", tmpPr.Code())
+		}
+		if len(children) > 0 {
 			pr.Put("children: [").Push()
-			for _, tmp := range ele.Children() {
+			for _, tmp := range children {
 				if ele.IsLocalRoot() {
 					depth = 0
 				}

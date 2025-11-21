@@ -8,21 +8,20 @@ import (
 type ElementType string
 
 const (
-	ElementTypeDiv           ElementType = "div"
-	ElementTypeText          ElementType = "text"
-	ElementTypeInput         ElementType = "input"
-	ElementTypeImg           ElementType = "img"
-	ElementTypeSvg           ElementType = "svg"
-	ElementTypeDivider       ElementType = "divider"
-	ElementTypeBar           ElementType = "bar"
-	ElementTypeScrollbar     ElementType = "scrollbar"
-	ElementTypeIframe        ElementType = "iframe"
-	ElementTypeButton        ElementType = "button"
-	ElementTypeCompare       ElementType = "compare"
-	ElementTypeContainer     ElementType = "container"
-	ElementTypeContainerItem ElementType = "container_item"
-	ElementTypeEditor        ElementType = "editor"
-	ElementTypeTree          ElementType = "tree"
+	ElementTypeDiv       ElementType = "div"
+	ElementTypeText      ElementType = "text"
+	ElementTypeInput     ElementType = "input"
+	ElementTypeImg       ElementType = "img"
+	ElementTypeSvg       ElementType = "svg"
+	ElementTypeDivider   ElementType = "divider"
+	ElementTypeBar       ElementType = "bar"
+	ElementTypeScrollbar ElementType = "scrollbar"
+	ElementTypeIframe    ElementType = "iframe"
+	ElementTypeButton    ElementType = "button"
+	ElementTypeCompare   ElementType = "compare"
+	ElementTypeContainer ElementType = "container"
+	ElementTypeEditor    ElementType = "editor"
+	ElementTypeTree      ElementType = "tree"
 )
 
 type ElementTag string
@@ -40,10 +39,10 @@ func NewElement(type_ ElementType, tag ElementTag, children ...*Element) *Elemen
 	return &Element{
 		type_:      type_,
 		tag:        tag,
-		name:       string(tag),
 		properties: map[string]string{},
 		methods:    map[string]string{},
 		children:   children,
+		name:       string(tag),
 	}
 }
 
@@ -54,13 +53,10 @@ type Element struct {
 	methods    map[string]string
 	children   []*Element
 
-	name      string
-	selfIndex []int
-
+	name          string
+	selfIndex     []int
 	isLocalRoot   bool
 	localElements []*Element
-
-	seed *Element
 }
 
 func (e *Element) SelfIndex() []int {

@@ -64,37 +64,25 @@ func (o *ContainerOpt) HandleItemUpdated(s string) *ContainerOpt {
 	return o
 }
 
-func containerItem(child *Element) *Element {
-	ret := NewElement(ElementTypeContainerItem, ElementTagDiv, child)
-	ret.SetProperty("compute", "null").
-		SetProperty("update", "null").
-		SetProperty("click", "null").
-		SetMethod("onUpdated", `function(k, v) {
-    this.update?.(this, k, v);
-}`)
-	NewOpt().Y("0").X("0").H("0").Init(ret)
-	return ret
-}
-
 func VListContainer(opt *ContainerOpt, child *Element) *Element {
-	ret := Container(opt, containerItem(child))
+	ret := Container(opt, child)
 	opt.List("true").Virtual("true").Scrollable("true").Init(ret)
 	return ret
 }
 
 func ListContainer(opt *ContainerOpt, child *Element) *Element {
-	ret := Container(opt, containerItem(child))
+	ret := Container(opt, child)
 	opt.List("true").Scrollable("true").Init(ret)
 	return ret
 }
 
 func Container(opt *ContainerOpt, child *Element) *Element {
+	NewOpt().Y("0").X("0").H("0").Init(child)
 	ret := NewElement(ElementTypeContainer, ElementTagDiv,
-		HScrollbar(nil).SetName("hBarEle"),
-		VScrollbar(nil).SetName("vBarEle"),
+		HScrollbar(nil),
+		VScrollbar(nil),
+		child,
 	)
-	ret.SetLocalRoot()
-	//ret.SetSeed(child)
 	opt.List("false").Virtual("false").Scrollable("false").ScrollLeft("0").ScrollTop("0").Init(ret)
 	ret.SetProperty("onUpdated", `function(k) {
     // items
@@ -131,7 +119,7 @@ func Container(opt *ContainerOpt, child *Element) *Element {
 }`)
 	ret.SetMethod("onCreated", `function() {
     if (!this.list) {
-        const child = g.createElement(this.model.slot[0], this);
+        const child = g.createElement(this.model.itemModel, this);
         this.childWidth = child.w;
         this.childHeight = child.h;
         child.onUpdated((k, v) => {

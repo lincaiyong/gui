@@ -3,7 +3,6 @@ function container_updateList() {
         return;
     }
     const data = this.items;
-    const computeFunc = this.model.slot[0].properties.compute[0]();
     const scrollLeft = this.scrollLeft || 0;
     const scrollTop = this.scrollTop || 0;
     const RESERVED_COUNT = 2;
@@ -13,7 +12,7 @@ function container_updateList() {
     const visible = [];
     let prevItem = null;
     for (let i = 0; i < data.length; i++) {
-        const item = computeFunc(this, i, prevItem);
+        const item = this.handleItemCompute(this, i, prevItem);
         computedItems.push(item);
         prevItem = item;
 
@@ -61,7 +60,7 @@ function container_updateList() {
             if (!child) {
                 child = other.shift();
                 if (!child) {
-                    child = g.createElement(this.model.slot[0], this);
+                    child = g.createElement(this.model.itemModel, this);
                     ['x', 'y', 'w', 'h'].forEach(k => child._properties[k].reset());
                 }
                 nonHitKey.push(child);
@@ -83,10 +82,10 @@ function container_updateList() {
             g.destroyElement(child);
         }
         while (this.children.length < visible.length + 2) {
-            g.createElement(this.model.slot[0], this);
+            g.createElement(this.model.itemModel, this);
         }
         for (let i = 0; i < visible.length; i++) {
-            const child = this.children[i+RESERVED_COUNT];
+            const child = this.children[i + RESERVED_COUNT];
             const item = computedItems[visible[i]];
             child.data = item;
             child.x = item.x - scrollLeft;
@@ -113,7 +112,7 @@ function container_updateList() {
         if (mh - scrollTop < this.ch) {
             this.scrollTop = Math.max(mh - this.ch, 0);
         }
-        this.hBar?.show(true);
-        this.vBar?.show(true);
+        this.children[0].show(true); // hScrollBar
+        this.children[1].show(true); // vScrollBar
     }
 }
