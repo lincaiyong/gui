@@ -822,9 +822,13 @@ class BaseElement {
         if (typeof (v) === 'string' && (this.tag === 'svg' || this.tag === 'img')) {
             this.properties.src.value = v;
             if (this.tag === 'img') {
-                this.ref.setAttribute(k, v);
+                this.ref.setAttribute('src', v);
             } else {
-                g.fetchRes(v).then(data => this.ref.innerHTML = data).catch(err => g.log.error(err));
+                g.fetchRes(v).then(data => {
+                    this.ref.innerHTML = data;
+                }).catch(err => {
+                    console.error(err);
+                });
             }
         }
     }

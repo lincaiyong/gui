@@ -11,6 +11,7 @@ import (
 func main() {
 	common.StartServer("gui", "v1.0.1", "",
 		func(_ []string, r *gin.RouterGroup) error {
+			r.Use(CorsMiddleware())
 			r.GET("/res/*filepath", gui.HandleRes())
 			r.GET("/hello", func(c *gin.Context) {
 				comp := Div(NewOpt(),
@@ -38,45 +39,37 @@ function handleClick() {
 				)
 				gui.HandlePage(c, "container", root)
 			})
-			//			r.GET("/editor", func(c *gin.Context) {
-			//				comp := Root(Editor().NameAs("editorEle")).OnCreated("Root.test").
-			//					Code(`
-			//function test() {
-			//	setTimeout(function() {
-			//		const editor = g.root.editorEle;
-			//		editor.setValue('package main\n\nfunc main() {\n\n}');
-			//		editor.setLanguage('go');
-			//	}, 1000);
-			//}
-			//`)
-			//				gui.MakePage(c, "editor", comp)
-			//			})
-			//			r.GET("/iframe", func(c *gin.Context) {
-			//				comp := Root(
-			//					Iframe().NameAs("iframeEle"),
-			//				).OnCreated("Root.test").Code(`
-			//function test() {
-			//	setTimeout(function() {
-			//		const iframe = g.root.iframeEle;
-			//		const url = 'http://127.0.0.1:9123/editor';
-			//		g.util.fetch(url).then(html => {
-			//			iframe.setHtml(html);
-			//		}).catch(e => {
-			//			g.log.error(e);
-			//		});
-			//	}, 1000);
-			//}`)
-			//				gui.MakePage(c, "iframe", comp)
-			//			})
-			//			r.GET("/img", func(c *gin.Context) {
-			//				gui.MakePage(c, "img", Root(Img("'img/bot.png'")))
-			//			})
-			//			r.GET("/input", func(c *gin.Context) {
-			//				gui.MakePage(c, "input", Root(
-			//					Input().H("30").W("400").X("parent.w/2-.w/2").Y("parent.h/2-.h/2").
-			//						BorderTop(1).BorderBottom(1),
-			//				))
-			//			})
+			r.GET("/editor", func(c *gin.Context) {
+				root := Editor(NewEditorOpt().OnCreated("test"))
+				gui.HandlePage(c, "editor", root, `function test() {
+	setTimeout(function() {
+		const editor = g.root.editorEle;
+		editor.setValue('package main\n\nfunc main() {\n\n}');
+		editor.setLanguage('go');
+	}, 1000);
+}`)
+			})
+			r.GET("/iframe", func(c *gin.Context) {
+				comp := Named("iframe", Iframe(NewOpt().OnCreated("test")))
+				gui.HandlePage(c, "iframe", comp, `function test() {
+	setTimeout(function() {
+		const iframe = g.root.iframeEle;
+		const url = 'http://127.0.0.1:9123/editor';
+		g.fetch(url).then(html => {
+			iframe.srcdoc = html;
+		}).catch(e => {
+			console.error(e);
+		});
+	}, 1000);
+}`)
+			})
+			r.GET("/img", func(c *gin.Context) {
+				gui.HandlePage(c, "img", Img(NewOpt(), "'res/img/bot.png'"))
+			})
+			r.GET("/input", func(c *gin.Context) {
+				gui.HandlePage(c, "input", Div(NewOpt(), Input(NewOpt().H("30").W("400").X("parent.w/2-.w/2").Y("parent.h/2-.h/2").
+					BorderTop(1).BorderBottom(1), "'x'")))
+			})
 			//			r.GET("/tree", func(c *gin.Context) {
 			//				gui.MakePage(c, "tree", Root(
 			//					Tree().NameAs("treeEle"),

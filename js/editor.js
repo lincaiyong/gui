@@ -1,4 +1,4 @@
-function handleCreated() {
+function editor_handleCreated() {
     let lineNumbers = 'on';
     if (!this.showLineNo) {
         lineNumbers = 'off';
