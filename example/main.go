@@ -16,26 +16,28 @@ func main() {
 					HDivider(NewOpt().Y("prev.y2")),
 					Named("text2", Text(NewOpt().H("200").X("parent.w/2-.w/2").Y("prev.y2").OnClick("() => console.log(12)"), "'hello world'")),
 					Div(NewOpt().Y("450").H("400"),
-						Div(NewOpt().W("next.x"),
+						Named("left", Div(NewOpt().W("next.x"),
 							Named("editor", Editor(NewEditorOpt().X("20").Y("0").W("800").H("next.y - .y").BgColor(ColorBlue))),
 							HBar(NewOpt().BgColor(ColorBlue).Opacity("0.1").Y("parent.h/2").W("parent.w")),
-							Div(NewOpt().X("20").Y("prev.y2").W("800").H("parent.h-prev.y2").BgColor(ColorYellow),
-								Named("container", ListContainer(NewContainerOpt().HandleItemCompute("onComputeItem").HandleItemUpdated("onUpdateItem"),
-									Div(NewOpt().OnHover("onHoverItem"),
-										Text(NewOpt(), "''"),
-									),
-								)),
-							),
-						),
+							Div(NewOpt().X("20").Y("prev.y2").W("800").H("parent.h-prev.y2").BgColor(ColorYellow)),
+						)),
 						VBar(NewOpt().X("parent.w/2").BgColor(ColorBlue).Opacity("0.1")),
-						Div(NewOpt().X("prev.x2").W("parent.w-prev.x2"),
+						Named("right", Div(NewOpt().X("prev.x2").W("parent.w-prev.x2"),
 							Named("compare", Compare(NewOpt().Y("0").H("next.y").BgColor(ColorRed))),
 							HBar(NewOpt().BgColor(ColorBlue).Opacity("0.1").Y("parent.h/2").W("parent.w")),
 							Div(NewOpt().Y("prev.y2").W("40").H("40").BgColor(ColorGreen)),
-							Named("btn", Button(NewButtonOpt().OnClick("onTestButtonClick").Svg(SvgProject).X("prev.x2").Y("prev.y2 + 100").W("40").H("40"))),
-						),
+							Named("btn", Button(NewButtonOpt().Svg(SvgProject).X("prev.x2").Y("prev.y2").W("40").H("40"))),
+							Named("container", ListContainer(NewContainerOpt().Y("prev.y2").H("300").HandleItemCompute("onComputeItem").HandleItemUpdated("onUpdateItem"),
+								Div(NewOpt().OnHover("onHoverItem").OnClick("onClickItem"),
+									Text(NewOpt().Color("root.color"), "''"),
+								),
+							)),
+						)),
 					),
 				)
+				root.SetMethod("onCreated", `function() {
+	this.containerEle.items = [1,2,3,4,5,6,7,8,9,1,2,3,4,5,6,7,8,9];
+}`)
 				HandlePage(c, "example", root, `function onText1Click() {
 	console.log(...arguments);
 }
@@ -57,8 +59,8 @@ function onUpdateItem(k, v) {
 function onHoverItem(ele, hovered) {
     ele.backgroundColor = hovered ? '#888' : '#eee';
 }
-function onTestButtonClick() {
-	g.root.containerEle.items = [1,2,3,4,5,6,7,8,9,1,2,3,4,5,6,7,8,9];
+function onClickItem(ele) {
+	console.log(ele);
 }`)
 			})
 			return nil

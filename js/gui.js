@@ -76,7 +76,6 @@ class BaseElement {
         this.properties = {};
         this.parent = parent;
         this.model = model;
-        this.tag = model.tag;
         this.id = parent ? `${parent.id}.${model.name}` : model.name;
         this.ref = document.createElement(model.tag);
         this.ref.style.position = model.position || 'absolute';
@@ -126,6 +125,10 @@ class BaseElement {
                 });
             }
         }
+    }
+
+    get tag() {
+        return this.model.tag;
     }
 
     get local() {
