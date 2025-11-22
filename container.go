@@ -61,18 +61,20 @@ func (o *ContainerOpt) HandleItemCompute(s string) *ContainerOpt {
 
 func VListContainer(opt *ContainerOpt, child *Element) *Element {
 	ret := Container(opt, child)
+	NewOpt().W("0").H("0").Init(child)
 	opt.List("true").Virtual("true").Scrollable("true").Init(ret)
 	return ret
 }
 
 func ListContainer(opt *ContainerOpt, child *Element) *Element {
 	ret := Container(opt, child)
+	NewOpt().W("0").H("0").Init(child)
 	opt.List("true").Scrollable("true").Init(ret)
 	return ret
 }
 
 func Container(opt *ContainerOpt, child *Element) *Element {
-	childOpt := NewOpt().Y("0").X("0").H("0")
+	childOpt := NewOpt()
 	child.SetProperty("data", "null")
 	if opt.handleItemUpdate != "" {
 		childOpt.OnUpdated(opt.handleItemUpdate)
@@ -86,7 +88,7 @@ func Container(opt *ContainerOpt, child *Element) *Element {
 		VScrollbar(NewOpt()),
 		child,
 	)
-	opt.List("false").Virtual("false").Scrollable("false").ScrollLeft("0").ScrollTop("0").
+	opt.List("false").Virtual("false").Scrollable("true").ScrollLeft("0").ScrollTop("0").
 		OnUpdated("container_handleUpdated").
 		OnCreated("container_handleCreated").
 		Init(ret)

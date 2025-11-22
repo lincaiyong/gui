@@ -34,7 +34,7 @@ function handleClick() {
 			r.GET("/container", func(c *gin.Context) {
 				root := Div(NewOpt(),
 					Container(NewContainerOpt().H("400").Scrollable("true").BgColor("'#eee'").W("200").H("200").X("parent.w/2-.w/2").Y("parent.h/2-.h/2"),
-						Text(NewOpt(), "'hello world!'")),
+						Named("text", Text(NewOpt().W("1000").H("600"), "'hello world!'"))),
 				)
 				gui.HandlePage(c, "container", root)
 			})
