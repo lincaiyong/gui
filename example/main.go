@@ -27,7 +27,7 @@ func main() {
 							HBar(NewOpt().BgColor(ColorBlue).Opacity("0.1").Y("parent.h/2").W("parent.w")),
 							Div(NewOpt().Y("prev.y2").W("40").H("40").BgColor(ColorGreen)),
 							Named("btn", Button(NewButtonOpt().Svg(SvgProject).X("prev.x2").Y("prev.y2").W("40").H("40"))),
-							Named("container", ListContainer(NewContainerOpt().Y("prev.y2").H("300").HandleItemCompute("onComputeItem").HandleItemUpdated("onUpdateItem"),
+							Named("container", VListContainer(NewContainerOpt().Y("prev.y2").H("parent.h-prev.y2").HandleItemCompute("onComputeItem").HandleItemUpdated("onUpdateItem"),
 								Div(NewOpt().OnHover("onHoverItem").OnClick("onClickItem"),
 									Text(NewOpt().Color("root.color"), "''"),
 								),

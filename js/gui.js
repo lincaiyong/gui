@@ -131,6 +131,10 @@ class BaseElement {
         return this.model.tag;
     }
 
+    get root() {
+        return g.root;
+    }
+
     get local() {
         const depth = this.model.depth || 0;
         if (depth === 0) {

@@ -8,6 +8,7 @@ func Div(opt *Opt, children ...*Element) *Element {
 
 func Text(opt *Opt, text string) *Element {
 	ret := NewElement(ElementTypeText, ElementTagSpan)
+	NewOpt().Color(ColorBlack).Init(ret)
 	opt.InnerText(text).FontSize("Math.floor(.h * 2 / 3)").LineHeight(".h").
 		W("g.textWidth(.innerText, .fontFamily, .fontSize)").Init(ret)
 	return ret
