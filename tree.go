@@ -48,19 +48,6 @@ func Tree(opt *TreeOpt) *Element {
 		)),
 	)
 	ret.SetLocalRoot()
-
-	opt.OnUpdated(".handleUpdated").Init(ret)
-	ret.SetMethod("handleUpdated", `function(k, v) {
-    if (k === 'items') {
-        this.nodeMap = tree_makeNodeMap(v, this.sort);
-        this.containerEle.items = tree_nodeToItems(this.nodeMap, '', 0, 0);
-        this.selectedEle.v = 0;
-    }
-}`)
-	ret.SetMethod("handleChildSelected", `function(child, focus) {
-    this.selectedChildTop = child.y + this.containerEle.scrollTop;
-    this.selectedEle.v = 1;
-    this.focus = focus;
-}`)
+	opt.OnUpdated("tree_handleUpdated").Init(ret)
 	return ret
 }

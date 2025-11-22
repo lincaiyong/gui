@@ -164,3 +164,17 @@ function tree_sortChildren(node) {
         node.children.forEach(tree_sortChildren);
     }
 }
+
+function tree_handleUpdated(k, v) {
+    if (k === 'items') {
+        this.nodeMap = tree_makeNodeMap(v, this.sort);
+        this.containerEle.items = tree_nodeToItems(this.nodeMap, '', 0, 0);
+        this.selectedEle.v = 0;
+    }
+}
+
+function tree_handleChildSelected(child, focus) {
+    this.selectedChildTop = child.y + this.containerEle.scrollTop;
+    this.selectedEle.v = 1;
+    this.focus = focus;
+}

@@ -153,16 +153,16 @@ function container_handleUpdated(k) {
 
 function container_handleCreated() {
     if (!this.list) {
-        const child = g.createElement(null, this.model.itemModel, this);
+        const child = g.createElement(null, this, this.model.itemModel);
         this.childWidth = child.w;
         this.childHeight = child.h;
-        child.onUpdated((k, v) => {
+        child.onUpdated = (k, v) => {
             if (k === 'w') {
                 this.childWidth = v;
             } else if (k === 'h') {
                 this.childHeight = v;
             }
-        });
+        };
     }
 
     if (this.scrollable) {

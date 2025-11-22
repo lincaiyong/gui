@@ -1,10 +1,10 @@
 class Property {
     static id = 0;
 
-    constructor(element, name, sources, sourceResolver, computeFunc) {
+    constructor(element, name, sources, sourceResolver, computeFunc, staticValue) {
         this._element = element;
         this._name = name;
-        this._value = undefined;
+        this._value = staticValue;
         this._subscribers = [];
         this._sources = Array.from(sources || []);
         this._sourceResolver = sourceResolver;
@@ -19,6 +19,9 @@ class Property {
     }
 
     reset(sources = null, computeFunc = null) {
+        if (!this._computeFunc) {
+            return;
+        }
         this.unsubscribe();
         this._sources = Array.from(sources || []);
         this.subscribe();
@@ -28,6 +31,9 @@ class Property {
     }
 
     update() {
+        if (!this._computeFunc) {
+            return;
+        }
         for (const source of this._resolvedSources) {
             if (!source) {
                 console.error(`source is empty`);
@@ -40,6 +46,9 @@ class Property {
     }
 
     subscribe() {
+        if (!this._computeFunc) {
+            return;
+        }
         this._resolvedSources = this._sources.map(source => this._sourceResolver(source));
         this._resolvedSources.forEach(
             source => source?._subscribers.push(this)
@@ -47,6 +56,9 @@ class Property {
     }
 
     unsubscribe() {
+        if (!this._computeFunc) {
+            return;
+        }
         this._resolvedSources.forEach(
             source => source?._subscribers.splice(source?._subscribers.indexOf(this), 1)
         );
@@ -57,6 +69,9 @@ class Property {
     }
 
     set value(val) {
+        if (!this._computeFunc) {
+            return;
+        }
         if (this._value !== val && val !== undefined) {
             if (this._name === g.debug) {
                 console.log(g.debug);
@@ -68,6 +83,9 @@ class Property {
     }
 
     onUpdated(fun) {
+        if (!this._computeFunc) {
+            return;
+        }
         this._updatedListeners.push(fun);
         return () => this._updatedListeners.splice(this._updatedListeners.indexOf(fun), 1);
     }
@@ -101,15 +119,20 @@ class BaseElement {
         }
         const props = Object.assign({}, this._defaultProperties, model.properties || {});
         for (const k in props) {
-            const [computeFunc, sources] = props[k];
-            const sourceResolver = source => {
-                const resolved = this.resolveSrc(source);
-                if (!resolved) {
-                    console.error(`fail to resolve: ${source}`);
+            const v = props[k];
+            if (v instanceof Array) {
+                const [computeFunc, sources] = v;
+                const sourceResolver = source => {
+                    const resolved = this.resolveSrc(source);
+                    if (!resolved) {
+                        console.error(`fail to resolve: ${source}`);
+                    }
+                    return resolved
                 }
-                return resolved
+                this.properties[k] = new Property(this, k, sources, sourceResolver, computeFunc);
+            } else {
+                this.properties[k] = new Property(this, k, [], null, null, v);
             }
-            this.properties[k] = new Property(this, k, sources, sourceResolver, computeFunc);
             if (k === 'hovered') {
                 this.properties[k].onUpdated(v => {
                     this.onHover?.(this, v);
