@@ -39,27 +39,27 @@ function tree_updateItem(itemEle, k, v) {
     if (k === 'data') {
         if (v.leaf) {
             const ext = v.key.substring(v.key.lastIndexOf('.') + 1);
-            let src = 'svg/text.svg';
+            let src = 'res/svg/text.svg';
             switch (ext) {
                 case 'go':
-                    src = 'svg/go.svg';
+                    src = 'res/svg/go.svg';
                     break;
                 case 'js':
-                    src = 'svg/js.svg';
+                    src = 'res/svg/js.svg';
                     break;
                 case 'py':
-                    src = 'svg/python.svg';
+                    src = 'res/svg/python.svg';
                     break;
             }
             if (v.key === 'go.mod' || v.key.endsWith('/go.mod')) {
-                src = 'svg/goMod.svg'
+                src = 'res/svg/goMod.svg'
             }
             if (v.key === '.gitignore' || v.key.endsWith('/.gitignore')) {
-                src = 'svg/ignored.svg'
+                src = 'res/svg/ignored.svg'
             }
             itemEle.iconEle.src = src;
         } else {
-            itemEle.iconEle.src = 'svg/folder.svg';
+            itemEle.iconEle.src = 'res/svg/folder.svg';
         }
     }
 }

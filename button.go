@@ -3,7 +3,7 @@ package gui
 func NewButtonOpt() *ButtonOpt {
 	ret := &ButtonOpt{}
 	ret.BaseOpt = NewBaseOpt[ButtonOpt](ret)
-	ret.Svg("'svg/project.svg'").
+	ret.Svg(SvgProject).
 		Selected("false").
 		Text("''").
 		Flag("false")
@@ -64,7 +64,7 @@ func SourceDirButton(opt *ButtonOpt) *Element {
 func SourceFileButton(opt *ButtonOpt) *Element {
 	ret := NewElement(ElementTypeButton, ElementTagDiv,
 		Text(NewOpt().X("next.x2+4").Y("1").H("parent.h-2").Color(ColorGray110), "parent.text"),
-		Svg(NewOpt().X("3").Y("2").W("16").H(".w"), "'svg/go.svg'"),
+		Svg(NewOpt().X("3").Y("2").W("16").H(".w"), SvgGo),
 	)
 	ret.SetLocalRoot()
 	opt.W("child.w + 26").H("20").BorderRadius("3").

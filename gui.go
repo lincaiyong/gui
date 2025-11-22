@@ -53,8 +53,7 @@ func GenHtml(title string, root *Element, jsCode ...string) (string, error) {
     <script src="res/vs/loader.js"></script>
     <script>
 {{code}}
-        require.config({paths: {'vs': 'res/vs'}});
-        require(['vs/editor/editor.main'], () => g.createAll(document.body, root));
+        g.start(root);
     </script>
 </body>
 </html>`

@@ -34,6 +34,11 @@ const (
 	ElementTagIframe ElementTag = "iframe"
 )
 
+func Named(name string, ele *Element) *Element {
+	ele.name = fmt.Sprintf("%sEle", name)
+	return ele
+}
+
 func NewElement(type_ ElementType, tag ElementTag, children ...*Element) *Element {
 	return &Element{
 		type_: type_,
@@ -47,7 +52,7 @@ func NewElement(type_ ElementType, tag ElementTag, children ...*Element) *Elemen
 		},
 		methods:  map[string]string{},
 		children: children,
-		name:     string(tag),
+		name:     string(type_),
 	}
 }
 
@@ -106,11 +111,6 @@ func (e *Element) Tag() ElementTag {
 
 func (e *Element) Name() string {
 	return e.name
-}
-
-func (e *Element) SetName(name string) *Element {
-	e.name = fmt.Sprintf("%sEle", name)
-	return e
 }
 
 func (e *Element) Properties() map[string]string {

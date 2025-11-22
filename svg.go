@@ -3,7 +3,7 @@ package gui
 import "fmt"
 
 func svg(name string) string {
-	return fmt.Sprintf("'svg/%s.svg'", name)
+	return fmt.Sprintf("'res/svg/%s.svg'", name)
 }
 
 var (
@@ -31,4 +31,5 @@ var (
 	SvgIgnored             = svg("ignored")
 	SvgFolder              = svg("folder")
 	SvgSearch              = svg("search")
+	SvgGo                  = svg("go")
 )

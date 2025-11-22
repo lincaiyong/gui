@@ -1,6 +1,7 @@
 class Property {
     static id = 0;
 
+
     constructor(element, name, sources, sourceResolver, computeFunc) {
         this._element = element;
         this._name = name;
@@ -55,6 +56,9 @@ class Property {
 
     set value(val) {
         if (this._value !== val && val !== undefined) {
+            if (this._name === g.debug) {
+                console.log(g.debug);
+            }
             this._value = val;
             this._updatedListeners.forEach(fun => fun(val));
             this._subscribers.forEach(sub => sub.update());
@@ -329,9 +333,12 @@ class BaseElement {
             onWheel: [() => undefined, []],
             opacity: [() => 1, []],
             outline: [() => 'none', []],
+            placeholder: [() => '', []],
             position: [() => 'absolute', []],
             scrollLeft: [() => 0, []],
             scrollTop: [() => 0, []],
+            src: [() => '', []],
+            srcdoc: [() => '', []],
             userSelect: [() => 'none', []],
             v: [() => 0, []],
             w: [() => 0, []],
@@ -1047,7 +1054,7 @@ const g = {
     createAll(dom, model) {
         document.documentElement.style.overflow = 'hidden';
         if (g.root) {
-            g.root.destroyElement();
+            g.destroyElement(g.root);
         }
         g.root = g.createElement(dom, null, model);
         const resize = () => [g.root.w, g.root.h] = [window.innerWidth, window.innerHeight];
@@ -1127,6 +1134,10 @@ const g = {
                 })
                 .catch(err => reject(err));
         });
+    },
+    start(root) {
+        require.config({paths: {'vs': 'res/vs'}});
+        require(['vs/editor/editor.main'], () => g.createAll(document.body, root));
     }
 };
 
