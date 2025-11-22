@@ -49,10 +49,15 @@ class Property {
         if (!this._computeFunc) {
             return;
         }
-        this._resolvedSources = this._sources.map(source => this._sourceResolver(source));
-        this._resolvedSources.forEach(
-            source => source?._subscribers.push(this)
-        );
+        this._resolvedSources = this._sources.map(source => {
+            return this._sourceResolver(source);
+        });
+        this._resolvedSources.forEach(source => {
+            if (!source?._subscribers) {
+                console.error("invalid subscriber");
+            }
+            source?._subscribers.push(this);
+        });
     }
 
     unsubscribe() {
@@ -136,11 +141,11 @@ class BaseElement {
             if (k === 'hovered') {
                 this.properties[k].onUpdated(v => {
                     this.onHover?.(this, v);
-                    this.onUpdated?.(k, v);
+                    this.onUpdated?.(this, k, v);
                 });
             } else {
                 this.properties[k].onUpdated(v => {
-                    this.onUpdated?.(k, v);
+                    this.onUpdated?.(this, k, v);
                 });
             }
             if (!(k in this._defaultProperties)) {
@@ -219,7 +224,7 @@ class BaseElement {
     _initAll() {
         Object.values(this.properties).forEach(p => p.update());
         this.children.forEach(child => child._initAll());
-        this.onCreated?.();
+        this.onCreated?.(this);
     }
 
     _create(parent) {
@@ -245,7 +250,7 @@ class BaseElement {
     }
 
     _destroy() {
-        this.onDestroy?.();
+        this.onDestroy?.(this);
         this._unInitAll();
         this._destroyAll();
     }
@@ -1197,10 +1202,11 @@ const g = {
     },
     resCache: {},
     fetchRes(uri) {
-        if (uri in g.resCache) {
-            return g.resCache[uri];
-        }
         return new Promise((resolve, reject) => {
+            if (uri in g.resCache) {
+                resolve(g.resCache[uri]);
+                return;
+            }
             fetch(uri)
                 .then(resp => resp.text())
                 .then(v => {

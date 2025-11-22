@@ -109,6 +109,8 @@ func (v *Visitor) visit(node *parser.Node) string {
 			i = fmt.Sprintf("e.%s", i)
 		}
 		return i
+	case parser.NodeTypeObject:
+		return "{}"
 	default:
 		v.err = fmt.Errorf("fail to visit unknown node type: %s", node.Type())
 		return ""

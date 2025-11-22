@@ -2,6 +2,8 @@ package gui
 
 import (
 	"fmt"
+	"github.com/lincaiyong/log"
+	"strings"
 )
 
 type ElementType string
@@ -35,6 +37,9 @@ const (
 )
 
 func Named(name string, ele *Element) *Element {
+	if strings.HasSuffix(name, "Ele") {
+		log.WarnLog("invalid name: %s", name)
+	}
 	ele.name = fmt.Sprintf("%sEle", name)
 	return ele
 }
@@ -93,8 +98,9 @@ func (e *Element) IsLocalRoot() bool {
 	return e.isLocalRoot
 }
 
-func (e *Element) SetLocalRoot() {
+func (e *Element) SetLocalRoot() *Element {
 	e.isLocalRoot = true
+	return e
 }
 
 func (e *Element) Tag() ElementTag {

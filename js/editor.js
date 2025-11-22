@@ -1,10 +1,10 @@
-function editor_handleCreated() {
+function editor_handleCreated(ele) {
     let lineNumbers = 'on';
-    if (!this.showLineNo) {
+    if (!ele.showLineNo) {
         lineNumbers = 'off';
     }
-    const value = this.value;
-    const language = this.language;
+    const value = ele.value;
+    const language = ele.language;
     const options = {
         value,
         language,
@@ -19,29 +19,29 @@ function editor_handleCreated() {
         // glyphMargin: false,
         // suggestOnTriggerCharacters: false,
     };
-    this._editor = monaco.editor.create(this.ref, options);
-    this._editor.onDidChangeCursorPosition((e) => {
-        this.onCursorPositionChange?.(e.position.lineNumber, e.position.column);
+    ele._editor = monaco.editor.create(ele.ref, options);
+    ele._editor.onDidChangeCursorPosition((e) => {
+        ele.onCursorPositionChange?.(e.position.lineNumber, e.position.column);
     });
-    this._editor.onDidChangeModelContent(() => {
-        this.value = this._editor.getValue();
+    ele._editor.onDidChangeModelContent(() => {
+        ele.value = ele._editor.getValue();
     });
 }
 
-function editor_handleUpdated(k, v) {
-    if (!this._editor) {
+function editor_handleUpdated(ele, k, v) {
+    if (!ele._editor) {
         return;
     }
     switch (k) {
         case 'value':
-            this._editor.setValue(v);
+            ele._editor.setValue(v);
             break;
         case 'language':
-            monaco.editor.setModelLanguage(this._editor.getModel(), v);
+            monaco.editor.setModelLanguage(ele._editor.getModel(), v);
             break;
     }
 }
 
-function editor_handleDestroy() {
-    this._editor.dispose();
+function editor_handleDestroy(ele) {
+    ele._editor.dispose();
 }

@@ -172,6 +172,7 @@ func walkTree(ele *Element, localRoot *Element, depth int, index []int) {
 	if ele.IsLocalRoot() {
 		localRoot = ele
 		depth = 0
+		index = nil
 	}
 	for i, child := range ele.Children() {
 		walkTree(child, localRoot, depth+1, append(index, i))

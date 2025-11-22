@@ -70,18 +70,18 @@ function handleClick() {
 				gui.HandlePage(c, "input", Div(NewOpt(), Input(NewOpt().H("30").W("400").X("parent.w/2-.w/2").Y("parent.h/2-.h/2").
 					BorderTop(1).BorderBottom(1), "'x'")))
 			})
-			//			r.GET("/tree", func(c *gin.Context) {
-			//				gui.MakePage(c, "tree", Root(
-			//					Tree().NameAs("treeEle"),
-			//				).OnCreated("Root.test").Code(`
-			//function test() {
-			//	setTimeout(function() {
-			//		const treeEle = g.root.treeEle;
-			//		treeEle.items = ['test/test.go', 'test/test.js', 'test/test.py', 'test/test.txt', 'go.mod'];
-			//	}, 1000);
-			//}
-			//`))
-			//			})
+			r.GET("/tree", func(c *gin.Context) {
+				gui.HandlePage(c, "tree", Div(NewOpt().OnCreated("test"),
+					Named("tree", Tree(NewTreeOpt())),
+				), `
+function test() {
+	setTimeout(function() {
+		const treeEle = g.root.treeEle;
+		treeEle.items = ['test/test.go', 'test/test.js', 'test/test.py', 'test/test.txt', 'go.mod'];
+	}, 1000);
+}
+`)
+			})
 			//			r.GET("/toyeditor", func(c *gin.Context) {
 			//				gui.MakePage(c, "toyeditor", Root(ToyEditor()))
 			//			})

@@ -117,60 +117,60 @@ function container_updateList() {
     }
 }
 
-function container_handleUpdated(k) {
+function container_handleUpdated(ele, k) {
     // items
-    if (k === 'items' && this.list) {
-        container_updateList.apply(this);
+    if (k === 'items' && ele.list) {
+        container_updateList.apply(ele);
     }
 
     // scroll
-    if (this.list && this.virtual && this.items instanceof Array) {
-        if ((k === 'scrollLeft' || k === 'scrollTop') && this.items instanceof Array) {
-            container_updateList.apply(this);
+    if (ele.list && ele.virtual && ele.items instanceof Array) {
+        if ((k === 'scrollLeft' || k === 'scrollTop') && ele.items instanceof Array) {
+            container_updateList.apply(ele);
         }
-    } else if (this.list) {
+    } else if (ele.list) {
         const RESERVED_COUNT = 2;
         if (k === 'scrollLeft') {
-            for (let i = RESERVED_COUNT; i < this.children.length; i++) {
-                const child = this.children[i];
-                child.x = child.data.x - this.scrollLeft;
+            for (let i = RESERVED_COUNT; i < ele.children.length; i++) {
+                const child = ele.children[i];
+                child.x = child.data.x - ele.scrollLeft;
             }
         } else if (k === 'scrollTop') {
-            for (let i = RESERVED_COUNT; i < this.children.length; i++) {
-                const child = this.children[i];
-                child.y = child.data.y - this.scrollTop;
+            for (let i = RESERVED_COUNT; i < ele.children.length; i++) {
+                const child = ele.children[i];
+                child.y = child.data.y - ele.scrollTop;
             }
         }
     }
 
     // w & h -> 影响scroll
-    if (this.scrollable) {
-        if ((k === 'w' || k === 'h') && this.items instanceof Array) {
-            container_updateList.apply(this);
+    if (ele.scrollable) {
+        if ((k === 'w' || k === 'h') && ele.items instanceof Array) {
+            container_updateList.apply(ele);
         }
     }
 }
 
-function container_handleCreated() {
-    if (!this.list) {
-        const child = g.createElement(null, this, this.model.itemModel);
-        this.childWidth = child.w;
-        this.childHeight = child.h;
+function container_handleCreated(ele) {
+    if (!ele.list) {
+        const child = g.createElement(null, ele, ele.model.itemModel);
+        ele.childWidth = child.w;
+        ele.childHeight = child.h;
         child.onUpdated = (k, v) => {
             if (k === 'w') {
-                this.childWidth = v;
+                ele.childWidth = v;
             } else if (k === 'h') {
-                this.childHeight = v;
+                ele.childHeight = v;
             }
         };
     }
 
-    if (this.scrollable) {
-        this.hBar = new Scrollbar(this, 'h');
-        this.vBar = new Scrollbar(this, 'v');
-        const bars = [this.hBar, this.vBar];
+    if (ele.scrollable) {
+        ele.hBar = new Scrollbar(ele, 'h');
+        ele.vBar = new Scrollbar(ele, 'v');
+        const bars = [ele.hBar, ele.vBar];
         bars.forEach(bar => bar.initDraggable());
-        this.onWheel = (_, ev) => {
+        ele.onWheel = (_, ev) => {
             ev.preventDefault();
             bars.forEach(bar => bar.handleWheel(ev));
         };

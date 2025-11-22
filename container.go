@@ -75,7 +75,7 @@ func ListContainer(opt *ContainerOpt, child *Element) *Element {
 
 func Container(opt *ContainerOpt, child *Element) *Element {
 	childOpt := NewOpt()
-	child.SetProperty("data", "null")
+	child.SetProperty("data", "{}")
 	if opt.handleItemUpdate != "" {
 		childOpt.OnUpdated(opt.handleItemUpdate)
 	}

@@ -1,6 +1,6 @@
-function tree_computeItem(container, index) {
+function treeItem_handleCompute(container, index) {
     const data = container.items[index];
-    const h = container.root.itemHeight;
+    const h = container.local.itemHeight;
     return Object.assign(data, {
         index,
         key: data.key,
@@ -11,9 +11,9 @@ function tree_computeItem(container, index) {
     });
 }
 
-function tree_clickItem(itemEle, ev) {
+function treeItem_handleClick(itemEle, ev) {
     const treeEle = itemEle.local;
-    treeEle.handleChildSelected(itemEle, true);
+    tree_handleChildSelected.apply(treeEle, [itemEle, true]);
     // 通知发生点击事件
     if (treeEle.onClickItem instanceof Function) {
         treeEle.onClickItem(itemEle, ev);
@@ -23,7 +23,7 @@ function tree_clickItem(itemEle, ev) {
         const {key} = itemEle.data;
         const node = treeEle.nodeMap[key];
         node.collapsed = !node.collapsed;
-        treeEle.containerEle.items = treeEle.nodeToItems(treeEle.nodeMap, '', 0, 0);
+        treeEle.containerEle.items = tree_nodeToItems.apply(treeEle, [treeEle.nodeMap, '', 0, 0]);
     }
     // 处理blur
     treeEle.onClickOutside = (_, event) => {
@@ -35,7 +35,7 @@ function tree_clickItem(itemEle, ev) {
     };
 }
 
-function tree_updateItem(itemEle, k, v) {
+function treeItem_handleUpdated(ele, k, v) {
     if (k === 'data') {
         if (v.leaf) {
             const ext = v.key.substring(v.key.lastIndexOf('.') + 1);
@@ -57,9 +57,9 @@ function tree_updateItem(itemEle, k, v) {
             if (v.key === '.gitignore' || v.key.endsWith('/.gitignore')) {
                 src = 'res/svg/ignored.svg'
             }
-            itemEle.iconEle.src = src;
+            ele.iconEle.src = src;
         } else {
-            itemEle.iconEle.src = 'res/svg/folder.svg';
+            ele.iconEle.src = 'res/svg/folder.svg';
         }
     }
 }
@@ -165,11 +165,11 @@ function tree_sortChildren(node) {
     }
 }
 
-function tree_handleUpdated(k, v) {
+function tree_handleUpdated(ele, k, v) {
     if (k === 'items') {
-        this.nodeMap = tree_makeNodeMap(v, this.sort);
-        this.containerEle.items = tree_nodeToItems(this.nodeMap, '', 0, 0);
-        this.selectedEle.v = 0;
+        ele.nodeMap = tree_makeNodeMap(v, ele.sort);
+        ele.containerEle.items = tree_nodeToItems(ele.nodeMap, '', 0, 0);
+        ele.selectedEle.v = 0;
     }
 }
 

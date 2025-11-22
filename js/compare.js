@@ -1,16 +1,16 @@
-function compare_handleCreated() {
+function compare_handleCreated(ele) {
     const leftModel = monaco.editor.createModel('原始文本', 'text/plain');
     const rightModel = monaco.editor.createModel('修改后的文本', 'text/plain');
 
-    this._editor = monaco.editor.createDiffEditor(this.ref, {
+    ele._editor = monaco.editor.createDiffEditor(ele.ref, {
         automaticLayout: true,
     });
-    this._editor.setModel({
+    ele._editor.setModel({
         original: leftModel,
         modified: rightModel
     });
 }
 
-function compare_handleDestroy() {
-    this._editor.dispose();
+function compare_handleDestroy(ele) {
+    ele._editor.dispose();
 }
