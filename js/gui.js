@@ -102,7 +102,13 @@ class BaseElement {
         const props = Object.assign({}, this._defaultProperties, model.properties || {});
         for (const k in props) {
             const [computeFunc, sources] = props[k];
-            const sourceResolver = source => this.resolveSrc(source);
+            const sourceResolver = source => {
+                const resolved = this.resolveSrc(source);
+                if (!resolved) {
+                    console.error(`fail to resolve: ${source}`);
+                }
+                return resolved
+            }
             this.properties[k] = new Property(this, k, sources, sourceResolver, computeFunc);
             if (k === 'hovered') {
                 this.properties[k].onUpdated(v => {
@@ -280,7 +286,7 @@ class BaseElement {
         }
         const [e, p] = source.split('.', 2);
         const target = this.resolveEle(e);
-        return target?.properties[p];
+        return target?.properties[p] || target;
     }
 
     resolveEle(name) {

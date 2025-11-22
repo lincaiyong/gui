@@ -50,7 +50,7 @@ func NewElement(type_ ElementType, tag ElementTag, children ...*Element) *Elemen
 			"x2":      ".x + .w",
 			"y2":      ".y + .h",
 		},
-		methods:  map[string]string{},
+		isStatic: map[string]bool{},
 		children: children,
 		name:     string(type_),
 	}
@@ -60,7 +60,7 @@ type Element struct {
 	type_      ElementType
 	tag        ElementTag
 	properties map[string]string
-	methods    map[string]string
+	isStatic   map[string]bool
 	children   []*Element
 
 	name          string
@@ -81,10 +81,6 @@ func (e *Element) Type() ElementType {
 	return e.type_
 }
 
-func (e *Element) SetType(type_ ElementType) {
-	e.type_ = type_
-}
-
 func (e *Element) LocalElements() []*Element {
 	return e.localElements
 }
@@ -101,10 +97,6 @@ func (e *Element) SetLocalRoot() {
 	e.isLocalRoot = true
 }
 
-func (e *Element) SetTag(tag ElementTag) {
-	e.tag = tag
-}
-
 func (e *Element) Tag() ElementTag {
 	return e.tag
 }
@@ -117,17 +109,18 @@ func (e *Element) Properties() map[string]string {
 	return e.properties
 }
 
-func (e *Element) SetProperty(k, v string) *Element {
-	e.properties[k] = v
+func (e *Element) IsStatic(name string) bool {
+	return e.isStatic[name]
+}
+
+func (e *Element) SetStaticProperty(k, v string) *Element {
+	e.SetProperty(k, v)
+	e.isStatic[k] = true
 	return e
 }
 
-func (e *Element) Methods() map[string]string {
-	return e.methods
-}
-
-func (e *Element) SetMethod(k, v string) *Element {
-	e.methods[k] = v
+func (e *Element) SetProperty(k, v string) *Element {
+	e.properties[k] = v
 	return e
 }
 

@@ -107,11 +107,15 @@ func genModel(ele *Element, depth int, pr *Printer) error {
 		} else {
 			pr.Put("properties: {").Push()
 			for _, k := range sortedKeys(props) {
-				v1, v2, err := convertExpr(props[k])
-				if err != nil {
-					return err
+				if ele.IsStatic(k) {
+					pr.Put("%s: %s,", k, props[k])
+				} else {
+					v1, v2, err := convertExpr(props[k])
+					if err != nil {
+						return err
+					}
+					pr.Put("%s: [e => %s, %s],", k, v1, v2)
 				}
-				pr.Put("%s: [e => %s, %s],", k, v1, v2)
 			}
 			pr.Pop().Put("},")
 		}
@@ -125,14 +129,6 @@ func genModel(ele *Element, depth int, pr *Printer) error {
 				return err
 			}
 			pr.Put("itemModel: %s", tmpPr.Code())
-		}
-		if len(ele.methods) > 0 {
-			pr.Put("methods: {").Push()
-			for _, k := range sortedKeys(ele.methods) {
-				m := ele.methods[k]
-				pr.Put("%s: %s,", k, m)
-			}
-			pr.Pop().Put("},")
 		}
 		if len(children) > 0 {
 			pr.Put("children: [").Push()

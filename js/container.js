@@ -116,3 +116,63 @@ function container_updateList() {
         this.vBar.show(true);
     }
 }
+
+function container_handleUpdated(k) {
+    // items
+    if (k === 'items' && this.list) {
+        container_updateList.apply(this);
+    }
+
+    // scroll
+    if (this.list && this.virtual && this.items instanceof Array) {
+        if ((k === 'scrollLeft' || k === 'scrollTop') && this.items instanceof Array) {
+            container_updateList.apply(this);
+        }
+    } else if (this.list) {
+        const RESERVED_COUNT = 2;
+        if (k === 'scrollLeft') {
+            for (let i = RESERVED_COUNT; i < this.children.length; i++) {
+                const child = this.children[i];
+                child.x = child.data.x - this.scrollLeft;
+            }
+        } else if (k === 'scrollTop') {
+            for (let i = RESERVED_COUNT; i < this.children.length; i++) {
+                const child = this.children[i];
+                child.y = child.data.y - this.scrollTop;
+            }
+        }
+    }
+
+    // w & h -> 影响scroll
+    if (this.scrollable) {
+        if ((k === 'w' || k === 'h') && this.items instanceof Array) {
+            container_updateList.apply(this);
+        }
+    }
+}
+
+function container_handleCreated() {
+    if (!this.list) {
+        const child = g.createElement(null, this.model.itemModel, this);
+        this.childWidth = child.w;
+        this.childHeight = child.h;
+        child.onUpdated((k, v) => {
+            if (k === 'w') {
+                this.childWidth = v;
+            } else if (k === 'h') {
+                this.childHeight = v;
+            }
+        });
+    }
+
+    if (this.scrollable) {
+        this.hBar = new Scrollbar(this, 'h');
+        this.vBar = new Scrollbar(this, 'v');
+        const bars = [this.hBar, this.vBar];
+        bars.forEach(bar => bar.initDraggable());
+        this.onWheel = (_, ev) => {
+            ev.preventDefault();
+            bars.forEach(bar => bar.handleWheel(ev));
+        };
+    }
+}

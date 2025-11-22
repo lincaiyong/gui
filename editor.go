@@ -31,57 +31,12 @@ func (o *EditorOpt) ShowLineNo(b bool) *EditorOpt {
 }
 
 func (o *EditorOpt) OnCursorPositionChange(s string) *EditorOpt {
-	o.SetProperty("onCursorPositionChange", s)
+	o.SetStaticProperty("onCursorPositionChange", s)
 	return o
 }
 
 func Editor(opt *EditorOpt) *Element {
 	ret := NewElement(ElementTypeEditor, ElementTagDiv)
-	ret.SetMethod("handleCreated", `function() {
-    let lineNumbers = 'on';
-    if (!this.showLineNo) {
-        lineNumbers = 'off';
-    }
-    const value = this.value;
-    const language = this.language;
-    const options = {
-        value,
-        language,
-        theme: 'vs',
-        automaticLayout: true,
-        lineNumbers,
-        minimap: {
-            enabled: false,
-        },
-        readOnly: true,
-        // fontFamily: '',
-        // glyphMargin: false,
-        // suggestOnTriggerCharacters: false,
-    };
-    this._editor = monaco.editor.create(this.ref, options);
-    this._editor.onDidChangeCursorPosition((e) => {
-        this.onCursorPositionChange?.(e.position.lineNumber, e.position.column);
-    });
-    this._editor.onDidChangeModelContent(() => {
-        this.value = this._editor.getValue();
-    });
-}`).
-		SetMethod("handleUpdated", `function(k, v) {
-    if (!this._editor) {
-        return;
-    }
-    switch (k) {
-        case 'value':
-            this._editor.setValue(v);
-            break;
-        case 'language':
-            monaco.editor.setModelLanguage(this._editor.getModel(), v);
-            break;
-    }
-}`).
-		SetMethod("handleDestroy", `function() {
-    this._editor.dispose();
-}`)
-	opt.OnCreated(".handleCreated").OnUpdated(".handleUpdated").OnDestroy(".handleDestroy").Init(ret)
+	opt.OnCreated("editor_handleCreated").OnUpdated("editor_handleUpdated").OnDestroy("editor_handleDestroy").Init(ret)
 	return ret
 }

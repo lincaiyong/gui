@@ -16,16 +16,24 @@ func NewBaseOpt[T any](self *T) *BaseOpt[T] {
 	return &BaseOpt[T]{
 		self:       self,
 		properties: make(map[string]string),
+		isStatic:   map[string]bool{},
 	}
 }
 
 type BaseOpt[T any] struct {
 	self       *T
 	properties map[string]string
+	isStatic   map[string]bool
 }
 
 func (o *BaseOpt[T]) SetProperty(key, value string) *T {
 	o.properties[key] = value
+	return o.self
+}
+
+func (o *BaseOpt[T]) SetStaticProperty(key, value string) *T {
+	o.SetProperty(key, value)
+	o.isStatic[key] = true
 	return o.self
 }
 
@@ -35,6 +43,9 @@ func (o *BaseOpt[T]) Properties() map[string]string {
 
 func (o *BaseOpt[T]) Init(e *Element) {
 	for k, v := range o.properties {
+		if o.isStatic[k] {
+			e.SetProperty(k, v)
+		}
 		e.SetProperty(k, v)
 	}
 }
@@ -225,112 +236,112 @@ func (o *BaseOpt[T]) HoveredByMouse(s string) *T {
 }
 
 func (o *BaseOpt[T]) OnClick(s string) *T {
-	o.SetProperty("onClick", s)
+	o.SetStaticProperty("onClick", s)
 	return o.self
 }
 
 func (o *BaseOpt[T]) OnDoubleClick(s string) *T {
-	o.SetProperty("onDoubleClick", s)
+	o.SetStaticProperty("onDoubleClick", s)
 	return o.self
 }
 
 func (o *BaseOpt[T]) OnContextMenu(s string) *T {
-	o.SetProperty("onContextMenu", s)
+	o.SetStaticProperty("onContextMenu", s)
 	return o.self
 }
 
 func (o *BaseOpt[T]) OnMouseDown(s string) *T {
-	o.SetProperty("onMouseDown", s)
+	o.SetStaticProperty("onMouseDown", s)
 	return o.self
 }
 
 func (o *BaseOpt[T]) OnMouseMove(s string) *T {
-	o.SetProperty("onMouseMove", s)
+	o.SetStaticProperty("onMouseMove", s)
 	return o.self
 }
 
 func (o *BaseOpt[T]) OnMouseUp(s string) *T {
-	o.SetProperty("onMouseUp", s)
+	o.SetStaticProperty("onMouseUp", s)
 	return o.self
 }
 
 func (o *BaseOpt[T]) OnWheel(s string) *T {
-	o.SetProperty("onWheel", s)
+	o.SetStaticProperty("onWheel", s)
 	return o.self
 }
 
 func (o *BaseOpt[T]) OnInput(s string) *T {
-	o.SetProperty("onInput", s)
+	o.SetStaticProperty("onInput", s)
 	return o.self
 }
 
 func (o *BaseOpt[T]) OnKeyUp(s string) *T {
-	o.SetProperty("onKeyUp", s)
+	o.SetStaticProperty("onKeyUp", s)
 	return o.self
 }
 
 func (o *BaseOpt[T]) OnKeyDown(s string) *T {
-	o.SetProperty("onKeyDown", s)
+	o.SetStaticProperty("onKeyDown", s)
 	return o.self
 }
 
 func (o *BaseOpt[T]) OnCompositionStart(s string) *T {
-	o.SetProperty("onCompositionStart", s)
+	o.SetStaticProperty("onCompositionStart", s)
 	return o.self
 }
 
 func (o *BaseOpt[T]) OnCompositionUpdate(s string) *T {
-	o.SetProperty("onCompositionUpdate", s)
+	o.SetStaticProperty("onCompositionUpdate", s)
 	return o.self
 }
 
 func (o *BaseOpt[T]) OnCompositionEnd(s string) *T {
-	o.SetProperty("onCompositionEnd", s)
+	o.SetStaticProperty("onCompositionEnd", s)
 	return o.self
 }
 
 func (o *BaseOpt[T]) OnPaste(s string) *T {
-	o.SetProperty("onPaste", s)
+	o.SetStaticProperty("onPaste", s)
 	return o.self
 }
 
 func (o *BaseOpt[T]) OnCopy(s string) *T {
-	o.SetProperty("onCopy", s)
+	o.SetStaticProperty("onCopy", s)
 	return o.self
 }
 
 func (o *BaseOpt[T]) OnCut(s string) *T {
-	o.SetProperty("onCut", s)
+	o.SetStaticProperty("onCut", s)
 	return o.self
 }
 
 func (o *BaseOpt[T]) OnActive(s string) *T {
-	o.SetProperty("onActive", s)
+	o.SetStaticProperty("onActive", s)
 	return o.self
 }
 
 func (o *BaseOpt[T]) OnFocus(s string) *T {
-	o.SetProperty("onFocus", s)
+	o.SetStaticProperty("onFocus", s)
 	return o.self
 }
 
 func (o *BaseOpt[T]) OnHover(s string) *T {
-	o.SetProperty("onHover", s)
+	o.SetStaticProperty("onHover", s)
 	return o.self
 }
 
 func (o *BaseOpt[T]) OnClickOutside(s string) *T {
-	o.SetProperty("onClickOutside", s)
+	o.SetStaticProperty("onClickOutside", s)
 	return o.self
 }
 
 func (o *BaseOpt[T]) OnScrollTop(s string) *T {
-	o.SetProperty("onScrollTop", s)
+	o.SetStaticProperty("onScrollTop", s)
 	return o.self
 }
 
 func (o *BaseOpt[T]) OnScrollLeft(s string) *T {
-	o.SetProperty("onScrollLeft", s)
+	o.SetStaticProperty("onScrollLeft", s)
 	return o.self
 }
 
@@ -350,16 +361,16 @@ func (o *BaseOpt[T]) Src(s string) *T {
 }
 
 func (o *BaseOpt[T]) OnCreated(s string) *T {
-	o.SetProperty("onCreated", s)
+	o.SetStaticProperty("onCreated", s)
 	return o.self
 }
 
 func (o *BaseOpt[T]) OnDestroy(s string) *T {
-	o.SetProperty("onDestroy", s)
+	o.SetStaticProperty("onDestroy", s)
 	return o.self
 }
 
 func (o *BaseOpt[T]) OnUpdated(s string) *T {
-	o.SetProperty("onUpdated", s)
+	o.SetStaticProperty("onUpdated", s)
 	return o.self
 }

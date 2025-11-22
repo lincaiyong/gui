@@ -55,7 +55,7 @@ func (o *ContainerOpt) Virtual(s string) *ContainerOpt          { o.SetProperty(
 func (o *ContainerOpt) HandleItemClick(s string) *ContainerOpt  { o.handleItemClick = s; return o }
 func (o *ContainerOpt) HandleItemUpdate(s string) *ContainerOpt { o.handleItemUpdate = s; return o }
 func (o *ContainerOpt) HandleItemCompute(s string) *ContainerOpt {
-
+	o.SetProperty("computeItemFn", s)
 	return o
 }
 
@@ -87,66 +87,8 @@ func Container(opt *ContainerOpt, child *Element) *Element {
 		child,
 	)
 	opt.List("false").Virtual("false").Scrollable("false").ScrollLeft("0").ScrollTop("0").
-		OnUpdated(".handleUpdated").
-		OnCreated(".handleCreated").
+		OnUpdated("container_handleUpdated").
+		OnCreated("container_handleCreated").
 		Init(ret)
-	ret.SetMethod("handleUpdated", `function(k) {
-    // items
-    if (k === 'items' && this.list) {
-        container_updateList.apply(this);
-    }
-
-    // scroll
-    if (this.list && this.virtual && this.items instanceof Array) {
-        if ((k === 'scrollLeft' || k === 'scrollTop') && this.items instanceof Array){
-            container_updateList.apply(this);
-        }
-    } else if (this.list) {
-        const RESERVED_COUNT = 2;
-        if (k === 'scrollLeft') {
-            for (let i = RESERVED_COUNT; i < this.children.length; i++) {
-                const child = this.children[i];
-                child.x = child.data.x - this.scrollLeft;
-            }
-        } else if (k === 'scrollTop') {
-            for (let i = RESERVED_COUNT; i < this.children.length; i++) {
-                const child = this.children[i];
-                child.y = child.data.y - this.scrollTop;
-            }
-        }
-    }
-
-    // w & h -> 影响scroll
-    if (this.scrollable) {
-        if ((k === 'w' || k === 'h') && this.items instanceof Array) {
-            container_updateList.apply(this);
-        }
-    }
-}`)
-	ret.SetMethod("handleCreated", `function() {
-    if (!this.list) {
-        const child = g.createElement(null, this.model.itemModel, this);
-        this.childWidth = child.w;
-        this.childHeight = child.h;
-        child.onUpdated((k, v) => {
-            if (k === 'w') {
-                this.childWidth = v;
-            } else if (k === 'h') {
-                this.childHeight = v;
-            }
-        });
-    }
-
-    if (this.scrollable) {
-        this.hBar = new Scrollbar(this, 'h');
-        this.vBar = new Scrollbar(this, 'v');
-        const bars = [this.hBar, this.vBar];
-        bars.forEach(bar => bar.initDraggable());
-        this.onWheel = (_, ev) => {
-            ev.preventDefault();
-            bars.forEach(bar => bar.handleWheel(ev));
-        };
-    }
-}`)
 	return ret
 }
