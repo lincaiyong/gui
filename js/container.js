@@ -1,10 +1,10 @@
-function container_updateList() {
-    if (!this.list) {
+function container_updateList(ele) {
+    if (!ele.list) {
         return;
     }
-    const data = this.items;
-    const scrollLeft = this.scrollLeft || 0;
-    const scrollTop = this.scrollTop || 0;
+    const data = ele.items;
+    const scrollLeft = ele.scrollLeft || 0;
+    const scrollTop = ele.scrollTop || 0;
     const RESERVED_COUNT = 2;
     let mw = 0;
     let mh = 0;
@@ -12,30 +12,30 @@ function container_updateList() {
     const visible = [];
     let prevItem = null;
     for (let i = 0; i < data.length; i++) {
-        const item = this.computeItemFn(this, i, prevItem);
+        const item = ele.computeItemFn(ele, i, prevItem);
         computedItems.push(item);
         prevItem = item;
 
         mw = Math.max(item.x + item.w, mw);
         mh = Math.max(item.y + item.h, mh);
 
-        if (!this.virtual) {
+        if (!ele.virtual) {
             visible.push(i);
         } else {
             const x = prevItem.x - scrollLeft;
             const x2 = x + prevItem.w;
             const y = prevItem.y - scrollTop;
             const y2 = y + prevItem.h;
-            if (!(x > this.w || x2 < 0 || y > this.h || y2 < 0)) {
+            if (!(x > ele.w || x2 < 0 || y > ele.h || y2 < 0)) {
                 visible.push(i);
             }
         }
     }
 
-    if (this.reuseItem) {
+    if (ele.reuseItem) {
         const old = {};
-        for (let i = RESERVED_COUNT; i < this.children.length; i++) {
-            const child = this.children[i];
+        for (let i = RESERVED_COUNT; i < ele.children.length; i++) {
+            const child = ele.children[i];
             const key = child.data.key;
             if (key in old) {
                 old[key].push(child);
@@ -60,7 +60,7 @@ function container_updateList() {
             if (!child) {
                 child = other.shift();
                 if (!child) {
-                    child = g.createElement(null, this, this.model.itemModel);
+                    child = g.createElement(null, ele, ele.model.itemModel);
                     ['x', 'y', 'w', 'h'].forEach(k => child.properties[k].reset());
                 }
                 nonHitKey.push(child);
@@ -77,15 +77,15 @@ function container_updateList() {
             child.h = item.h;
         });
     } else {
-        while (this.children.length > visible.length + 2) {
-            const child = this.children[this.children.length - 1];
+        while (ele.children.length > visible.length + 2) {
+            const child = ele.children[ele.children.length - 1];
             g.destroyElement(child);
         }
-        while (this.children.length < visible.length + 2) {
-            g.createElement(null, this, this.model.itemModel);
+        while (ele.children.length < visible.length + 2) {
+            g.createElement(null, ele, ele.model.itemModel);
         }
         for (let i = 0; i < visible.length; i++) {
-            const child = this.children[i + RESERVED_COUNT];
+            const child = ele.children[i + RESERVED_COUNT];
             const item = computedItems[visible[i]];
             child.data = item;
             child.x = item.x - scrollLeft;
@@ -95,38 +95,38 @@ function container_updateList() {
         }
     }
 
-    this.childWidth = this.minWidth > 0 ? Math.max(mw, this.minWidth) : mw;
-    this.childHeight = mh;
-    if (this.align !== 'none') {
-        const w = this.align === 'max' ? this.childWidth : Math.max(this.childWidth, this.cw);
-        for (let i = RESERVED_COUNT; i < this.children.length; i++) {
-            const child = this.children[i];
+    ele.childWidth = ele.minWidth > 0 ? Math.max(mw, ele.minWidth) : mw;
+    ele.childHeight = mh;
+    if (ele.align !== 'none') {
+        const w = ele.align === 'max' ? ele.childWidth : Math.max(ele.childWidth, ele.cw);
+        for (let i = RESERVED_COUNT; i < ele.children.length; i++) {
+            const child = ele.children[i];
             child.w = w;
         }
     }
 
-    if (this.scrollable) {
-        if (mw - scrollLeft < this.cw) {
-            this.scrollLeft = Math.max(mw - this.cw, 0);
+    if (ele.scrollable) {
+        if (mw - scrollLeft < ele.cw) {
+            ele.scrollLeft = Math.max(mw - ele.cw, 0);
         }
-        if (mh - scrollTop < this.ch) {
-            this.scrollTop = Math.max(mh - this.ch, 0);
+        if (mh - scrollTop < ele.ch) {
+            ele.scrollTop = Math.max(mh - ele.ch, 0);
         }
-        this.hBar.show(true);
-        this.vBar.show(true);
+        ele.hBar.show(true);
+        ele.vBar.show(true);
     }
 }
 
 function container_handleUpdated(ele, k) {
     // items
     if (k === 'items' && ele.list) {
-        container_updateList.apply(ele);
+        container_updateList(ele);
     }
 
     // scroll
     if (ele.list && ele.virtual && ele.items instanceof Array) {
         if ((k === 'scrollLeft' || k === 'scrollTop') && ele.items instanceof Array) {
-            container_updateList.apply(ele);
+            container_updateList(ele);
         }
     } else if (ele.list) {
         const RESERVED_COUNT = 2;
@@ -146,7 +146,7 @@ function container_handleUpdated(ele, k) {
     // w & h -> 影响scroll
     if (ele.scrollable) {
         if ((k === 'w' || k === 'h') && ele.items instanceof Array) {
-            container_updateList.apply(ele);
+            container_updateList(ele);
         }
     }
 }

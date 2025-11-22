@@ -72,8 +72,11 @@ function handleClick() {
 			})
 			r.GET("/tree", func(c *gin.Context) {
 				gui.HandlePage(c, "tree", Div(NewOpt().OnCreated("test"),
-					Named("tree", Tree(NewTreeOpt())),
+					Named("tree", Tree(NewTreeOpt().OnClickItem("handleClickItem"))),
 				), `
+function handleClickItem(ele) {
+	console.log(ele);
+}
 function test() {
 	setTimeout(function() {
 		const treeEle = g.root.treeEle;
@@ -82,11 +85,6 @@ function test() {
 }
 `)
 			})
-			//			r.GET("/toyeditor", func(c *gin.Context) {
-			//				gui.MakePage(c, "toyeditor", Root(ToyEditor()))
-			//			})
-			//			r.GET("/goland", goland)
-			//			r.GET("/larkbase", larkbase)
 			return nil
 		},
 	)

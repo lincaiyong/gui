@@ -11,8 +11,8 @@ function button_handleActive(ele) {
 
 function button_handleHover(ele, hover) {
     if (hover) {
-        this.backgroundColor = this.selected ? '#3475F0' : '#EBECF0';
+        ele.backgroundColor = ele.selected ? '#3475F0' : '#EBECF0';
     } else {
-        this.backgroundColor = this.selected ? '#3475F0' : '';
+        ele.backgroundColor = ele.selected ? '#3475F0' : '';
     }
 }

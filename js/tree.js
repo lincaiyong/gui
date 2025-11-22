@@ -13,7 +13,7 @@ function treeItem_handleCompute(container, index) {
 
 function treeItem_handleClick(itemEle, ev) {
     const treeEle = itemEle.local;
-    tree_handleChildSelected.apply(treeEle, [itemEle, true]);
+    tree_handleChildSelected(treeEle, itemEle, true);
     // 通知发生点击事件
     if (treeEle.onClickItem instanceof Function) {
         treeEle.onClickItem(itemEle, ev);
@@ -173,8 +173,8 @@ function tree_handleUpdated(ele, k, v) {
     }
 }
 
-function tree_handleChildSelected(child, focus) {
-    this.selectedChildTop = child.y + this.containerEle.scrollTop;
-    this.selectedEle.v = 1;
-    this.focus = focus;
+function tree_handleChildSelected(ele, child, focus) {
+    ele.selectedChildTop = child.y + ele.containerEle.scrollTop;
+    ele.selectedEle.v = 1;
+    ele.focus = focus;
 }
