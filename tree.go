@@ -37,7 +37,7 @@ func Tree(opt *TreeOpt) *Element {
 			NewContainerOpt().Align("'fill'").X("10").W("parent.w - .x").
 				HandleItemCompute("tree_computeItem").
 				HandleItemClick("tree_clickItem").
-				HandleItemUpdated("tree_updateItem"),
+				HandleItemUpdate("tree_updateItem"),
 			Div(NewOpt(),
 				Named("arrowEle", Svg(NewOpt().X("this.indent + parent.data.depth * 20 + 4").Y("parent.h/2-.h/2").W("17").H(".w").
 					V("parent.data.leaf ? 0 : 1").Color(ColorGray110),
@@ -49,15 +49,15 @@ func Tree(opt *TreeOpt) *Element {
 	)
 	ret.SetLocalRoot()
 
-	opt.Init(ret)
-	ret.SetMethod("onUpdated", `function(k, v) {
+	opt.OnUpdated(".handleUpdated").Init(ret)
+	ret.SetMethod("handleUpdated", `function(k, v) {
     if (k === 'items') {
         this.nodeMap = tree_makeNodeMap(v, this.sort);
         this.containerEle.items = tree_nodeToItems(this.nodeMap, '', 0, 0);
         this.selectedEle.v = 0;
     }
 }`)
-	ret.SetMethod("selectChild", `function(child, focus) {
+	ret.SetMethod("handleChildSelected", `function(child, focus) {
     this.selectedChildTop = child.y + this.containerEle.scrollTop;
     this.selectedEle.v = 1;
     this.focus = focus;

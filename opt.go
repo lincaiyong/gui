@@ -348,3 +348,18 @@ func (o *BaseOpt[T]) Src(s string) *T {
 	o.SetProperty("src", s)
 	return o.self
 }
+
+func (o *BaseOpt[T]) OnCreated(s string) *T {
+	o.SetProperty("onCreated", s)
+	return o.self
+}
+
+func (o *BaseOpt[T]) OnDestroy(s string) *T {
+	o.SetProperty("onDestroy", s)
+	return o.self
+}
+
+func (o *BaseOpt[T]) OnUpdated(s string) *T {
+	o.SetProperty("onUpdated", s)
+	return o.self
+}

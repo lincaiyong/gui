@@ -13,7 +13,7 @@ function tree_computeItem(container, index) {
 
 function tree_clickItem(itemEle, ev) {
     const treeEle = itemEle.local;
-    treeEle.selectChild(itemEle, true);
+    treeEle.handleChildSelected(itemEle, true);
     // 通知发生点击事件
     if (treeEle.onClickItem instanceof Function) {
         treeEle.onClickItem(itemEle, ev);

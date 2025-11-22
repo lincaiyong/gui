@@ -37,7 +37,7 @@ func (o *EditorOpt) OnCursorPositionChange(s string) *EditorOpt {
 
 func Editor(opt *EditorOpt) *Element {
 	ret := NewElement(ElementTypeEditor, ElementTagDiv)
-	ret.SetMethod("onCreated", `function() {
+	ret.SetMethod("handleCreated", `function() {
     let lineNumbers = 'on';
     if (!this.showLineNo) {
         lineNumbers = 'off';
@@ -66,7 +66,7 @@ func Editor(opt *EditorOpt) *Element {
         this.value = this._editor.getValue();
     });
 }`).
-		SetMethod("onUpdated", `function(k, v) {
+		SetMethod("handleUpdated", `function(k, v) {
     if (!this._editor) {
         return;
     }
@@ -79,9 +79,9 @@ func Editor(opt *EditorOpt) *Element {
             break;
     }
 }`).
-		SetMethod("onDestroy", `function() {
+		SetMethod("handleDestroy", `function() {
     this._editor.dispose();
 }`)
-	opt.Init(ret)
+	opt.OnCreated(".handleCreated").OnUpdated(".handleUpdated").OnDestroy(".handleDestroy").Init(ret)
 	return ret
 }

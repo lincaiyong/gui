@@ -12,7 +12,7 @@ function container_updateList() {
     const visible = [];
     let prevItem = null;
     for (let i = 0; i < data.length; i++) {
-        const item = this.handleItemCompute(this, i, prevItem);
+        const item = this.computeItemFn(this, i, prevItem);
         computedItems.push(item);
         prevItem = item;
 

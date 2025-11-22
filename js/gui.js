@@ -1,7 +1,6 @@
 class Property {
     static id = 0;
 
-
     constructor(element, name, sources, sourceResolver, computeFunc) {
         this._element = element;
         this._name = name;
@@ -30,6 +29,9 @@ class Property {
 
     update() {
         for (const source of this._resolvedSources) {
+            if (!source) {
+                console.error(`source is empty`);
+            }
             if (source._value === undefined) {
                 return;
             }
@@ -338,6 +340,9 @@ class BaseElement {
             onScrollLeft: [() => undefined, []],
             onScrollTop: [() => undefined, []],
             onWheel: [() => undefined, []],
+            onCreated: [() => undefined, []],
+            onDestroy: [() => undefined, []],
+            onUpdated: [() => undefined, []],
             opacity: [() => 1, []],
             outline: [() => 'none', []],
             placeholder: [() => '', []],
@@ -547,6 +552,18 @@ class BaseElement {
 
     get onWheel() {
         return this.properties.onWheel.value;
+    }
+
+    get onCreated() {
+        return this.properties.onCreated.value;
+    }
+
+    get onDestroy() {
+        return this.properties.onDestroy.value;
+    }
+
+    get onUpdated() {
+        return this.properties.onUpdated.value;
     }
 
     get opacity() {
@@ -961,6 +978,24 @@ class BaseElement {
             this._addSideEffect('onWheel', g.addListener(this.ref, 'wheel', ev => {
                 v(this, ev);
             }));
+        }
+    }
+
+    set onCreated(v) {
+        if (v instanceof Function) {
+            this.properties.onCreated.value = v;
+        }
+    }
+
+    set onDestroy(v) {
+        if (v instanceof Function) {
+            this.properties.onDestroy.value = v;
+        }
+    }
+
+    set onUpdated(v) {
+        if (v instanceof Function) {
+            this.properties.onUpdated.value = v;
         }
     }
 

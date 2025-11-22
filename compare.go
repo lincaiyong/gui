@@ -2,7 +2,7 @@ package gui
 
 func Compare(opt *Opt) *Element {
 	ret := NewElement(ElementTypeCompare, ElementTagDiv)
-	ret.SetMethod("onCreated", `function() {
+	ret.SetMethod("handleCreated", `function() {
     const leftModel = monaco.editor.createModel('原始文本', 'text/plain');
     const rightModel = monaco.editor.createModel('修改后的文本', 'text/plain');
 
@@ -13,9 +13,9 @@ func Compare(opt *Opt) *Element {
         original: leftModel,
         modified: rightModel
     });
-}`).SetMethod("onDestroy", `function() {
+}`).SetMethod("handleDestroy", `function() {
     this._editor.dispose();
 }`)
-	opt.Init(ret)
+	opt.OnCreated(".handleCreated").OnDestroy(".handleDestroy").Init(ret)
 	return ret
 }
